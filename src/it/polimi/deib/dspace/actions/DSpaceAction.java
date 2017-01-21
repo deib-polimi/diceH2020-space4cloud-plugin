@@ -1,6 +1,7 @@
 package it.polimi.deib.dspace.actions;
 
 
+import it.polimi.deib.dspace.control.DICEWrap;
 import it.polimi.deib.dspace.ui.DSpaceWizard;
 
 import org.eclipse.jface.action.IAction;
@@ -35,6 +36,8 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 		System.out.println("Hola");
 		WizardDialog dialog = new WizardDialog(null, new DSpaceWizard());
 		dialog.open();
+		System.out.println("Starting");
+		DICEWrap.getWrapper().start();
 	}
 
 	/**

@@ -40,7 +40,8 @@ public class Configuration {
 	public void dump(){
 		for (ClassDesc c : classes){
 			System.out.println("Class: "+c.getId());
-			System.out.println(" "+c.getUmlPath());
+			System.out.println(" "+c.getDtsmPath());
+			System.out.println(" "+c.getDdsmPath());
 			for (String alt : c.getAlternatives()){
 				System.out.println(" "+alt);
 			}
@@ -53,5 +54,13 @@ public class Configuration {
 	
 	public void setPrivate(boolean isPrivate){
 		this.isPrivate = isPrivate;
+	}
+	
+	public String getTechnology(){
+		return technology;
+	}
+	
+	public boolean getIsPrivate(){
+		return isPrivate;
 	}
 }

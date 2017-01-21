@@ -4,7 +4,8 @@ package it.polimi.deib.dspace.control;
 public class ClassDesc {
 	private final int id;
 	private String[] alternatives;
-	private String umlPath;
+	private String ddsmPath;
+	private String dtsmPath;
 	
 	public ClassDesc(int id){
 		this.id = id;
@@ -22,11 +23,19 @@ public class ClassDesc {
 		alternatives = alt;
 	}
 	
-	public void setUmlPath(String umlPath){
-		this.umlPath = umlPath;
+	public void setDdsmPath(String ddsmPath){
+		this.ddsmPath = ddsmPath;
 	}
 	
-	public String getUmlPath(){
-		return umlPath;
+	public String getDdsmPath(){
+		return ddsmPath;
+	}
+	
+	public void setDtsmPath(String dtsmPath){
+		this.dtsmPath = dtsmPath;
+	}
+	
+	public String getDtsmPath(){
+		return dtsmPath;
 	}
 }

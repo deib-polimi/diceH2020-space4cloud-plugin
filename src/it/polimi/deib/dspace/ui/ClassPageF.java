@@ -21,19 +21,19 @@ import it.polimi.deib.dspace.control.Configuration;
 import it.polimi.deib.dspace.control.DB;
 import it.polimi.deib.dspace.control.DICEWrap;
 
-public class ClassPage extends WizardPage{
+public class ClassPageF extends WizardPage{
 	private Composite container;
 	private GridLayout layout;
 	private List l1;
 	private List l2;
-	private String ddsmPath = "";
 	private String dtsmPath = "";
+	private String ddsmPath = "";
 	private Label fileName;
 	private Label fileName1;
 	private int classCount = 0;
 	private int numClasses;
 
-	protected ClassPage(String title, String description) {
+	protected ClassPageF(String title, String description) {
 		super("Browse Files");
 		setTitle(title);
 		setDescription(description);
@@ -123,7 +123,8 @@ public class ClassPage extends WizardPage{
 		fl1 = new Label(container, SWT.NONE);
 		
 		fileName1 = new Label(container, SWT.NONE);
-		fileName1.setLayoutData(new GridData(SWT.BEGINNING, SWT.END, false, false));	
+		fileName1.setLayoutData(new GridData(SWT.BEGINNING, SWT.END, false, false));
+		
 		
 		browse.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
@@ -137,9 +138,10 @@ public class ClassPage extends WizardPage{
             	dtsmPath = chooser.getSelectedFile().getPath();
             	
             	fileName.setText(chooser.getSelectedFile().getName());
-            	//setPageComplete(true);
             	container.layout();
-            	getWizard().getContainer().updateButtons();
+            	if(!dtsmPath.equals("") && !ddsmPath.equals("") && l2.getItemCount() > 0){
+        			setPageComplete(true);
+        		}
             }
 
         });
@@ -153,12 +155,13 @@ public class ClassPage extends WizardPage{
 
             	if (choice != JFileChooser.APPROVE_OPTION) return;
             	
-            	ddsmPath = chooser.getSelectedFile().getPath();
+            	dtsmPath = chooser.getSelectedFile().getPath();
             	
             	fileName1.setText(chooser.getSelectedFile().getName());
-            	//setPageComplete(true);
             	container.layout();
-            	getWizard().getContainer().updateButtons();
+            	if(!dtsmPath.equals("") && !ddsmPath.equals("") && l2.getItemCount() > 0){
+        			setPageComplete(true);
+        		}
             }
 
         });
@@ -169,37 +172,16 @@ public class ClassPage extends WizardPage{
         setControl(container);
 	}
 	
-	@Override
-	public boolean canFlipToNextPage(){
-		if(!ddsmPath.equals("") && !dtsmPath.equals("") && l2.getItemCount() > 0){
-			System.out.println("Can turn");
-			return true;
-		}
-		return false;
-	}
-	
 	private void populateAlternatives(){
 		l1.setItems(DB.getDB().fetchAlternatives());
 	}
 	
-	public String getDTSMPath(){
+	public String getDtsmPath(){
 		return dtsmPath;
 	}
 	
-	public String getDDSMPath(){
+	public String getDdsmPath(){
 		return ddsmPath;
-	}
-	
-	public void reset(){
-		l2.removeAll();
-		populateAlternatives();
-		fileName.setText("");
-		fileName1.setText("");
-		ddsmPath = "";
-		dtsmPath = "";
-		getWizard().getContainer().updateButtons();
-		container.layout();
-		classCount++;
 	}
 	
 	public String[] getSelectedAlternatives() {
@@ -210,3 +192,4 @@ public class ClassPage extends WizardPage{
 		this.numClasses = numClasses;
 	}
 }
+

@@ -28,12 +28,26 @@ import fr.lip6.move.pnml.ptnet.Place;
 public class DICEWrap {
 	private static DICEWrap diceWrap;
 	private ModelResult result;
+	private Configuration conf;
 	
 	public static DICEWrap getWrapper(){
 		if (diceWrap == null){
 			diceWrap = new DICEWrap();
 		}
 		return diceWrap;
+	}
+	
+	public void start(){
+		conf = Configuration.getCurrent();
+		if(conf.getTechnology().equals("Storm")){
+			for (ClassDesc c : conf.getClasses()){
+				try {
+					buildAnalyzableModel(c.getDtsmPath());
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+				}
+			}
+		}
 	}
 	
 	public void buildAnalyzableModel(String umlModelPath) throws Exception{
@@ -55,10 +69,14 @@ public class DICEWrap {
 	    FileChannel outChannel = outputFile.getChannel();
 	    pnd.toPNML(outChannel);*/
 		
+		String id;
+		
 		System.out.println("TRAVERSING LIST");
 		for(Trace i: result.getTraceSet().getTraces()){
 			if (i.getFromDomainElement() instanceof Device  && i.getToAnalyzableElement() instanceof Place){
-				System.out.println(((Place)i.getToAnalyzableElement()).getId());
+				id = ((Place)i.getToAnalyzableElement()).getId();
+				System.out.println(id);
+				System.out.println(((Place)i.getToAnalyzableElement()).getInitialMarking().getText());
 			}
 		}
 	}
