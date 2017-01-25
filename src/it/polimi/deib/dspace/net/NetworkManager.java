@@ -15,6 +15,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Manages interaction with the backend
@@ -64,6 +65,7 @@ public class NetworkManager {
 			e.printStackTrace();
 		}
 		catch (ClientProtocolException e1) {
+			//Connection problem
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
@@ -81,13 +83,15 @@ public class NetworkManager {
 	 * Sends to the backend the models to be simulated
 	 * @param file The model file
 	 * @param scenario The scenario parameter
+	 * @throws UnsupportedEncodingException 
 	 */
-	public void sendModel(File file, String scenario){
+	public void sendModel(File file_1,File file_2, String scenario) throws UnsupportedEncodingException{
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		HttpPost httppost = new HttpPost(modelUploadEndpoint);
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();  
-		FileBody fileBody = new FileBody(file);
-	    builder.addPart("file[]", fileBody);
+		builder.addTextBody("scenario",scenario);
+	    builder.addPart("file[]", new FileBody(file_1));
+	    builder.addPart("file[]", new FileBody(file_2));
 	    httppost.setEntity(builder.build());
 	    CloseableHttpResponse response;
 	    try {
