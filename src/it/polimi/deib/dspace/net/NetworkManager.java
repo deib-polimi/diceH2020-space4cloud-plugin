@@ -1,7 +1,9 @@
 package it.polimi.deib.dspace.net;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -10,7 +12,9 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -26,7 +30,7 @@ import java.io.UnsupportedEncodingException;
 public class NetworkManager {
 	
 	private static NetworkManager instance;
-	private static String rootEndpoint = "http://specclient1.dei.polimi.it:8080";
+	private static String rootEndpoint = "http://specclient1.dei.polimi.it:8018";
 	private static String alternativesEndpoint = rootEndpoint+"/alternatives";
 	private static String modelUploadEndpoint = rootEndpoint+"/files/upload";
 	private static String simulationSetupEndpoint = rootEndpoint+"/launch/simulationSetup";
@@ -94,22 +98,20 @@ public class NetworkManager {
 	 * @throws UnsupportedEncodingException 
 	 */
 	public void sendModel(File[] files, String scenario) throws UnsupportedEncodingException{
-		CloseableHttpClient httpclient = HttpClients.createDefault();
-		HttpPost httppost = new HttpPost(modelUploadEndpoint);
+		HttpClient httpclient = HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build();
+		HttpResponse response;
+		HttpPost post = new HttpPost(modelUploadEndpoint);
+		
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();  
 		builder.addPart("scenario",new StringBody(scenario,ContentType.DEFAULT_TEXT));
 		for(File file:files){
 			builder.addPart("file[]", new FileBody(file));
 		}
-	    httppost.setEntity(builder.build());
-	    CloseableHttpResponse response;
+	    post.setEntity(builder.build());
 	    try {
-			response = httpclient.execute(httppost);
+	    	response = httpclient.execute(post);
 			if(response.getStatusLine().getStatusCode() != 302){
 				System.err.println("Error: POST not succesfull");
-			}
-			else{
-				this.simulationSetup();
 			}
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
@@ -120,16 +122,16 @@ public class NetworkManager {
 		}
 	}
 	private void simulationSetup(){
-		CloseableHttpClient httpclient = HttpClients.createDefault();
+		HttpClient httpclient = HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build();
 		HttpGet httpget = new HttpGet(simulationSetupEndpoint);
-		CloseableHttpResponse response;
+		HttpResponse response;
 		try {
-			response = httpclient.execute(httpget);
+			response = httpclient.execute(new HttpPost(modelUploadEndpoint));
 			if(response.getStatusLine().getStatusCode() != 200){
 				//
 			}
 			else{
-				response.close();
+				//response.close();
 			}
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
