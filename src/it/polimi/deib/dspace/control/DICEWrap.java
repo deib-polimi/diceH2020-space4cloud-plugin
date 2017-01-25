@@ -2,6 +2,7 @@ package it.polimi.deib.dspace.control;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
@@ -24,6 +25,7 @@ import es.unizar.disco.simulation.models.traces.Trace;
 import fr.lip6.move.pnml.ptnet.PetriNet;
 import fr.lip6.move.pnml.ptnet.PetriNetDoc;
 import fr.lip6.move.pnml.ptnet.Place;
+import it.polimi.deib.dspace.net.NetworkManager;
 
 public class DICEWrap {
 	private static DICEWrap diceWrap;
@@ -90,5 +92,17 @@ public class DICEWrap {
 		File targetFolder = new File(System.getProperty("user.dir"));
 		GenerateGspn gspn = new GenerateGspn(((PetriNetDoc)result.getModel().get(0)).getNets().get(0),targetFolder, new ArrayList<EObject>());
 		gspn.doGenerate(new BasicMonitor());
+	}
+	
+	public void sendModel(){
+		File files[] = {new File("/home/kom/eclipse/java-neon/eclipse/1_h8_D500000.0MapJ1Cineca5xlarge.txt"),
+				new File("/home/kom/eclipse/java-neon/eclipse/1_h8_D500000.0RSJ1Cineca5xlarge.txt"),
+				new File("/home/kom/eclipse/java-neon/eclipse/1_h8_D500000.0.json")};
+		try {
+			NetworkManager.getInstance().sendModel(files, "PublicAvgWorkLoad");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
