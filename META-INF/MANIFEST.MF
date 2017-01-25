@@ -13,3 +13,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.acceleo.engine;bundle-version="3.6.5"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ClassPath: imported_packages/json-simple-1.1.1.jar,
+ .
