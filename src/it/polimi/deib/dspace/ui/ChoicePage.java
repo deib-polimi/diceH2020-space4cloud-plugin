@@ -125,15 +125,7 @@ public class ChoicePage extends WizardPage{
         pri.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
             	choice = false;
-//            	try{
-//	            	classes = Integer.parseInt(t1.getText());
-//            	}catch(NumberFormatException ex){
-//            		JOptionPane.showMessageDialog(null, "Please insert a valid number in both fields.");
-//            		pri.setSelection(false);
-//            		return;
-//            	}
             	getWizard().getContainer().updateButtons();
-            	//setPageComplete(true);
             	System.out.println("Choice: PRIVATE");
             }
 
@@ -142,15 +134,6 @@ public class ChoicePage extends WizardPage{
         pub.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
             	choice = true;
-//            	try{
-//	            	classes = Integer.parseInt(t1.getText());
-//            	}catch(NumberFormatException ex){
-//            		JOptionPane.showMessageDialog(null, "Please insert a valid number in both fields.");
-//            		pub.setSelection(false);
-//            		return;
-//            	}
-//            	
-//            	setPageComplete(true);
             	getWizard().getContainer().updateButtons();
             	System.out.println("Choice: PUBLIC");
             }

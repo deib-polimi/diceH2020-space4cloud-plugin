@@ -8,9 +8,7 @@ import it.polimi.deib.dspace.control.Configuration;
 
 public class DSpaceWizard extends Wizard{
 	private ChoicePage choice;
-	private DICEPage dice;
 	private ClassPage classp;
-	private ClassPageF classpf;
 	private FinalPage fpage;
 	private int n = 0;
 	private int classes;
@@ -30,28 +28,16 @@ public class DSpaceWizard extends Wizard{
 	
 	@Override
 	public void addPages(){
-		dice = new DICEPage("Select UML model", "Select which UML file you want to build PNML on.");
 		choice = new ChoicePage("Service type","Choose service type");
-		//xxx = new XXXPage("Step 1","Load .xxx files");
-		//yyy = new YYYPage("Step 2","Load .yyy files");
 		classp = new ClassPage("Class page", "Select page parameters and alternatives");
-		classpf = new ClassPageF("Class page", "Select page parameters and alternatives");
 		fpage = new FinalPage("Goodbye", ".");
 		addPage(choice);
 		addPage(classp);
-		addPage(classpf);
 		addPage(fpage);
-		//addPage(dice);
-		//addPage(dice);
-		//addPage(xxx);
-		//addPage(yyy);
 	}
 	
 	@Override
 	public IWizardPage getNextPage(IWizardPage currentPage) {
-		if (currentPage == dice){
-			return choice;
-		}
 		if (currentPage == choice){
 			classes = choice.getClasses();
 			Configuration.getCurrent().setNumClasses(classes);
@@ -78,29 +64,8 @@ public class DSpaceWizard extends Wizard{
 			classp.reset();
 			return classp;
 		}
-//		
-//		if(currentPage == fpage){
-//			return null;
-//		}
-//		
 		
 		return null;
-//		if (currentPage == zero ){
-//	        if (zero.getChoice()){
-//	        	System.out.println("Returning xxx");
-//	        	return xxx;
-//	        }else{
-//	        	System.out.println("Returning yyy - a");
-//	        	return yyy;
-//        	}
-//	    }
-//		if (currentPage == xxx){
-//			System.out.println("Returning yyy - b");
-//			return yyy;
-//		}
-//		if (currentPage == zero){
-//			return xxx;
-//		}
 	}
 	
 	@Override

@@ -15,15 +15,23 @@
                   name="wizardGroup">
             </separator>
          </menu>
+          <action
+               label="&amp;Preferencies..."
+               class="it.polimi.deib.dspace.actions.DSpaceAction"
+               tooltip=""
+               menubarPath="openWizard/wizardGroup"
+               id="it.polimi.deib.wizard.actions.Preferencies">
+         </action>
          <action
                label="&amp;Open Wizard"
                icon="icons/sample.gif"
                class="it.polimi.deib.dspace.actions.DSpaceAction"
                tooltip=""
-               menubarPath="openWizard/sampleGroup"
-               toolbarPath="Normal/sampleGroup"
-               id="it.polimi.deib.wizard.actions.SampleAction">
+               menubarPath="openWizard/wizardGroup"
+               toolbarPath="Normal/wizardGroup"
+               id="it.polimi.deib.wizard.actions.Start">
          </action>
+         
       </actionSet>
    </extension>
 

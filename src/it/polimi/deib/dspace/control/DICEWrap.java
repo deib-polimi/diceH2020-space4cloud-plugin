@@ -39,10 +39,15 @@ public class DICEWrap {
 	
 	public void start(){
 		conf = Configuration.getCurrent();
+		if(!conf.isComplete()){
+			System.out.println("Incomplete, aborting");
+			return;
+		}
 		if(conf.getTechnology().equals("Storm")){
 			for (ClassDesc c : conf.getClasses()){
 				try {
 					buildAnalyzableModel(c.getDtsmPath());
+					genGSPN();
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
 				}

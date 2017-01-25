@@ -16,7 +16,6 @@ public class FinalPage extends WizardPage{
 		super("Browse Files");
 		setTitle(title);
 		setDescription(description);
-		setPageComplete(true);
 	}
 
 	@Override

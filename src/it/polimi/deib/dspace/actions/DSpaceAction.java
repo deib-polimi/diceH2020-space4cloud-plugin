@@ -33,11 +33,15 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
 	public void run(IAction action) {
-		System.out.println("Hola");
-		WizardDialog dialog = new WizardDialog(null, new DSpaceWizard());
-		dialog.open();
-		System.out.println("Starting");
-		DICEWrap.getWrapper().start();
+		System.out.println("Hola "+action.getId());
+		if(action.getId().endsWith("Start")){
+			WizardDialog dialog = new WizardDialog(null, new DSpaceWizard());
+			dialog.open();
+			System.out.println("Starting");
+			DICEWrap.getWrapper().start();
+		}else{
+			System.out.println("Set up options");
+		}
 	}
 
 	/**
