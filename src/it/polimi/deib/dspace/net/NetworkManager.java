@@ -2,29 +2,19 @@ package it.polimi.deib.dspace.net;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
 
 /**
  * Manages interaction with the backend
@@ -45,15 +35,10 @@ public class NetworkManager {
 		return instance;
 		
 	}
-	private HttpURLConnection openConnection(String endpoint) throws IOException{
-		URL url = new URL(endpoint);
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		return connection;
-	}
-	private void closeConnection(HttpURLConnection connection){
-		connection.disconnect();
-	}
-	
+	/**
+	 * Fetches alternatives from the backend
+	 * @return A json object representing the fetched alternatives
+	 */
 	public JSONObject fetchAlternatives(){
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		HttpGet httpget = new HttpGet(alternativesEndpoint);
@@ -67,6 +52,7 @@ public class NetworkManager {
 				return null;
 			}
 			else{
+				//Converts response stream into string in order to parse everything int json
 				body = IOUtils.toString(response.getEntity().getContent(), "UTF-8");
 				parser = new JSONParser();
 				json = (JSONObject) parser.parse(body);
@@ -89,12 +75,33 @@ public class NetworkManager {
 			e.printStackTrace();
 		}
 		return null;
-			
 		
 	}
-	
-	public void sendModel(File file) throws IOException{
-		
+	/**
+	 * Sends to the backend the models to be simulated
+	 * @param file The model file
+	 * @param scenario The scenario parameter
+	 */
+	public void sendModel(File file, String scenario){
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		HttpPost httppost = new HttpPost(modelUploadEndpoint);
+		MultipartEntityBuilder builder = MultipartEntityBuilder.create();  
+		FileBody fileBody = new FileBody(file);
+	    builder.addPart("file[]", fileBody);
+	    httppost.setEntity(builder.build());
+	    CloseableHttpResponse response;
+	    try {
+			response = httpclient.execute(httppost);
+			if(response.getStatusLine().getStatusCode() != 200){
+				System.err.println("Error");
+			}
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	
