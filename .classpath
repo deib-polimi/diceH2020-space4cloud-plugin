@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="imported_packages/commons-io-2.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="imported_packages/commons-codec-1.9.jar"/>
+	<classpathentry exported="true" kind="lib" path="imported_packages/commons-logging-1.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="imported_packages/fluent-hc-4.5.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="imported_packages/httpclient-4.5.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="imported_packages/httpclient-cache-4.5.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="imported_packages/httpclient-win-4.5.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="imported_packages/httpcore-4.4.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="imported_packages/httpmime-4.5.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="imported_packages/jna-4.1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="imported_packages/jna-platform-4.1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="imported_packages/json-simple-1.1.1.jar" sourcepath="imported_packages/json-simple-1.1.1-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
