@@ -31,6 +31,17 @@ public class DICEWrap {
 	private static DICEWrap diceWrap;
 	private ModelResult result;
 	private Configuration conf;
+	private String path;
+	private String fileNames[] = {"1_h8_D500000.0MapJ1Cineca5xlarge.txt","1_h8_D500000.0RSJ1Cineca5xlarge.txt",
+	"1_h8_D500000.0.json"}; //to be replaced with conf content once web serice is ready to process it
+	private String scenario;
+	private String initialMarking;
+	
+	public DICEWrap(){
+		path = "/home/kom/eclipse/java-neon/eclipse/"; // to be replaced by fetching this info in tools
+		scenario = "PublicAvgWorkLoad"; // ditto
+		initialMarking = "";
+	}
 	
 	public static DICEWrap getWrapper(){
 		if (diceWrap == null){
@@ -45,14 +56,30 @@ public class DICEWrap {
 			System.out.println("Incomplete, aborting");
 			return;
 		}
-		if(conf.getTechnology().equals("Storm")){
-			for (ClassDesc c : conf.getClasses()){
-				try {
-					buildAnalyzableModel(c.getDtsmPath());
-					genGSPN();
-				} catch (Exception e) {
-					System.out.println(e.getMessage());
+		
+		switch(conf.getTechnology()){
+			case "Storm":
+				for (ClassDesc c : conf.getClasses()){
+					createDirectory(); // TODO
+					try {
+						buildAnalyzableModel(c.getDtsmPath());
+						extractInitialMarking();
+						genGSPN();
+						sendModel();
+					} catch (Exception e) {
+						System.out.println(e.getMessage());
+					}
 				}
+			default:
+				System.err.println("Unknown technology");
+		}
+	}
+	
+	public void extractInitialMarking(){
+		for(Trace i: result.getTraceSet().getTraces()){
+			if (i.getFromDomainElement() instanceof Device  && i.getToAnalyzableElement() instanceof Place){
+				initialMarking = ((Place)i.getToAnalyzableElement()).getInitialMarking().getText().toString();
+				System.out.println(initialMarking);
 			}
 		}
 	}
@@ -75,34 +102,31 @@ public class DICEWrap {
 	    }
 	    FileChannel outChannel = outputFile.getChannel();
 	    pnd.toPNML(outChannel);*/
-		
-		String id;
-		
-		System.out.println("TRAVERSING LIST");
-		for(Trace i: result.getTraceSet().getTraces()){
-			if (i.getFromDomainElement() instanceof Device  && i.getToAnalyzableElement() instanceof Place){
-				id = ((Place)i.getToAnalyzableElement()).getId();
-				System.out.println(id);
-				System.out.println(((Place)i.getToAnalyzableElement()).getInitialMarking().getText());
-			}
-		}
 	}
 	
 	public void genGSPN() throws Exception{
-		File targetFolder = new File(System.getProperty("user.dir"));
+		File targetFolder = new File(path);
 		GenerateGspn gspn = new GenerateGspn(((PetriNetDoc)result.getModel().get(0)).getNets().get(0),targetFolder, new ArrayList<EObject>());
 		gspn.doGenerate(new BasicMonitor());
 	}
 	
 	public void sendModel(){
-		File files[] = {new File("/home/kom/eclipse/java-neon/eclipse/1_h8_D500000.0MapJ1Cineca5xlarge.txt"),
-				new File("/home/kom/eclipse/java-neon/eclipse/1_h8_D500000.0RSJ1Cineca5xlarge.txt"),
-				new File("/home/kom/eclipse/java-neon/eclipse/1_h8_D500000.0.json")};
+		File files[] = {new File(path+fileNames[0]),
+				new File(path+fileNames[1]),
+				new File(path+fileNames[2])};
 		try {
-			NetworkManager.getInstance().sendModel(files, "PublicAvgWorkLoad");
+			System.out.println("Sending model:");
+			for(File i: files){
+				System.out.println("\t"+i.getName());
+			}
+			System.out.println("\t"+initialMarking);
+			System.out.println("\t"+scenario);
+			NetworkManager.getInstance().sendModel(files, scenario, initialMarking);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+	
+	private void createDirectory(){}
 }
