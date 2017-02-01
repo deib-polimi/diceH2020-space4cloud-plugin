@@ -18,8 +18,8 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 
 import it.polimi.deib.dspace.control.Configuration;
-import it.polimi.deib.dspace.control.DB;
 import it.polimi.deib.dspace.control.DICEWrap;
+import it.polimi.deib.dspace.net.NetworkManager;
 
 public class ClassPage extends WizardPage{
 	private Composite container;
@@ -179,7 +179,7 @@ public class ClassPage extends WizardPage{
 	}
 	
 	private void populateAlternatives(){
-		l1.setItems(DB.getDB().fetchAlternatives());
+		l1.setItems(NetworkManager.getInstance().getAlternatives());
 	}
 	
 	public String getDTSMPath(){

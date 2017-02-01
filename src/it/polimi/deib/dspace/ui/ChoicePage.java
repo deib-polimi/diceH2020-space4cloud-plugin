@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 
-import it.polimi.deib.dspace.control.DB;
+import it.polimi.deib.dspace.net.NetworkManager;
 
 public class ChoicePage extends WizardPage{
 	private static final Logger LOGGER = Logger.getLogger(ChoicePage.class.getName() );
@@ -77,7 +77,7 @@ public class ChoicePage extends WizardPage{
         g4 = new GridData(SWT.CENTER, SWT.BEGINNING, true, true);
         t2 = new List(container, SWT.BORDER);
         t2.setLayoutData(g4);
-        t2.setItems(DB.getDB().fetchTechnology());
+        t2.setItems(NetworkManager.getInstance().getTechnologies());
         t2.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
             	getWizard().getContainer().updateButtons();

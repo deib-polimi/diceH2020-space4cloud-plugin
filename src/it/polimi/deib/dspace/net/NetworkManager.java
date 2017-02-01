@@ -144,5 +144,14 @@ public class NetworkManager {
 		
 	}
 	
+	public String[] getAlternatives(){
+		String s[] = {"a","b","c","d"};
+		return s;
+	}
+	
+	public String[] getTechnologies(){
+		String s[] = {"Storm", "MapReduce", "Aaaaa"};
+		return s;
+	}
 	
 }
