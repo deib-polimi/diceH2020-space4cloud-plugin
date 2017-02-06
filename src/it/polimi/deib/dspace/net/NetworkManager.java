@@ -150,7 +150,7 @@ public class NetworkManager {
 	}
 	
 	public String[] getTechnologies(){
-		String s[] = {"Storm", "MapReduce", "Aaaaa","Hadoop"};
+		String s[] = {"Storm", "MapReduce", "Aaaaa"};
 		return s;
 	}
 	

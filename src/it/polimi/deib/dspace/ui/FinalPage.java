@@ -2,7 +2,6 @@ package it.polimi.deib.dspace.ui;
 
 
 import org.eclipse.jface.wizard.WizardPage;
-import org.jsoup.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;

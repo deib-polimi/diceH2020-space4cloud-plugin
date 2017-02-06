@@ -8,10 +8,12 @@ import it.polimi.deib.dspace.control.Configuration;
 
 
 public class DSpaceWizard extends Wizard{
+	private FileHandler fileHandler;
 	private ChoicePage choice;
 	private ClassPage classp;
 	private FinalPage fpage;
 	private ResultPage result;
+	private SelectFolderPage folPage;
 	private int n = 0;
 	private int classes;
 	private ClassDesc c;
@@ -20,7 +22,7 @@ public class DSpaceWizard extends Wizard{
 	public DSpaceWizard() {
         super();
         setNeedsProgressMonitor(true);
-        
+        this.fileHandler=new FileHandler();
 	}
 
 	@Override
@@ -35,7 +37,8 @@ public class DSpaceWizard extends Wizard{
 		classp = new ClassPage("Class page", "Select page parameters and alternatives");
 		fpage = new FinalPage("Goodbye", ".");
 		result=new ResultPage("Result");
-		
+		folPage=new SelectFolderPage("Select folder");
+		addPage(folPage);
 		addPage(choice);
 		addPage(classp);
 		addPage(fpage);
@@ -45,12 +48,6 @@ public class DSpaceWizard extends Wizard{
 	@Override
 	public IWizardPage getNextPage(IWizardPage currentPage) {
 		if (currentPage == choice){
-			//TODO just for testing delete after 
-			FileHandler hd=new FileHandler();
-			hd.setFolder("/home/arlind/Downloads/31_h8_D500000.0");
-			hd.setInitialMarking("smth");
-			hd.setScenario("PublicPeakWorkload");
-			hd.sendFile();
 			classes = choice.getClasses();
 			Configuration.getCurrent().setNumClasses(classes);
 			Configuration.getCurrent().setPrivate(choice.getChoice());
@@ -80,6 +77,17 @@ public class DSpaceWizard extends Wizard{
 				result.displayUrl("www.google.com");
 				return result;
 			}
+		}
+		if(currentPage==this.folPage){
+			
+			fileHandler.setFolder(folPage.getSelectedFolder());
+			fileHandler.setInitialMarking("smth");
+			//TODO get from configuration
+			fileHandler.setScenario(false,true);
+			fileHandler.sendFile();
+			finish = true;
+			result.displayUrl("http://specclient1.dei.polimi.it:8018/resPub");
+			return result;
 		}
 		
 		return null;
