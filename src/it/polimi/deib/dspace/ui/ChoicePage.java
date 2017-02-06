@@ -32,7 +32,7 @@ public class ChoicePage extends WizardPage{
 	private List t2;
 	private Label l1;
 	private Label l2;
-	private GridData g1,g2,g3,g4,g5,g6,f1,f2,f3;
+	private GridData g1,g2,g3,g4,g5,g6,f1,f2,f3,added;
 
 	protected ChoicePage(String title, String description) {
 		super("Choose service type");

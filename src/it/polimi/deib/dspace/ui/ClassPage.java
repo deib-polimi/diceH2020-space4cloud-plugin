@@ -42,7 +42,6 @@ public class ClassPage extends WizardPage{
 	@Override
 	public void createControl(Composite parent) {
 		container = new Composite(parent, SWT.NONE);
-		
 		layout = new GridLayout();
 		container.setLayout(layout);
 		layout.numColumns = 4;
