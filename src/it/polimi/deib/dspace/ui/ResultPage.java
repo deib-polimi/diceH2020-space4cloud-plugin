@@ -1,5 +1,4 @@
 package it.polimi.deib.dspace.ui;
-import java.util.logging.Logger;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;

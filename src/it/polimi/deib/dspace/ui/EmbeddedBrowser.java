@@ -1,15 +1,30 @@
 package it.polimi.deib.dspace.ui;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.browser.LocationEvent;
+import org.eclipse.swt.browser.LocationListener;
 import org.eclipse.swt.browser.ProgressEvent;
 import org.eclipse.swt.browser.ProgressListener;
+
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ProgressBar;
 
+
 public final class EmbeddedBrowser {  
+	private static final int BUFFER_SIZE = 4096;
 	private String URL;
 	
 	public EmbeddedBrowser(String url){
@@ -48,6 +63,96 @@ public final class EmbeddedBrowser {
             }
         });
         browser.setUrl(URL);
+        browser.addLocationListener(new LocationListener(){
+			@Override
+			public void changing(LocationEvent event) {
+				if(event.location.contains("downloadZipOpt")){
+		        	JFileChooser j = new JFileChooser();
+		        	j.setDialogTitle("Choose folder to save file");
+		        	j.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		        	int choice = j.showOpenDialog(null);
+		        	
+		        	if (choice!= JFileChooser.APPROVE_OPTION) return;
+		        	String selectedFolder=j.getSelectedFile().getAbsolutePath();
+		        	try {
+		        		downloadFile(event.location,selectedFolder);
+		        	} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		        }
+			}
+
+			@Override
+			public void changed(LocationEvent arg0) {
+				
+			}
+        	
+        	
+        	
+        	
+        });
+        
 
     }
+    
+    /**
+     * Downloads a file from a URL
+     * @param fileURL HTTP URL of the file to be downloaded
+     * @param saveDir path of the directory to save the file
+     * @throws IOException
+     */
+    public static void downloadFile(String fileURL, String saveDir)
+            throws IOException {
+        URL url = new URL(fileURL);
+        HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
+        int responseCode = httpConn.getResponseCode();
+ 
+        // always check HTTP response code first
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            String fileName = "";
+            String disposition = httpConn.getHeaderField("Content-Disposition");
+ 
+            if (disposition != null) {
+                // extracts file name from header field
+                int index = disposition.indexOf("filename=");
+                if (index > 0) {
+                    fileName = disposition.substring(index + 10,
+                            disposition.length() - 1);
+                }
+            } else {
+                // extracts file name from URL
+                fileName = fileURL.substring(fileURL.lastIndexOf("/") + 1,
+                        fileURL.length());
+            }
+ 
+            // opens input stream from the HTTP connection
+            InputStream inputStream = httpConn.getInputStream();
+            String saveFilePath = saveDir + File.separator + fileName;
+             
+            // opens an output stream to save into file
+            FileOutputStream outputStream = new FileOutputStream(saveFilePath);
+ 
+            int bytesRead = -1;
+            byte[] buffer = new byte[BUFFER_SIZE];
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+ 
+            outputStream.close();
+            inputStream.close();
+ 
+            System.out.println("File downloaded");
+            JOptionPane.showMessageDialog(null, "Download Complete", "InfoBox: " , JOptionPane.INFORMATION_MESSAGE);
+
+        } else {
+            System.out.println("No file to download. Server replied HTTP code: " + responseCode);
+        }
+        httpConn.disconnect();
+    }
+    
+    
+    
+    
+    
 }
