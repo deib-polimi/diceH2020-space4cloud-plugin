@@ -11,7 +11,7 @@ public class ResultPage extends WizardPage{
 	private Composite container;
 
 
-	protected ResultPage(String name) {
+	public ResultPage(String name) {
 		super(name);
 		this.setTitle(name);
 	

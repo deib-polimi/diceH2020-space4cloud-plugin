@@ -104,7 +104,7 @@ public class NetworkManager {
 		
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();  
 		builder.addPart("scenario",new StringBody(scenario,ContentType.DEFAULT_TEXT));
-		builder.addPart("initialMarking",new StringBody(scenario,ContentType.DEFAULT_TEXT));
+		//builder.addPart("initialMarking",new StringBody(initialMarking,ContentType.DEFAULT_TEXT));
 		for(File file:files){
 			builder.addPart("file[]", new FileBody(file));
 		}

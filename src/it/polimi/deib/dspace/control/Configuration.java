@@ -9,6 +9,7 @@ public class Configuration {
 	private int numClasses;
 	private boolean isPrivate;
 	private String technology;
+	private boolean hasLTC; //Long Term Contract already existing
 	
 	public Configuration(){
 		classes = new Vector<ClassDesc>();
@@ -54,6 +55,10 @@ public class Configuration {
 	
 	public void setPrivate(boolean isPrivate){
 		this.isPrivate = isPrivate;
+	}
+	
+	public void setLTC(boolean hasLTC){
+		this.hasLTC = hasLTC;
 	}
 	
 	public String getTechnology(){
