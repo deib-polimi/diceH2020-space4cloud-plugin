@@ -30,12 +30,15 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.uml2.uml.Device;
+import org.eclipse.uml2.uml.FinalNode;
 import org.eclipse.uml2.uml.Model;
+import org.eclipse.uml2.uml.Transition;
 import org.json.simple.JSONObject;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import es.unizar.disco.pnml.m2m.builder.HadoopActivityDiagram2PnmlResourceBuilder;
 import es.unizar.disco.pnml.m2m.builder.StormActivityDiagram2PnmlResourceBuilder;
 import es.unizar.disco.pnml.m2t.templates.gspn.GenerateGspn;
 import es.unizar.disco.simulation.models.builders.IAnalyzableModelBuilder.ModelResult;
@@ -101,15 +104,29 @@ public class DICEWrap {
 						buildStormAnalyzableModel(c.getDtsmPath());
 						extractStormInitialMarking();
 						genGSPN();
-						sendModel();
 					} catch (Exception e) {
 						System.out.println(e.getMessage());
 					}
 				}
 				break;
+			case "Hadoop":
+				for (ClassDesc c : conf.getClasses()){
+					try {
+						buildHadoopAnalyzableModel(c.getDtsmPath());
+						extractHadoopInitialMarking();
+						genGSPN();
+					} catch (Exception e) {
+						System.err.println("HADOOP EXCEPTION");
+						System.out.println(e.getMessage());
+					}
+				}
+				break;
 			default:
-				System.err.println("Unknown technology");
+				System.err.println("Unknown technology: "+conf.getTechnology());
 		}
+		
+		//generateJson();
+		//sendModel();
 	}
 	
 	public void extractStormInitialMarking(){
@@ -121,7 +138,7 @@ public class DICEWrap {
 		}
 	}
 	
-	public void buildStormAnalyzableModel(String umlModelPath) throws Exception{
+	public void buildStormAnalyzableModel(String umlModelPath){
 		StormActivityDiagram2PnmlResourceBuilder builder = new StormActivityDiagram2PnmlResourceBuilder();
 		
 		ResourceSet set = new ResourceSetImpl();
@@ -141,9 +158,26 @@ public class DICEWrap {
 	    pnd.toPNML(outChannel);*/
 	}
 	
-//	public void buildHadoopAnalyzableModel(String umlModelPath) throws Exception{
-//		HadoopActivityDiagram2PnmlResourceBuilder builder = new HadoopActivityDiagram2PnmlResourceBuilder();
-//	}
+	public void buildHadoopAnalyzableModel(String umlModelPath){
+		HadoopActivityDiagram2PnmlResourceBuilder builder = new HadoopActivityDiagram2PnmlResourceBuilder();
+		
+		ResourceSet set = new ResourceSetImpl();
+		Resource res = set.getResource(URI.createFileURI(umlModelPath), true);
+		result = builder.createAnalyzableModel((Model)res.getContents().get(0), new BasicEList<PrimitiveVariableAssignment>());
+		System.out.println("Hadoop builder created");
+	}
+	
+	public void extractHadoopInitialMarking(){
+		System.out.println("Extracting marking\n");
+		System.err.println(result.getTraceSet().getTraces().size());
+		for(Trace i: result.getTraceSet().getTraces()){
+			System.out.println("Traversing traces");
+			if (i.getFromDomainElement() instanceof FinalNode  && i.getToAnalyzableElement() instanceof Transition){
+				initialMarking = ((Place)i.getToAnalyzableElement()).getInitialMarking().getText().toString();
+				System.err.println(initialMarking);
+			}
+		}
+	} 
 	
 	public void genGSPN() throws Exception{
 		File targetFolder = new File(path);

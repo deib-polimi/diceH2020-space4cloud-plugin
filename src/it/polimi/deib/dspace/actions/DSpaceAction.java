@@ -38,8 +38,8 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 			WizardDialog dialog = new WizardDialog(null, new DSpaceWizard());
 			dialog.open();
 //			System.out.println("Starting");
-//			DICEWrap.getWrapper().start();
-			DICEWrap.getWrapper().generateJson();
+			DICEWrap.getWrapper().start();
+//			DICEWrap.getWrapper().generateJson();
 			//DICEWrap.getWrapper().sendModel();
 		}else{
 			System.out.println("Set up options");
