@@ -7,7 +7,7 @@ public class Configuration {
 	
 	private Vector<ClassDesc> classes;
 	private int numClasses;
-	private boolean isPrivate;
+	private boolean isPrivate = false;
 	private String technology;
 	private boolean hasLTC; //Long Term Contract already existing
 	

@@ -145,7 +145,7 @@ public class NetworkManager {
 	}
 	
 	public String[] getAlternatives(){
-		String s[] = {"a","b","c","d"};
+		String s[] = {"a-b","b-c","c-d","d-e"};
 		return s;
 	}
 	
