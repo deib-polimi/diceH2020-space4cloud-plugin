@@ -51,7 +51,7 @@ public class DSpaceWizard extends Wizard{
 		if (currentPage == choice){
 			classes = choice.getClasses();
 			Configuration.getCurrent().setNumClasses(classes);
-			Configuration.getCurrent().setPrivate(choice.getChoice());
+			Configuration.getCurrent().setPrivate(!choice.getChoice());
 			Configuration.getCurrent().setTechnology(choice.getTechnology());
 			classp.setNumClasses(classes);
 			return classp;

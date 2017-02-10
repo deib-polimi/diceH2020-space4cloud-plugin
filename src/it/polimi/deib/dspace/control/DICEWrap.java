@@ -1,29 +1,14 @@
 package it.polimi.deib.dspace.control;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.Map.Entry;
-import java.util.Optional;
 
-import org.eclipse.core.internal.jobs.ObjectMap;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.BasicMonitor;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -33,7 +18,6 @@ import org.eclipse.uml2.uml.Device;
 import org.eclipse.uml2.uml.FinalNode;
 import org.eclipse.uml2.uml.Model;
 import org.eclipse.uml2.uml.Transition;
-import org.json.simple.JSONObject;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,26 +28,21 @@ import es.unizar.disco.pnml.m2t.templates.gspn.GenerateGspn;
 import es.unizar.disco.simulation.models.builders.IAnalyzableModelBuilder.ModelResult;
 import es.unizar.disco.simulation.models.datatypes.PrimitiveVariableAssignment;
 import es.unizar.disco.simulation.models.traces.Trace;
-import fr.lip6.move.pnml.ptnet.PetriNet;
 import fr.lip6.move.pnml.ptnet.PetriNetDoc;
 import fr.lip6.move.pnml.ptnet.Place;
 import it.polimi.deib.dspace.net.NetworkManager;
 import it.polimi.diceH2020.SPACE4Cloud.shared.generators.ClassParametersGenerator;
 import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.InstanceDataMultiProviderGenerator;
-import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.JobMLProfileGenerator;
 import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.JobMLProfilesMapGenerator;
 import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.PublicCloudParametersGenerator;
 import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.PublicCloudParametersMapGenerator;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.ClassParameters;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.ClassParametersMap;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.InstanceDataMultiProvider;
-import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.JobMLProfile;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.JobMLProfilesMap;
-import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.JobProfile;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.JobProfilesMap;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.PublicCloudParameters;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.PublicCloudParametersMap;
-import it.polimi.diceH2020.SPACE4Cloud.shared.settings.Scenarios;
 
 public class DICEWrap {
 	private static DICEWrap diceWrap;
@@ -104,6 +83,7 @@ public class DICEWrap {
 						buildStormAnalyzableModel(c.getDtsmPath());
 						extractStormInitialMarking();
 						genGSPN();
+						renameFiles(c);
 					} catch (Exception e) {
 						System.out.println(e.getMessage());
 					}
@@ -164,7 +144,6 @@ public class DICEWrap {
 		ResourceSet set = new ResourceSetImpl();
 		Resource res = set.getResource(URI.createFileURI(umlModelPath), true);
 		result = builder.createAnalyzableModel((Model)res.getContents().get(0), new BasicEList<PrimitiveVariableAssignment>());
-		System.out.println("Hadoop builder created");
 	}
 	
 	public void extractHadoopInitialMarking(){
@@ -183,6 +162,21 @@ public class DICEWrap {
 		File targetFolder = new File(path);
 		GenerateGspn gspn = new GenerateGspn(((PetriNetDoc)result.getModel().get(0)).getNets().get(0),targetFolder, new ArrayList<EObject>());
 		gspn.doGenerate(new BasicMonitor());
+	}
+	
+	private void renameFiles(ClassDesc cd){
+		File folder = new File(path);
+		File files[] = folder.listFiles();
+		
+		for(File f : files){
+			if(f.getName().endsWith(".def") && !f.getName().startsWith(conf.getID())){
+				f.renameTo(new File(path+conf.getID()+"J"+cd.getId()+".def"));
+				continue;
+			}
+			if(f.getName().endsWith(".net") && !f.getName().startsWith(conf.getID())){
+				f.renameTo(new File(path+conf.getID()+"J"+cd.getId()+".net"));
+			}
+		}
 	}
 	
 	public void sendModel(){
@@ -205,10 +199,9 @@ public class DICEWrap {
 	
 	public void generateJson(){
 		conf = Configuration.getCurrent(); //TODO: REMOVE
-		String name = generateName();
 		InstanceDataMultiProvider data = InstanceDataMultiProviderGenerator.build();
 		
-		data.setId(name);
+		data.setId(conf.getID());
 		
 		//Set MapJobProfile
 		Map classdesc = new HashMap<String,Map>();
@@ -289,8 +282,9 @@ public class DICEWrap {
 		}
 		
 		//Set mapJobMLProfile
-		
-		data.setMapJobMLProfiles(null);
+		JobMLProfilesMap jML = JobMLProfilesMapGenerator.build();
+		jML.setMapJobMLProfile(null);
+		data.setMapJobMLProfiles(jML);
 		
 		//Set MapVMConfigurations
 		
@@ -302,7 +296,7 @@ public class DICEWrap {
 		String s="";
 		try {
 			s = mapper.writeValueAsString(data);
-			mapper.writerWithDefaultPrettyPrinter().writeValue(new File(name+".json"), data);
+			mapper.writerWithDefaultPrettyPrinter().writeValue(new File(conf.getID()+".json"), data);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -313,9 +307,5 @@ public class DICEWrap {
 		
 		System.out.println(s);
 		
-	}
-
-	private String generateName() {
-		return String.valueOf(ThreadLocalRandom.current().nextInt(1000, 5000 + 1));
 	}
 }

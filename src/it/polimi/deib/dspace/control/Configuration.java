@@ -1,6 +1,7 @@
 package it.polimi.deib.dspace.control;
 
 import java.util.Vector;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Configuration {
 	private static Configuration currentConf;
@@ -10,9 +11,11 @@ public class Configuration {
 	private boolean isPrivate = false;
 	private String technology;
 	private boolean hasLTC; //Long Term Contract already existing
+	private String ID;
 	
 	public Configuration(){
 		classes = new Vector<ClassDesc>();
+		ID = generateName();
 	}
 	
 	public static Configuration getCurrent(){
@@ -20,6 +23,14 @@ public class Configuration {
 			currentConf = new Configuration();
 		}
 		return currentConf;
+	}
+	
+	private String generateName() {
+		return String.valueOf(ThreadLocalRandom.current().nextInt(1000, 9998 + 1));
+	}
+	
+	public String getID(){
+		return ID;
 	}
 
 	public int getNumClasses() {
