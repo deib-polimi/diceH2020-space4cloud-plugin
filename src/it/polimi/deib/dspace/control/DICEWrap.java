@@ -1,6 +1,8 @@
 package it.polimi.deib.dspace.control;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -208,6 +210,7 @@ public class DICEWrap {
 		for(ClassDesc c : conf.getClasses()){
 			Map alternatives = new HashMap<String,Map>();
 			for (String alt: c.getAlternatives()){
+				createTxtFiles(c,alt);
 				String split[] = alt.split("-");
 				
 				Map profile = new HashMap<>();
@@ -307,5 +310,23 @@ public class DICEWrap {
 		
 		System.out.println(s);
 		
+	}
+	
+	private void createTxtFiles(ClassDesc cd, String alt){
+		String split[] = alt.split("-");
+		File fileMap = new File(path + conf.getID() + "MapJ" + cd.getId() + split[0] + split[1] + ".txt");
+		File fileRS = new File(path + conf.getID() + "RS" + cd.getId() + split[0] + split[1] + ".txt");
+		
+		try {
+			BufferedWriter out = new BufferedWriter(new FileWriter(fileMap));
+			out.write(".");
+			out.close();
+			out = new BufferedWriter(new FileWriter(fileRS));
+			out.write(".");
+			out.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

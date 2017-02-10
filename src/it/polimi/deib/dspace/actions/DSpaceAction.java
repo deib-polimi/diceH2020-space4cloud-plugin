@@ -1,14 +1,14 @@
 package it.polimi.deib.dspace.actions;
 
 
-import it.polimi.deib.dspace.control.DICEWrap;
-import it.polimi.deib.dspace.ui.DSpaceWizard;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.eclipse.jface.wizard.*;
+
+import it.polimi.deib.dspace.control.DICEWrap;
+import it.polimi.deib.dspace.ui.DSpaceWizard;
 
 /**
  * Our sample action implements workbench action delegate.
@@ -39,7 +39,8 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 			dialog.open();
 //			System.out.println("Starting");
 //			DICEWrap.getWrapper().buildHadoopAnalyzableModel("/home/kom/Downloads/wikistats4opt/model_1_class.uml");
-			DICEWrap.getWrapper().start();
+//			DICEWrap.getWrapper().start();
+			DICEWrap.getWrapper().generateJson();
 //			DICEWrap.getWrapper().sendModel();
 		}else{
 			System.out.println("Set up options");
