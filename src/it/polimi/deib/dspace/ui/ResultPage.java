@@ -1,13 +1,11 @@
 package it.polimi.deib.dspace.ui;
 
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Shell;
 
 public class ResultPage extends Dialog{
 	
 	private EmbeddedBrowser browser;
-	private Composite container;
 	private Shell shell;
 
 	public ResultPage(Shell name) {
