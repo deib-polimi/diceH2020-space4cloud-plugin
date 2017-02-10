@@ -38,9 +38,9 @@ public class DSpaceWizard extends Wizard{
 		fpage = new FinalPage("Goodbye", ".");
 		result=new ResultPage("Result");
 		folPage=new SelectFolderPage("Select folder");
+		addPage(choice);
 		addPage(result);
 		addPage(folPage);
-		addPage(choice);
 		addPage(classp);
 		addPage(fpage);
 		
