@@ -19,7 +19,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -36,17 +35,19 @@ public class JSonReader {
 	private Map<String,String> classTypeVM;
 	private List<String> classes;
 	private Map<String,String> idClassUmlFile;
-	public JSonReader(Map<String,String> idClassUmlFile){
+	private String filePath;
+	public JSonReader(Map<String,String> idClassUmlFile,String filePath){
 		setProvider("");
 		setClassNumVM(new HashMap<String,Long>());
 		setClassTypeVM(new HashMap<String,String>());
 		classes=new ArrayList<String>();
 		this.idClassUmlFile=idClassUmlFile;
+		this.filePath=filePath;
 	}
 	
 	
 	//Takes as input the file path of the JSon file 
-	public void read(String filePath){
+	public void read(){
 			
 		 // read the json file
 		FileReader reader;
@@ -70,13 +71,10 @@ public class JSonReader {
 			}
 			
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	
