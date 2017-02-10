@@ -1,4 +1,4 @@
-package it.polimi.deib.dspace.ui;
+package it.polimi.deib.dspace.control;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;

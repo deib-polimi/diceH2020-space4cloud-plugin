@@ -3,6 +3,8 @@ package it.polimi.deib.dspace.ui;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Shell;
 
+import it.polimi.deib.dspace.control.EmbeddedBrowser;
+
 public class ResultPage extends Dialog{
 	
 	private EmbeddedBrowser browser;

@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
-import it.polimi.deib.dspace.ui.JSonReader;
+import it.polimi.deib.dspace.control.JSonReader;
 import it.polimi.deib.dspace.ui.ResultPage;
 
 

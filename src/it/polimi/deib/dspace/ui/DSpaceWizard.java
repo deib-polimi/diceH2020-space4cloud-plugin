@@ -5,6 +5,7 @@ import org.eclipse.jface.wizard.Wizard;
 
 import it.polimi.deib.dspace.control.ClassDesc;
 import it.polimi.deib.dspace.control.Configuration;
+import it.polimi.deib.dspace.control.FileHandler;
 
 
 public class DSpaceWizard extends Wizard{
