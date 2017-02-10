@@ -1,8 +1,6 @@
 package it.polimi.deib.dspace.control;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -50,7 +48,6 @@ public class DICEWrap {
 	private static DICEWrap diceWrap;
 	private ModelResult result;
 	private Configuration conf;
-	private String path;
 //	private String fileNames[] = {"1_h8_D500000.0MapJ1Cineca5xlarge.txt","1_h8_D500000.0RSJ1Cineca5xlarge.txt",
 //	"1_h8_D500000.0.json"}; //to be replaced with conf content once web serice is ready to process it
 	private String fileNames[] = {"aaa0MapJ1Cineca5xlarge.txt","aaa0RSJ1Cineca5xlarge.txt",
@@ -59,7 +56,6 @@ public class DICEWrap {
 	private String initialMarking;
 	
 	public DICEWrap(){
-		path = "/home/kom/eclipse/java-neon/eclipse/"; // to be replaced by fetching this info in tools
 		scenario = "PublicAvgWorkLoad"; // ditto
 		initialMarking = "";
 	}
@@ -83,9 +79,8 @@ public class DICEWrap {
 				for (ClassDesc c : conf.getClasses()){
 					try {
 						buildStormAnalyzableModel(c.getDtsmPath());
-						extractStormInitialMarking();
 						genGSPN();
-						renameFiles(c);
+						FileManager.getInstance().renameFiles(c);
 					} catch (Exception e) {
 						System.out.println(e.getMessage());
 					}
@@ -161,27 +156,13 @@ public class DICEWrap {
 	} 
 	
 	public void genGSPN() throws Exception{
-		File targetFolder = new File(path);
+		File targetFolder = new File(FileManager.getInstance().getPath());
 		GenerateGspn gspn = new GenerateGspn(((PetriNetDoc)result.getModel().get(0)).getNets().get(0),targetFolder, new ArrayList<EObject>());
 		gspn.doGenerate(new BasicMonitor());
 	}
 	
-	private void renameFiles(ClassDesc cd){
-		File folder = new File(path);
-		File files[] = folder.listFiles();
-		
-		for(File f : files){
-			if(f.getName().endsWith(".def") && !f.getName().startsWith(conf.getID())){
-				f.renameTo(new File(path+conf.getID()+"J"+cd.getId()+".def"));
-				continue;
-			}
-			if(f.getName().endsWith(".net") && !f.getName().startsWith(conf.getID())){
-				f.renameTo(new File(path+conf.getID()+"J"+cd.getId()+".net"));
-			}
-		}
-	}
-	
 	public void sendModel(){
+		String path = FileManager.getInstance().getPath();
 		File files[] = {new File(path+fileNames[0]),
 				new File(path+fileNames[1]),
 				new File(path+fileNames[2])};
@@ -210,7 +191,7 @@ public class DICEWrap {
 		for(ClassDesc c : conf.getClasses()){
 			Map alternatives = new HashMap<String,Map>();
 			for (String alt: c.getAlternatives()){
-				createTxtFiles(c,alt);
+
 				String split[] = alt.split("-");
 				
 				Map profile = new HashMap<>();
@@ -310,23 +291,5 @@ public class DICEWrap {
 		
 		System.out.println(s);
 		
-	}
-	
-	private void createTxtFiles(ClassDesc cd, String alt){
-		String split[] = alt.split("-");
-		File fileMap = new File(path + conf.getID() + "MapJ" + cd.getId() + split[0] + split[1] + ".txt");
-		File fileRS = new File(path + conf.getID() + "RS" + cd.getId() + split[0] + split[1] + ".txt");
-		
-		try {
-			BufferedWriter out = new BufferedWriter(new FileWriter(fileMap));
-			out.write(".");
-			out.close();
-			out = new BufferedWriter(new FileWriter(fileRS));
-			out.write(".");
-			out.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 }

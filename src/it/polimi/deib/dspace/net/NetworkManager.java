@@ -145,7 +145,7 @@ public class NetworkManager {
 	}
 	
 	public String[] getAlternatives(){
-		String s[] = {"a-b","b-c","c-d","d-e"};
+		String s[] = {"Cineca-5xlarge","Amazon-large","Amazon-xlarge"};
 		return s;
 	}
 	
