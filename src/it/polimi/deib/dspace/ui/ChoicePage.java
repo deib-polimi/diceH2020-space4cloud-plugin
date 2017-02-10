@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
+import it.polimi.deib.dspace.control.Configuration;
 
 import it.polimi.deib.dspace.net.NetworkManager;
 
@@ -35,6 +36,7 @@ public class ChoicePage extends WizardPage{
 	private Button existingLTC,nExistingLTC;
 	private Text rTextField,SpsrTextField;
 	private Composite ltcCompositeText;
+	
 
 	protected ChoicePage(String title, String description) {
 		super("Choose service type");
@@ -191,6 +193,7 @@ public class ChoicePage extends WizardPage{
             	System.out.println("Choice: PRIVATE");
             	ltcCompositeText.setVisible(false);
             	ltcComposite.setVisible(false);
+            	Configuration.getCurrent().setPrivate(true);
             }
 
         });
@@ -203,6 +206,7 @@ public class ChoicePage extends WizardPage{
             		ltcCompositeText.setVisible(true);
             	}
             	System.out.println("Choice: PUBLIC");
+            	Configuration.getCurrent().setPrivate(false);
             }
 
         });
@@ -210,6 +214,7 @@ public class ChoicePage extends WizardPage{
         	 public void widgetSelected(SelectionEvent e) {
              	ltcCompositeText.setVisible(true);
              	getWizard().getContainer().updateButtons();
+             	Configuration.getCurrent().setLTC(true);
              }
         });
         this.rTextField.addModifyListener(new ModifyListener(){
@@ -230,6 +235,7 @@ public class ChoicePage extends WizardPage{
        	 public void widgetSelected(SelectionEvent e) {
             	ltcCompositeText.setVisible(false);
             	getWizard().getContainer().updateButtons();
+            	Configuration.getCurrent().setLTC(false);
             }
        });
         
@@ -270,5 +276,7 @@ public class ChoicePage extends WizardPage{
 			return true;
 		}
 		return false;
-}
+	}
+	
+	
 }

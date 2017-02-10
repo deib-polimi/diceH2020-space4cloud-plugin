@@ -83,4 +83,7 @@ public class Configuration {
 	public boolean isComplete(){
 		return(numClasses == classes.size() && numClasses > 0 && technology != null);
 	}
+	public boolean getHasLtc(){
+		return hasLTC;
+	}
 }

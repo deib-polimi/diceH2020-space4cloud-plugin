@@ -20,6 +20,7 @@ public class DSpaceResult implements IWorkbenchWindowActionDelegate{
 	private ResultPage p;
 	@Override
 	public void run(IAction arg0) {
+		
 		brows=new EmbeddedBrowser("www.google.com");
 		brows.launch(
 				window.getWorkbench().getDisplay().getActiveShell());
