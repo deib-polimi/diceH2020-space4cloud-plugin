@@ -1,11 +1,15 @@
 package it.polimi.deib.dspace.ui;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Iterator;
 
 import javax.swing.JFileChooser;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
@@ -26,6 +30,7 @@ import org.json.simple.parser.ParseException;
 
 import it.polimi.deib.dspace.Activator;
 import it.polimi.deib.dspace.net.NetworkManager;
+import utils.JsonDatabase;
 
 public class ClassPage extends WizardPage{
 	private Composite container;
@@ -129,7 +134,13 @@ public class ClassPage extends WizardPage{
 		
 		fileName1 = new Label(container, SWT.NONE);
 		fileName1.setLayoutData(new GridData(SWT.BEGINNING, SWT.END, false, false));	
-		Button button = new Button(container, SWT.NONE);
+		Button button = new Button(container, SWT.PUSH);
+		button.setText("Refresh alternatives");
+		button.addSelectionListener(new SelectionAdapter(){
+			public void widgetSelected(SelectionEvent e) {
+				refreshAlternatives();
+            }
+		});
 		
 		browse.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
@@ -185,20 +196,10 @@ public class ClassPage extends WizardPage{
 	}
 	
 	private void populateAlternatives(){
-		l1.setItems(this.fetchAlternatives());
+		l1.setItems(JsonDatabase.getInstance().getAlternatives());
 	}
 	private void refreshAlternatives(){
-		String[] alternatives;
-		alternatives = (String[])NetworkManager.getInstance().fetchAlternatives().get("alternatives");
-		String newJson = "{\n\t'alternatives':"+alternatives.toString()+"\n}";
-		try {
-			FileWriter writer = null ;//new FileWriter(FileLocator.find));
-			writer.write(newJson);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		l1.setItems(alternatives);
+		l1.setItems(JsonDatabase.getInstance().refreshDbContents());
 	}
 	
 	public String getDTSMPath(){
