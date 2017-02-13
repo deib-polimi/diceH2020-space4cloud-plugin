@@ -26,7 +26,7 @@ public class ConfigurationDialog extends Dialog {
 	private String server;
 	private Button save;
 	private boolean changed;
-	private final String filePath="configFile/ConfigFile.txt";
+	private final String filePath="ConfigFile.txt";
 	
 	public ConfigurationDialog(Shell parent) {
 		super(parent);
