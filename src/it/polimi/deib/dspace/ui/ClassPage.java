@@ -197,7 +197,7 @@ public class ClassPage extends WizardPage{
 		alternatives = (String[])NetworkManager.getInstance().fetchAlternatives().get("alternatives");
 		String newJson = "{\n\t'alternatives':"+alternatives.toString()+"\n}";
 		try {
-			FileWriter writer = new FileWriter("./db/alternatives.json");
+			FileWriter writer = new FileWriter(ClassPage.class.getClassLoader().getResource("db/alternatives.json").getPath());
 			writer.write(newJson);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -218,7 +218,7 @@ public class ClassPage extends WizardPage{
 		JSONParser parser;
 		JSONObject parsedJson;
 		try {
-			db = new FileReader("./db/alternatives.json");
+			db = new FileReader(ClassPage.class.getClassLoader().getResource("db/alternatives.json").getPath());
 			parser = new JSONParser();
 			parsedJson = (JSONObject) parser.parse(db);
 			return (String[]) parsedJson.get("alternatives");
