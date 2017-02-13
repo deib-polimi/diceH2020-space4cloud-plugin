@@ -36,17 +36,19 @@ public class JsonDatabase {
 	public String[] refreshDbContents() {
 		String pre = "{\n\t\"alternatives\":[";
 		String post = "]\n}";
-		String[] alternatives = digestAlternatives(NetworkManager.getInstance().fetchAlternatives());
+		//String[] alternatives = digestAlternatives(NetworkManager.getInstance().fetchAlternatives());
+		String[] alternatives = {"a","b","c"};
 		try {
 			FileWriter writer = new FileWriter("db.json");
 			for(int i = 0; i<alternatives.length; i++){
 				if(i != 0){	
-					pre = pre + ",\""+alternatives[i];
+					pre = pre + ",\""+alternatives[i]+"\"";
 				}
 				else{
-					pre = pre + "\""+alternatives[i];
+					pre = pre + "\""+alternatives[i]+"\"";
 				}
 			}
+			System.out.println(pre+post);
 			writer.write(pre+post);
 			writer.close();
 			return alternatives;
