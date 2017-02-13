@@ -49,11 +49,15 @@ public class DSpaceWizard extends Wizard{
 		if (currentPage == choice){
 			classes = choice.getClasses();
 			Configuration.getCurrent().setNumClasses(classes);
-			Configuration.getCurrent().setTechnology(choice.getTechnology());
 			if(Configuration.getCurrent().getIsPrivate()){
 				return folPage;
 			}else{
 				classp.setNumClasses(classes);
+				if (Configuration.getCurrent().getHasLtc()){
+					Configuration.getCurrent().setR(choice.getR());
+					Configuration.getCurrent().setSpsr(choice.getSpsr());
+				}
+				
 				return classp;
 			}
 			
@@ -65,9 +69,9 @@ public class DSpaceWizard extends Wizard{
 			c.setDtsmPath(classp.getDTSMPath());
 			c.setAltDdsm(classp.getAltDdsm());
 			Configuration.getCurrent().getClasses().add(c);
-			Configuration.getCurrent().dump();
 			if(n == classes){
 				finish = true;
+				Configuration.getCurrent().dump();
 				return fpage;
 			}
 			classp.reset();
@@ -76,7 +80,6 @@ public class DSpaceWizard extends Wizard{
 		if(currentPage==this.folPage){
 			
 			fileHandler.setFolder(folPage.getSelectedFolder());
-			fileHandler.setInitialMarking("smth");
 			fileHandler.setScenario(Configuration.getCurrent().getIsPrivate(),Configuration.getCurrent().getHasLtc());
 			fileHandler.sendFile();
 			finish = true;

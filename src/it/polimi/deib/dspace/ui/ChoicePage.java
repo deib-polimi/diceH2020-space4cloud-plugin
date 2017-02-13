@@ -90,6 +90,7 @@ public class ChoicePage extends WizardPage{
         t2.setItems(NetworkManager.getInstance().getTechnologies());
         t2.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
+            	Configuration.getCurrent().setTechnology(t2.getSelection()[0]);
             	getWizard().getContainer().updateButtons();
             }
 
@@ -278,5 +279,11 @@ public class ChoicePage extends WizardPage{
 		return false;
 	}
 	
+	public int getR(){
+		return Integer.parseInt(rTextField.getText());
+	}
 	
+	public float getSpsr(){
+		return Float.parseFloat(SpsrTextField.getText());
+	}
 }

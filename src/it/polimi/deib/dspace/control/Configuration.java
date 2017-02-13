@@ -12,6 +12,8 @@ public class Configuration {
 	private String technology;
 	private boolean hasLTC; //Long Term Contract already existing
 	private String ID;
+	private int r = -1;
+	private float spsr = -1;
 	
 	public Configuration(){
 		classes = new Vector<ClassDesc>();
@@ -50,6 +52,8 @@ public class Configuration {
 	}
 	
 	public void dump(){
+		System.out.println("Technology:\t"+technology);
+		System.out.println(isPrivate ? "Private" : !hasLTC ? "No LTC" : "r: " + r + "\t" + "spsr: " + spsr);
 		for (ClassDesc c : classes){
 			System.out.println("Class: "+c.getId());
 			System.out.println(" "+c.getDtsmPath());
@@ -84,5 +88,21 @@ public class Configuration {
 	}
 	public boolean getHasLtc(){
 		return hasLTC;
+	}
+
+	public int getR() {
+		return r;
+	}
+
+	public void setR(int r) {
+		this.r = r;
+	}
+
+	public float getSpsr() {
+		return spsr;
+	}
+
+	public void setSpsr(float spsr) {
+		this.spsr = spsr;
 	}
 }
