@@ -14,6 +14,7 @@ public class Configuration {
 	private String ID;
 	private int r = -1;
 	private float spsr = -1;
+	private String serverID;
 	
 	public Configuration(){
 		classes = new Vector<ClassDesc>();
@@ -104,5 +105,12 @@ public class Configuration {
 
 	public void setSpsr(float spsr) {
 		this.spsr = spsr;
+	}
+
+	public void setServerID(String serverId){
+		this.serverID=serverId;
+	}
+	public String getServerID(){
+		return this.serverID;
 	}
 }

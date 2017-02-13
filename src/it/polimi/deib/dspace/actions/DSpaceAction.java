@@ -1,13 +1,23 @@
 package it.polimi.deib.dspace.actions;
 
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
+import it.polimi.deib.dspace.control.Configuration;
 import it.polimi.deib.dspace.control.DICEWrap;
+import it.polimi.deib.dspace.ui.ConfigurationDialog;
 import it.polimi.deib.dspace.ui.DSpaceWizard;
 
 /**
@@ -44,6 +54,10 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 //			DICEWrap.getWrapper().sendModel();
 		}else{
 			System.out.println("Set up options");
+			ConfigurationDialog con=new ConfigurationDialog(new Shell());
+			con.load();
+			con.setView();
+			
 		}
 	}
 
@@ -73,4 +87,50 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 	public void init(IWorkbenchWindow window) {
 		this.window = window;
 	}
+	private void loadConfiguration(){
+		String filePath="configFile/ConfigFile.txt";
+		String defaultId="http://specclient1.dei.polimi.it:8018/";
+		File f = new File(filePath);
+		if(!(f.exists() && !f.isDirectory())) { 
+			try{
+			    PrintWriter writer = new PrintWriter(filePath, "UTF-8");
+			    Configuration.getCurrent().setServerID(defaultId);
+			    writer.println(defaultId);
+			    writer.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}else{
+			BufferedReader br=null;
+			try {
+				br = new BufferedReader(new FileReader(filePath));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+			    StringBuilder sb = new StringBuilder();
+			    String line = br.readLine();
+
+			    while (line != null) {
+			        sb.append(line);
+			        sb.append(System.lineSeparator());
+			        line = br.readLine();
+			    }
+			    String everything = sb.toString();
+			    Configuration.getCurrent().setServerID(everything);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+			    try {
+					br.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
 }
