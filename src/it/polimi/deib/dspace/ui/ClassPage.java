@@ -1,35 +1,30 @@
 package it.polimi.deib.dspace.ui;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.Iterator;
 
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-
+import org.apache.commons.io.IOUtils;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
-import org.eclipse.swt.widgets.Text;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import it.polimi.deib.dspace.control.Configuration;
-import it.polimi.deib.dspace.control.DICEWrap;
+import it.polimi.deib.dspace.Activator;
 import it.polimi.deib.dspace.net.NetworkManager;
 
 public class ClassPage extends WizardPage{
@@ -197,7 +192,7 @@ public class ClassPage extends WizardPage{
 		alternatives = (String[])NetworkManager.getInstance().fetchAlternatives().get("alternatives");
 		String newJson = "{\n\t'alternatives':"+alternatives.toString()+"\n}";
 		try {
-			FileWriter writer = new FileWriter(ClassPage.class.getClassLoader().getResource("db/alternatives.json").getPath());
+			FileWriter writer = null ;//new FileWriter(FileLocator.find));
 			writer.write(newJson);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -214,14 +209,25 @@ public class ClassPage extends WizardPage{
 		return ddsmPath;
 	}
 	private String[] fetchAlternatives(){
-		FileReader db;
+		String db;
 		JSONParser parser;
 		JSONObject parsedJson;
+		JSONArray jsonArray;
+		Iterator<Object> it;
+		int i = 0;
+		String[] targetStrings;
 		try {
-			db = new FileReader(ClassPage.class.getClassLoader().getResource("db/alternatives.json").getPath());
+			db = IOUtils.toString(FileLocator.openStream(Activator.getDefault().getBundle(), new Path("db/alternatives.json"), false),"UTF-8");
 			parser = new JSONParser();
 			parsedJson = (JSONObject) parser.parse(db);
-			return (String[]) parsedJson.get("alternatives");
+			jsonArray = (JSONArray) parsedJson.get("alternatives");
+			it = jsonArray.listIterator();
+			targetStrings = new String[jsonArray.size()];
+			while(it.hasNext()){
+				targetStrings[i] = it.next().toString();
+				i++;
+			}
+			return targetStrings;
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
