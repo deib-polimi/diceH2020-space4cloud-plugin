@@ -29,31 +29,32 @@ public class FileManager {
 		return fm;
 	}
 	
-	public void renameFiles(ClassDesc cd, String s){
+	/**
+	 * Rename files to be standard compliant and put placeholder
+	 * @param cdid ClassDesc id
+	 * @param alt Alternative name
+	 * @param s String be replaced
+	 */
+	public void editFiles(int cdid, String alt, String s){
 		Configuration conf = Configuration.getCurrent();
-		File folder = new File(path);
+		File folder = new File(path+"tmp/");
 		File files[] = folder.listFiles();
 		System.out.println("Renaming files");
 		for(File f : files){
-			if(f.getName().endsWith(".def") && !f.getName().startsWith(conf.getID())){
-				f.renameTo(new File(path+conf.getID()+"J"+cd.getId()+".def"));
+			if(f.getName().endsWith(".def")){
+				f.renameTo(new File(path + conf.getID() + "J" + cdid + alt.replaceAll("-", "") + ".def"));
+				f.delete();
 			}
-			if(f.getName().endsWith(".net") && !f.getName().startsWith(conf.getID())){
-				System.out.println("File found");
-				try {
-					FileUtils.copyFile(f, new File(path+conf.getID()+"J"+cd.getId()+".netNOPLACEHOLDER"));
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			if(f.getName().endsWith(".net")){
 				putPlaceHolder(s, f.getName());
-				f.renameTo(new File(path+conf.getID()+"J"+cd.getId()+".net"));
+				f.renameTo(new File(path + conf.getID() + "J" + cdid + alt.replaceAll("-", "") + ".net"));
+				f.delete();
 			}
 		}
 	}
 	
 	public void putPlaceHolder(String id, String file){
-		File f = new File(path + file);
+		File f = new File(path + "tmp/" + file);
 		try {
 			int i;
 			String newLine;
@@ -74,6 +75,11 @@ public class FileManager {
 					words = lines[i].split(" ");
 					break;
 				}
+			}
+			
+			if (words == null){
+				System.err.println("ID not found, couldn't put placehoder");
+				return;
 			}
 			
 			words[1] = placeHolder;

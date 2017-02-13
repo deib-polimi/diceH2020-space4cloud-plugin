@@ -70,19 +70,21 @@ public class DICEWrap {
 	public void start(){
 		conf = Configuration.getCurrent();
 		if(!conf.isComplete()){
-			System.out.println("Incomplete, aborting");
+			System.out.println("Incomplete, aborting"); //TODO check completion for real
 			return;
 		}
 		
 		switch(conf.getTechnology()){
 			case "Storm":
 				for (ClassDesc c : conf.getClasses()){
-					try {
-						buildStormAnalyzableModel(c.getDtsmPath());
-						genGSPN(); 
-						FileManager.getInstance().renameFiles(c,extractId());
-					} catch (Exception e) {
-						System.out.println(e.getMessage());
+					for(String alt : c.getAltDdsm().keySet()){
+						try {
+							buildStormAnalyzableModel(c.getAltDdsm().get(alt));
+							genGSPN(); 
+							FileManager.getInstance().editFiles(c.getId(),alt,extractId());
+						} catch (IOException e) {
+							System.out.println(e.getMessage());
+						}
 					}
 				}
 				break;
@@ -102,8 +104,8 @@ public class DICEWrap {
 				System.err.println("Unknown technology: "+conf.getTechnology());
 		}
 		
-		//generateJson();
-		//sendModel();
+		generateJson();
+//		sendModel();
 	}
 	
 	public void extractStormInitialMarking(){
@@ -168,8 +170,8 @@ public class DICEWrap {
 		}
 	} 
 	
-	public void genGSPN() throws Exception{
-		File targetFolder = new File(FileManager.getInstance().getPath());
+	public void genGSPN() throws IOException{
+		File targetFolder = new File(FileManager.getInstance().getPath()+"tmp/");
 		GenerateGspn gspn = new GenerateGspn(((PetriNetDoc)result.getModel().get(0)).getNets().get(0),targetFolder, new ArrayList<EObject>());
 		gspn.doGenerate(new BasicMonitor());
 		System.out.println("GSPN generated");
