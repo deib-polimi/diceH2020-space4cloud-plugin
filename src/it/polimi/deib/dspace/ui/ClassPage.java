@@ -1,5 +1,12 @@
 package it.polimi.deib.dspace.ui;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Iterator;
+
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -16,6 +23,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import it.polimi.deib.dspace.control.Configuration;
 import it.polimi.deib.dspace.control.DICEWrap;
@@ -188,7 +198,37 @@ public class ClassPage extends WizardPage{
 	public String getDDSMPath(){
 		return ddsmPath;
 	}
-	
+	private String[] fetchAlternatives(){
+		FileReader db;
+		String[] alternatives;
+		JSONParser parser;
+		JSONObject parsedJson;
+		try {
+			db = new FileReader("./db/alternatives.json");
+			parser = new JSONParser();
+			parsedJson = (JSONObject) parser.parse(db);
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	private ArrayList<String> mapToStringArray(Map<String, String> map){
+		Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
+		ArrayList<String> targetArrayList = new ArrayList<String>();
+		while (it.hasNext()) {
+	        Map.Entry<String,String> pair = (Map.Entry<String,String>)it.next();
+	        targetArrayList.add(pair.getValue());
+	    }
+		return targetArrayList;
+	}
 	public void reset(){
 		l2.removeAll();
 		populateAlternatives();

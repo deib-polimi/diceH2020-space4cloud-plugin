@@ -68,9 +68,8 @@ public class NetworkManager {
 				//Converts response stream into string in order to parse everything int json
 				body = IOUtils.toString(response.getEntity().getContent(), "UTF-8");
 				parser = new JSONParser();
-				json = (JSONObject) parser.parse(body);
 				response.close();
-				return json;
+				return ((JSONObject) parser.parse(body));
 			}
 		} catch (UnsupportedOperationException e) {
 			// TODO Auto-generated catch block
