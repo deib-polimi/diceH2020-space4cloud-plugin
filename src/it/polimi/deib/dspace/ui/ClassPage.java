@@ -1,15 +1,12 @@
 package it.polimi.deib.dspace.ui;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URL;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.swing.JFileChooser;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
@@ -29,7 +26,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import it.polimi.deib.dspace.Activator;
-import it.polimi.deib.dspace.net.NetworkManager;
 import utils.JsonDatabase;
 
 public class ClassPage extends WizardPage{
@@ -37,17 +33,17 @@ public class ClassPage extends WizardPage{
 	private GridLayout layout;
 	private List l1;
 	private List l2;
-	private String ddsmPath = "";
 	private String dtsmPath = "";
 	private Label fileName;
-	private Label fileName1;
 	private int classCount = 0;
 	private int numClasses;
+	private HashMap<String, String> altDdsm;
 
 	protected ClassPage(String title, String description) {
 		super("Browse Files");
 		setTitle(title);
 		setDescription(description);
+		altDdsm = new HashMap<String, String>();
 	}
 
 	@Override
@@ -81,13 +77,27 @@ public class ClassPage extends WizardPage{
 		
 		add.addSelectionListener(new SelectionAdapter() {
 	          public void widgetSelected(SelectionEvent e) {
+	        	  //Move alternative on the other side
 	        	  if(l1.getSelectionCount() < 1){
 	        		  return;
 	        	  }
 	        	  l2.add(l1.getSelection()[0]);
-	        	  l1.remove(l1.getSelectionIndices()[0]);
+	        	  
 	        	  container.layout();
-	        	  //AltDialog alt = new AltDialog();
+	        	  
+	        	  //Open file browser
+	        	  JFileChooser chooser= new JFileChooser();
+	        	  chooser.setMultiSelectionEnabled(false); //JUST ONE UML FILE
+					
+	        	  int choice = chooser.showOpenDialog(null);
+	        	  if (choice != JFileChooser.APPROVE_OPTION) return;
+	        	  altDdsm.put(l1.getSelection()[0], chooser.getSelectedFile().getPath());
+	        	  
+	        	  l1.remove(l1.getSelectionIndices()[0]);
+	        	  
+	        	  //Refresh page
+	        	  container.layout();
+	        	  getWizard().getContainer().updateButtons();
 	          }
 
 	      });
@@ -98,6 +108,7 @@ public class ClassPage extends WizardPage{
 	        		  return;
 	        	  }
 	        	  l1.add(l2.getSelection()[0]);
+	        	  altDdsm.remove(l2.getSelection()[0]);
 	        	  l2.remove(l2.getSelectionIndices()[0]);
 	        	  container.layout();
 	          }
@@ -120,28 +131,6 @@ public class ClassPage extends WizardPage{
 		fileName = new Label(container, SWT.NONE);
 		fileName.setLayoutData(new GridData(SWT.BEGINNING, SWT.END, false, false));
 		
-		fl1 = new Label(container, SWT.NONE);
-		fl1 = new Label(container, SWT.NONE);
-		fl1 = new Label(container, SWT.NONE);
-		
-		Button browse1 = new Button(container, SWT.PUSH);
-		browse1.setLayoutData(new GridData(SWT.BEGINNING, SWT.END, false, false));
-		browse1.setText("Load DDSM for this class...");
-		
-		fl1 = new Label(container, SWT.NONE);
-		fl1 = new Label(container, SWT.NONE);
-		fl1 = new Label(container, SWT.NONE);
-		
-		fileName1 = new Label(container, SWT.NONE);
-		fileName1.setLayoutData(new GridData(SWT.BEGINNING, SWT.END, false, false));	
-		Button button = new Button(container, SWT.PUSH);
-		button.setText("Refresh alternatives");
-		button.addSelectionListener(new SelectionAdapter(){
-			public void widgetSelected(SelectionEvent e) {
-				refreshAlternatives();
-            }
-		});
-		
 		browse.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
             	JFileChooser chooser= new JFileChooser();
@@ -161,25 +150,6 @@ public class ClassPage extends WizardPage{
 
         });
 		
-		browse1.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-            	JFileChooser chooser= new JFileChooser();
-            	chooser.setMultiSelectionEnabled(false); //JUST ONE UML FILE
-            	
-            	int choice = chooser.showOpenDialog(null);
-
-            	if (choice != JFileChooser.APPROVE_OPTION) return;
-            	
-            	ddsmPath = chooser.getSelectedFile().getPath();
-            	
-            	fileName1.setText(chooser.getSelectedFile().getName());
-            	//setPageComplete(true);
-            	container.layout();
-            	getWizard().getContainer().updateButtons();
-            }
-
-        });
-		
         populateAlternatives();
         
         setPageComplete(false);
@@ -188,7 +158,7 @@ public class ClassPage extends WizardPage{
 	
 	@Override
 	public boolean canFlipToNextPage(){
-		if(!ddsmPath.equals("") && !dtsmPath.equals("") && l2.getItemCount() > 0){
+		if(!dtsmPath.equals("") && l2.getItemCount() > 0){
 			System.out.println("Can turn");
 			return true;
 		}
@@ -205,9 +175,9 @@ public class ClassPage extends WizardPage{
 	public String getDTSMPath(){
 		return dtsmPath;
 	}
-	
-	public String getDDSMPath(){
-		return ddsmPath;
+
+	public HashMap<String, String> getAltDdsm(){
+		return altDdsm;
 	}
 	private String[] fetchAlternatives(){
 		String db;
@@ -245,12 +215,11 @@ public class ClassPage extends WizardPage{
 		l2.removeAll();
 		populateAlternatives();
 		fileName.setText("");
-		fileName1.setText("");
-		ddsmPath = "";
 		dtsmPath = "";
 		getWizard().getContainer().updateButtons();
 		container.layout();
 		classCount++;
+		altDdsm = new HashMap<String, String>();
 	}
 	
 	public String[] getSelectedAlternatives() {

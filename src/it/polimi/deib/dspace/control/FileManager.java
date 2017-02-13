@@ -9,6 +9,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Vector;
 
+import org.apache.commons.io.FileUtils;
+
 import com.fasterxml.jackson.databind.ser.impl.FilteredBeanPropertyWriter;
 
 public class FileManager {
@@ -27,17 +29,24 @@ public class FileManager {
 		return fm;
 	}
 	
-	public void renameFiles(ClassDesc cd){
+	public void renameFiles(ClassDesc cd, String s){
 		Configuration conf = Configuration.getCurrent();
 		File folder = new File(path);
 		File files[] = folder.listFiles();
-		
+		System.out.println("Renaming files");
 		for(File f : files){
 			if(f.getName().endsWith(".def") && !f.getName().startsWith(conf.getID())){
 				f.renameTo(new File(path+conf.getID()+"J"+cd.getId()+".def"));
-				continue;
 			}
 			if(f.getName().endsWith(".net") && !f.getName().startsWith(conf.getID())){
+				System.out.println("File found");
+				try {
+					FileUtils.copyFile(f, new File(path+conf.getID()+"J"+cd.getId()+".netNOPLACEHOLDER"));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				putPlaceHolder(s, f.getName());
 				f.renameTo(new File(path+conf.getID()+"J"+cd.getId()+".net"));
 			}
 		}

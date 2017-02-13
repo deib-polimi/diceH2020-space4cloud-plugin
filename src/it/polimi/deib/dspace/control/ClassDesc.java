@@ -1,10 +1,10 @@
 package it.polimi.deib.dspace.control;
 
+import java.util.HashMap;
 
 public class ClassDesc {
 	private final int id;
-	private String[] alternatives;
-	private String ddsmPath;
+	private HashMap<String, String> altDdsm;
 	private String dtsmPath;
 	
 	public ClassDesc(int id){
@@ -15,20 +15,12 @@ public class ClassDesc {
 		return id;
 	}
 	
-	public String[] getAlternatives() {
-		return alternatives;
+	public HashMap<String, String> getAltDdsm() {
+		return altDdsm;
 	}
 	
-	public void setAlternatives(String[] alt){
-		alternatives = alt;
-	}
-	
-	public void setDdsmPath(String ddsmPath){
-		this.ddsmPath = ddsmPath;
-	}
-	
-	public String getDdsmPath(){
-		return ddsmPath;
+	public void setAltDdsm(HashMap<String, String> altDdsm){
+		this.altDdsm = new HashMap<String, String>(altDdsm);
 	}
 	
 	public void setDtsmPath(String dtsmPath){

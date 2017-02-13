@@ -50,7 +50,7 @@ public class DSpaceWizard extends Wizard{
 			classes = choice.getClasses();
 			Configuration.getCurrent().setNumClasses(classes);
 			Configuration.getCurrent().setTechnology(choice.getTechnology());
-			if(!Configuration.getCurrent().getIsPrivate()){
+			if(Configuration.getCurrent().getIsPrivate()){
 				return folPage;
 			}else{
 				classp.setNumClasses(classes);
@@ -63,8 +63,7 @@ public class DSpaceWizard extends Wizard{
 			c = new ClassDesc(++n);
 			System.out.println("N: "+n+" classes: "+classes);
 			c.setDtsmPath(classp.getDTSMPath());
-			c.setDdsmPath(classp.getDDSMPath());
-			c.setAlternatives(classp.getSelectedAlternatives());
+			c.setAltDdsm(classp.getAltDdsm());
 			Configuration.getCurrent().getClasses().add(c);
 			Configuration.getCurrent().dump();
 			if(n == classes){

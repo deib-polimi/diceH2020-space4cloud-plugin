@@ -53,12 +53,11 @@ public class Configuration {
 		for (ClassDesc c : classes){
 			System.out.println("Class: "+c.getId());
 			System.out.println(" "+c.getDtsmPath());
-			System.out.println(" "+c.getDdsmPath());
-			for (String alt : c.getAlternatives()){
-				System.out.println(" "+alt);
+			for(String alt : c.getAltDdsm().keySet()){
+				System.out.println("\t"+alt+"\t"+c.getAltDdsm().get(alt));
 			}
 		}
-	}
+	} //TODO replace with dump on JSON
 	
 	public void setTechnology(String tech){
 		technology = tech;

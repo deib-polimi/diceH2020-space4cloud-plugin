@@ -79,8 +79,8 @@ public class DICEWrap {
 				for (ClassDesc c : conf.getClasses()){
 					try {
 						buildStormAnalyzableModel(c.getDtsmPath());
-						genGSPN();
-						FileManager.getInstance().renameFiles(c);
+						genGSPN(); 
+						FileManager.getInstance().renameFiles(c,extractId());
 					} catch (Exception e) {
 						System.out.println(e.getMessage());
 					}
@@ -115,12 +115,25 @@ public class DICEWrap {
 		}
 	}
 	
+	private String extractId(){
+		System.out.println("Extracting");
+		for(Trace i: result.getTraceSet().getTraces()){
+			if (i.getFromDomainElement() instanceof Device  && i.getToAnalyzableElement() instanceof Place){
+				System.out.println("Found "+ ((Place)i.getToAnalyzableElement()).getId());
+				return ((Place)i.getToAnalyzableElement()).getId();
+			}
+		}
+		return null;
+	}
+	
 	public void buildStormAnalyzableModel(String umlModelPath){
 		StormActivityDiagram2PnmlResourceBuilder builder = new StormActivityDiagram2PnmlResourceBuilder();
 		
 		ResourceSet set = new ResourceSetImpl();
 		Resource res = set.getResource(URI.createFileURI(umlModelPath), true);
 		result = builder.createAnalyzableModel((Model)res.getContents().get(0), new BasicEList<PrimitiveVariableAssignment>());
+		
+		System.out.println("Model built");
 		
 		/*PetriNet pnd = ((PetriNetDoc)result.getModel().get(0)).getNets().get(0);
 		File aFile = new File("small.pnml"); 
@@ -159,6 +172,7 @@ public class DICEWrap {
 		File targetFolder = new File(FileManager.getInstance().getPath());
 		GenerateGspn gspn = new GenerateGspn(((PetriNetDoc)result.getModel().get(0)).getNets().get(0),targetFolder, new ArrayList<EObject>());
 		gspn.doGenerate(new BasicMonitor());
+		System.out.println("GSPN generated");
 	}
 	
 	public void sendModel(){
@@ -190,8 +204,7 @@ public class DICEWrap {
 		Map classdesc = new HashMap<String,Map>();
 		for(ClassDesc c : conf.getClasses()){
 			Map alternatives = new HashMap<String,Map>();
-			for (String alt: c.getAlternatives()){
-
+			for (String alt: c.getAltDdsm().keySet()){
 				String split[] = alt.split("-");
 				
 				Map profile = new HashMap<>();
@@ -240,7 +253,7 @@ public class DICEWrap {
 			classdesc = new HashMap<String,Map>();
 			for(ClassDesc c : conf.getClasses()){
 				Map alternatives = new HashMap<String,Map>();
-				for (String alt: c.getAlternatives()){
+				for (String alt: c.getAltDdsm().keySet()){
 					String split[] = alt.split("-");
 					
 					PublicCloudParameters params = PublicCloudParametersGenerator.build(2);
