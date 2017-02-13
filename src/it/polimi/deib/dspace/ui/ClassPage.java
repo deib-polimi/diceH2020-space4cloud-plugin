@@ -2,6 +2,7 @@ package it.polimi.deib.dspace.ui;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -133,6 +134,7 @@ public class ClassPage extends WizardPage{
 		
 		fileName1 = new Label(container, SWT.NONE);
 		fileName1.setLayoutData(new GridData(SWT.BEGINNING, SWT.END, false, false));	
+		Button button = new Button(container, SWT.NONE);
 		
 		browse.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
@@ -188,7 +190,20 @@ public class ClassPage extends WizardPage{
 	}
 	
 	private void populateAlternatives(){
-		l1.setItems(NetworkManager.getInstance().getAlternatives());
+		l1.setItems(this.fetchAlternatives());
+	}
+	private void refreshAlternatives(){
+		String[] alternatives;
+		alternatives = (String[])NetworkManager.getInstance().fetchAlternatives().get("alternatives");
+		String newJson = "{\n\t'alternatives':"+alternatives.toString()+"\n}";
+		try {
+			FileWriter writer = new FileWriter("./db/alternatives.json");
+			writer.write(newJson);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		l1.setItems(alternatives);
 	}
 	
 	public String getDTSMPath(){
@@ -200,13 +215,13 @@ public class ClassPage extends WizardPage{
 	}
 	private String[] fetchAlternatives(){
 		FileReader db;
-		String[] alternatives;
 		JSONParser parser;
 		JSONObject parsedJson;
 		try {
 			db = new FileReader("./db/alternatives.json");
 			parser = new JSONParser();
 			parsedJson = (JSONObject) parser.parse(db);
+			return (String[]) parsedJson.get("alternatives");
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -217,17 +232,7 @@ public class ClassPage extends WizardPage{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		return null;
-	}
-	private ArrayList<String> mapToStringArray(Map<String, String> map){
-		Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
-		ArrayList<String> targetArrayList = new ArrayList<String>();
-		while (it.hasNext()) {
-	        Map.Entry<String,String> pair = (Map.Entry<String,String>)it.next();
-	        targetArrayList.add(pair.getValue());
-	    }
-		return targetArrayList;
 	}
 	public void reset(){
 		l2.removeAll();
