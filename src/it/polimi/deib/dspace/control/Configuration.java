@@ -57,9 +57,9 @@ public class Configuration {
 		System.out.println(isPrivate ? "Private" : !hasLTC ? "No LTC" : "r: " + r + "\t" + "spsr: " + spsr);
 		for (ClassDesc c : classes){
 			System.out.println("Class: "+c.getId());
-			System.out.println(" "+c.getDtsmPath());
-			for(String alt : c.getAltDdsm().keySet()){
-				System.out.println("\t"+alt+"\t"+c.getAltDdsm().get(alt));
+			System.out.println(" "+c.getDdsmPath());
+			for(String alt : c.getAltDtsm().keySet()){
+				System.out.println("\t"+alt+"\t"+c.getAltDtsm().get(alt));
 			}
 		}
 	} //TODO replace with dump on JSON

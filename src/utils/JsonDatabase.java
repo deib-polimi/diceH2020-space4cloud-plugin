@@ -37,7 +37,7 @@ public class JsonDatabase {
 		String pre = "{\n\t\"alternatives\":[";
 		String post = "]\n}";
 		//String[] alternatives = digestAlternatives(NetworkManager.getInstance().fetchAlternatives());
-		String[] alternatives = {"a","b","c"};
+		String[] alternatives = {"Cineca-5xlarge","Amazon-xlarge","Amazon-large"};
 		try {
 			FileWriter writer = new FileWriter("db.json");
 			for(int i = 0; i<alternatives.length; i++){

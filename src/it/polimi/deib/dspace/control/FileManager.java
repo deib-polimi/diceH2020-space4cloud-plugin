@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.apache.commons.io.FileUtils;
+import org.json.simple.JSONObject;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -120,7 +121,7 @@ public class FileManager {
 		}
 	}
 	
-	public void generateJson(){
+	public void generateInputJson(){
 		Configuration conf = Configuration.getCurrent(); //TODO: REMOVE
 		InstanceDataMultiProvider data = InstanceDataMultiProviderGenerator.build();
 		
@@ -130,7 +131,7 @@ public class FileManager {
 		Map classdesc = new HashMap<String,Map>();
 		for(ClassDesc c : conf.getClasses()){
 			Map alternatives = new HashMap<String,Map>();
-			for (String alt: c.getAltDdsm().keySet()){
+			for (String alt: c.getAltDtsm().keySet()){
 				//createTxtFiles(c,alt);
 				String split[] = alt.split("-");
 				
@@ -180,7 +181,7 @@ public class FileManager {
 			classdesc = new HashMap<String,Map>();
 			for(ClassDesc c : conf.getClasses()){
 				Map alternatives = new HashMap<String,Map>();
-				for (String alt: c.getAltDdsm().keySet()){
+				for (String alt: c.getAltDtsm().keySet()){
 					String split[] = alt.split("-");
 					
 					PublicCloudParameters params = PublicCloudParametersGenerator.build(2);
@@ -251,4 +252,25 @@ public class FileManager {
 		return toSend;
 	}
 
+	public void generateOutputJson() {
+		Map<Integer, String> map = new HashMap<Integer, String>();
+		
+		for(ClassDesc cd : Configuration.getCurrent().getClasses()){
+			map.put(cd.getId(), cd.getDdsmPath());
+		}
+		
+		JSONObject json = new JSONObject(map);
+		ObjectMapper mapper = new ObjectMapper();
+		
+		try {
+			mapper.writerWithDefaultPrettyPrinter().writeValue(
+					new File(Configuration.getCurrent().getID() + "OUT.json"), json);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

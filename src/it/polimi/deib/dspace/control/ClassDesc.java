@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 public class ClassDesc {
 	private final int id;
-	private HashMap<String, String> altDdsm;
-	private String dtsmPath;
+	private HashMap<String, String> altDtsm;
+	private String ddsmPath;
 	
 	public ClassDesc(int id){
 		this.id = id;
@@ -15,19 +15,19 @@ public class ClassDesc {
 		return id;
 	}
 	
-	public HashMap<String, String> getAltDdsm() {
-		return altDdsm;
+	public HashMap<String, String> getAltDtsm() {
+		return altDtsm;
 	}
 	
-	public void setAltDdsm(HashMap<String, String> altDdsm){
-		this.altDdsm = new HashMap<String, String>(altDdsm);
+	public void setAltDtsm(HashMap<String, String> altDtsm){
+		this.altDtsm = new HashMap<String, String>(altDtsm);
 	}
 	
-	public void setDtsmPath(String dtsmPath){
-		this.dtsmPath = dtsmPath;
+	public void setDdsmPath(String ddsmPath){
+		this.ddsmPath = ddsmPath;
 	}
 	
-	public String getDtsmPath(){
-		return dtsmPath;
+	public String getDdsmPath(){
+		return ddsmPath;
 	}
 }

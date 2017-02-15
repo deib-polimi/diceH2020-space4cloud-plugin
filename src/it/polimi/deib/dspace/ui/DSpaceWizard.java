@@ -66,8 +66,8 @@ public class DSpaceWizard extends Wizard{
 		if(currentPage == classp){
 			c = new ClassDesc(++n);
 			System.out.println("N: "+n+" classes: "+classes);
-			c.setDtsmPath(classp.getDTSMPath());
-			c.setAltDdsm(classp.getAltDdsm());
+			c.setDdsmPath(classp.getDDSMPath());
+			c.setAltDtsm(classp.getAltDtsm());
 			Configuration.getCurrent().getClasses().add(c);
 			if(n == classes){
 				finish = true;
