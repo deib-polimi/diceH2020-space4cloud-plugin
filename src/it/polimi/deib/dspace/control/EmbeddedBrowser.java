@@ -66,6 +66,9 @@ public final class EmbeddedBrowser {
         browser.addLocationListener(new LocationListener(){
 			@Override
 			public void changing(LocationEvent event) {
+				if(event.location.contains("asdkljflak")){
+					
+				}
 				if(event.location.contains("downloadZipOpt")){
 		        	JFileChooser j = new JFileChooser();
 		        	j.setDialogTitle("Choose folder to save file");

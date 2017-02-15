@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -36,13 +37,14 @@ public class JSonReader {
 	private List<String> classes;
 	private Map<String,String> idClassUmlFile;
 	private String filePath;
-	public JSonReader(Map<String,String> idClassUmlFile,String filePath){
+	public JSonReader(String filePath){
 		setProvider("");
 		setClassNumVM(new HashMap<String,Long>());
 		setClassTypeVM(new HashMap<String,String>());
 		classes=new ArrayList<String>();
 		this.idClassUmlFile=idClassUmlFile;
 		this.filePath=filePath;
+		idClassUmlFile=new HashMap<String,String>();
 	}
 	
 	
@@ -152,5 +154,29 @@ try {
 	public void setClassTypeVM(Map<String,String> classTypeVM) {
 		this.classTypeVM = classTypeVM;
 	}
+	public void createMap(String jsonFilePath){
+		FileReader reader;
 	
+		try {
+			reader = new FileReader(jsonFilePath);
+			JSONParser jsonParser = new JSONParser();
+			JSONObject jsonObject = (JSONObject) jsonParser.parse(reader);
+			Set<?> keys =  jsonObject.keySet();
+
+			for(Object s:keys){
+				this.idClassUmlFile.put((String) s, (String) jsonObject.get(s));
+			}
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 }

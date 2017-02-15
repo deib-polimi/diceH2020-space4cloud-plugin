@@ -7,6 +7,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.swing.JPanel;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -51,7 +53,17 @@ public class ConfigurationDialog extends Dialog {
 				changed=true;
 			}
         });
-		
+		new Label(shell,SWT.FILL);
+		new Label(shell,SWT.FILL);
+		new Label(shell,SWT.FILL);
+		new Label(shell,SWT.FILL);
+		new Label(shell,SWT.FILL);
+		new Label(shell,SWT.FILL);
+		new Label(shell,SWT.FILL);
+		new Label(shell,SWT.FILL);
+		new Label(shell,SWT.FILL);
+		new Label(shell,SWT.FILL);
+		new Label(shell,SWT.FILL);
 		save=new Button(shell,SWT.PUSH);
 		save.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
@@ -92,7 +104,6 @@ public class ConfigurationDialog extends Dialog {
 
 			    while (line != null) {
 			        sb.append(line);
-			        sb.append(System.lineSeparator());
 			        line = br.readLine();
 			    }
 			    String everything = sb.toString();

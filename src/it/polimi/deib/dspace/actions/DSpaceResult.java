@@ -22,11 +22,9 @@ public class DSpaceResult implements IWorkbenchWindowActionDelegate{
 		p=new ResultPage(new Shell());
 		p.displayUrl("http://specclient1.dei.polimi.it:8018/resPub");
 		//TODO test delete after
-		Map<String,String> idClassUmlFile=new HashMap<String,String>();
-		idClassUmlFile.put("1", "/home/arlind/Downloads/Wikistats-Models/Wikistats-Models/wikistats.uml");
-		JSonReader reader=new JSonReader(idClassUmlFile,"/home/arlind/Downloads/5550669387137824906/1_h8_D500000.0.json");
-		reader.read();
-		reader.write();
+		JSonReader reader=new JSonReader("/home/arlind/Downloads/5550669387137824906/1_h8_D500000.0.json");
+		reader.createMap("/home/arlind/Downloads/1004OUT.json");
+		
 	}
 
 	@Override
