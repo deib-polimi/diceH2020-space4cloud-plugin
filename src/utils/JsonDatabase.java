@@ -34,21 +34,11 @@ public class JsonDatabase {
 		}
 	}
 	public String[] refreshDbContents() {
-		String pre = "{\n\t\"alternatives\":[";
-		String post = "]\n}";
-		String[] alternatives = digestAlternatives(NetworkManager.getInstance().fetchAlternatives());
+		JSONArray array = NetworkManager.getInstance().fetchAlternatives();
+		String[] alternatives = digestAlternatives(array);
 		try {
 			FileWriter writer = new FileWriter("db.json");
-			for(int i = 0; i<alternatives.length; i++){
-				if(i != 0){	
-					pre = pre + ",\""+alternatives[i]+"\"";
-				}
-				else{
-					pre = pre + "\""+alternatives[i]+"\"";
-				}
-			}
-			System.out.println(pre+post);
-			writer.write(pre+post);
+			writer.write(array.toJSONString());
 			writer.close();
 			return alternatives;
 			
@@ -63,10 +53,13 @@ public class JsonDatabase {
 		String[] returnObject = new String[json.size()];
 		Iterator<?> it = json.iterator();
 		JSONObject object = new JSONObject();
+		String name,type;
 		int i = 0;
 		while(it.hasNext()){
 			object = (JSONObject) it.next();
-			returnObject[i] = object.get("name").toString();
+			name = ((JSONObject) object.get("provider")).get("name").toString();
+			type = object.get("type").toString();
+			returnObject[i] = name+"-"+type;
 			i++;
 		}
 		return returnObject;

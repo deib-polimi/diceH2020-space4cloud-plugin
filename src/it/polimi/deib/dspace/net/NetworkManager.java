@@ -16,7 +16,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -32,7 +31,7 @@ import java.util.List;
 public class NetworkManager {
 	
 	private static NetworkManager instance;
-	private static String rootEndpoint = "http://specclient1.dei.polimi.it:8018";
+	private static String rootEndpoint = "http://9a3c748a.ngrok.io";
 	private static String alternativesEndpoint = rootEndpoint+"/vm-types";
 	private static String modelUploadEndpoint = rootEndpoint+"/files/upload";
 	private static String simulationSetupEndpoint = rootEndpoint+"/launch/simulationSetup";
