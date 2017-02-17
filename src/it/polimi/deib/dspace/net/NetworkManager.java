@@ -15,6 +15,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -32,7 +33,7 @@ public class NetworkManager {
 	
 	private static NetworkManager instance;
 	private static String rootEndpoint = "http://specclient1.dei.polimi.it:8018";
-	private static String alternativesEndpoint = rootEndpoint+"/alternatives";
+	private static String alternativesEndpoint = rootEndpoint+"/vm-types";
 	private static String modelUploadEndpoint = rootEndpoint+"/files/upload";
 	private static String simulationSetupEndpoint = rootEndpoint+"/launch/simulationSetup";
 	
@@ -53,13 +54,12 @@ public class NetworkManager {
 	 * Fetches alternatives from the backend
 	 * @return A json object representing the fetched alternatives
 	 */
-	public JSONObject fetchAlternatives(){
+	public JSONArray fetchAlternatives(){
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		HttpGet httpget = new HttpGet(alternativesEndpoint);
 		CloseableHttpResponse response;
 		String body;
 		JSONParser parser;
-		JSONObject json;
 		try {
 			response = httpclient.execute(httpget);
 			if(response.getStatusLine().getStatusCode() != 200){
@@ -70,7 +70,7 @@ public class NetworkManager {
 				body = IOUtils.toString(response.getEntity().getContent(), "UTF-8");
 				parser = new JSONParser();
 				response.close();
-				return ((JSONObject) parser.parse(body));
+				return ((JSONArray) parser.parse(body));
 			}
 		} catch (UnsupportedOperationException e) {
 			// TODO Auto-generated catch block

@@ -36,6 +36,7 @@ public class ClassPage extends WizardPage{
 	private String ddsmPath = "";
 	private Label fileName;
 	private HashMap<String, String> altDtsm;
+	private int numClasses = 0;
 
 	protected ClassPage(String title, String description) {
 		super("Browse Files");
@@ -236,5 +237,9 @@ public class ClassPage extends WizardPage{
 	
 	public String[] getSelectedAlternatives() {
 		return l2.getItems();
+	}
+
+	void setNumClasses(int classes) {
+		numClasses = classes;
 	}
 }
