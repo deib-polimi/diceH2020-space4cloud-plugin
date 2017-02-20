@@ -16,7 +16,6 @@ import org.eclipse.swt.widgets.Label;
 
 public class SelectFolderPage extends WizardPage{
 	private Composite container;
-	private Label l1;
 	private GridLayout layout;
 	private Label folder;
 	private boolean canFlip;

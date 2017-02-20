@@ -52,7 +52,6 @@ public class DSpaceWizard extends Wizard{
 			if(Configuration.getCurrent().getIsPrivate()){
 				return folPage;
 			}else{
-				classp.setNumClasses(classes);
 				if (Configuration.getCurrent().getHasLtc()){
 					Configuration.getCurrent().setR(choice.getR());
 					Configuration.getCurrent().setSpsr(choice.getSpsr());

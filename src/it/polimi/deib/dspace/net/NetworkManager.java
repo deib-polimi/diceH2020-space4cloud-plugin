@@ -33,8 +33,7 @@ public class NetworkManager {
 	private static String rootEndpoint = "http://localhost:8000";
 	private static String vmConfigsEndpoint = "http://localhost:8080/vm-types";
 	private static String modelUploadEndpoint = rootEndpoint+"/files/view/upload";
-	private static String simulationSetupEndpoint = rootEndpoint+"/launch/simulationSetup";
-	
+
 	public static NetworkManager getInstance(){
 		if(instance != null){
 			return instance;

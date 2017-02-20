@@ -1,7 +1,5 @@
 package it.polimi.deib.dspace.ui;
 
-import java.util.logging.Logger;
-
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -16,12 +14,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
-import it.polimi.deib.dspace.control.Configuration;
 
+import it.polimi.deib.dspace.control.Configuration;
 import it.polimi.deib.dspace.net.NetworkManager;
 
 public class ChoicePage extends WizardPage{
-	private static final Logger LOGGER = Logger.getLogger(ChoicePage.class.getName() );
 	private Composite container;
 	private GridLayout layout;
 	private Button pri;
@@ -32,7 +29,7 @@ public class ChoicePage extends WizardPage{
 	private List t2;
 	private Label l1;
 	private Label l2;
-	private GridData g1,g2,g3,g4,g5,g6,f1,f2,f3,added;
+	private GridData g1,g3,g5,g6,f1,f2,f3;
 	private Button existingLTC,nExistingLTC;
 	private Text rTextField,SpsrTextField;
 	private Composite ltcCompositeText;
@@ -65,7 +62,7 @@ public class ChoicePage extends WizardPage{
         //l1.setLayoutData(g1);
         l1.setText("Number of classes:");
         
-        g2 = new GridData(SWT.CENTER, SWT.BEGINNING, true, true);
+        new GridData(SWT.CENTER, SWT.BEGINNING, true, true);
         l2 = new Label(container, SWT.NONE);
         //l2.setLayoutData(g2);
         l2.setText("Select technology:");
@@ -84,7 +81,7 @@ public class ChoicePage extends WizardPage{
 
         });
         
-        g4 = new GridData(SWT.CENTER, SWT.BEGINNING, true, true);
+        new GridData(SWT.CENTER, SWT.BEGINNING, true, true);
         t2 = new List(container, SWT.BORDER);
         //t2.setLayoutData(g4);
         t2.setItems(NetworkManager.getInstance().getTechnologies());

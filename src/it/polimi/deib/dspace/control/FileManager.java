@@ -11,13 +11,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONObject;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -25,7 +23,6 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.impl.FilteredBeanPropertyWriter;
 
 import it.polimi.diceH2020.SPACE4Cloud.shared.generators.ClassParametersGenerator;
 import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.InstanceDataMultiProviderGenerator;
@@ -99,6 +96,7 @@ public class FileManager {
 				s = s + "\n" + newLine;
 				newLine = in.readLine();
 			}
+			in.close();
 			
 			lines = s.split("\n");
 			for (i=0; i< lines.length; i++){

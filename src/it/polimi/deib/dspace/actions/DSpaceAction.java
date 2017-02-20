@@ -29,7 +29,6 @@ import it.polimi.deib.dspace.ui.DSpaceWizard;
  * @see IWorkbenchWindowActionDelegate
  */
 public class DSpaceAction implements IWorkbenchWindowActionDelegate {
-	private IWorkbenchWindow window;
 	/**
 	 * The constructor.
 	 */
@@ -91,7 +90,6 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#init
 	 */
 	public void init(IWorkbenchWindow window) {
-		this.window = window;
 	}
 	private void loadConfiguration(){
 		String filePath="configFile/ConfigFile.txt";
