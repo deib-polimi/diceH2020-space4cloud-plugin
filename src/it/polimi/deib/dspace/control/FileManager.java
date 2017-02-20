@@ -45,7 +45,7 @@ public class FileManager {
 	private String placeHolder = "@@CORES@@";
 	
 	private FileManager(){
-		path = "/home/kom/eclipse/java-neon/eclipse/"; // to be replaced by fetching this info in tools
+		path = "/home/giorgio/eclipse/java-neon/eclipse/"; // to be replaced by fetching this info in tools
 	}
 	
 	public static FileManager getInstance(){
