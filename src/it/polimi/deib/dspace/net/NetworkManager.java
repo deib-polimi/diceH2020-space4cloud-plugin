@@ -6,6 +6,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -14,7 +16,9 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -27,7 +31,7 @@ public class NetworkManager {
 	
 	private static NetworkManager instance;
 	private static String rootEndpoint = "http://localhost:8000";
-	private static String vmConfigsEndpoint = rootEndpoint+"/vm-types";
+	private static String vmConfigsEndpoint = "http://localhost:8080/vm-types";
 	private static String modelUploadEndpoint = rootEndpoint+"/files/view/upload";
 	private static String simulationSetupEndpoint = rootEndpoint+"/launch/simulationSetup";
 	
@@ -80,8 +84,8 @@ public class NetworkManager {
 	 * @throws UnsupportedEncodingException 
 	 */
 	public void sendModel(List<File> files, String scenario) throws UnsupportedEncodingException{
-		CloseableHttpClient httpclient = HttpClients.createDefault();
-		CloseableHttpResponse response;
+		HttpClient httpclient = HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build();
+		HttpResponse response;
 		HttpPost post = new HttpPost(modelUploadEndpoint);
 		
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();  
@@ -96,7 +100,7 @@ public class NetworkManager {
 				System.err.println("Error: POST not succesfull");
 			}
 			else{
-				response.close();
+				//response.close();
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
