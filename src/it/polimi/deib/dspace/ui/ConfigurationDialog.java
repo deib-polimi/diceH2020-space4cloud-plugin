@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 
 import org.eclipse.swt.SWT;
@@ -14,6 +15,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Dialog;
@@ -25,10 +27,14 @@ import org.eclipse.swt.widgets.Text;
 public class ConfigurationDialog extends Dialog {
 	private Shell shell;
 	private Text serverId;
+	private Text timeToCheck;
+	private String savingDir;
 	private String server;
 	private Button save;
 	private boolean changed;
+	private int timeToWait;
 	private final String filePath="ConfigFile.txt";
+	private Button selSave;
 	
 	public ConfigurationDialog(Shell parent) {
 		super(parent);
@@ -43,7 +49,7 @@ public class ConfigurationDialog extends Dialog {
 		shell.setLayout(layout);
 		Label l1=new Label(shell,SWT.FILL);
 		l1.setText("Set server address:");
-		serverId=new Text(shell,SWT.FILL);
+		serverId=new Text(shell,SWT.NONE);
 		serverId.setText(server);
 		serverId.addModifyListener(new ModifyListener(){
 
@@ -52,6 +58,38 @@ public class ConfigurationDialog extends Dialog {
 				server=serverId.getText();
 				changed=true;
 			}
+        });
+		Label l2=new Label(shell,SWT.FILL);
+		l2.setText("Set server address:");
+		timeToCheck=new Text(shell,SWT.NONE);
+		timeToCheck.setText(""+this.timeToWait);
+		timeToCheck.addModifyListener(new ModifyListener(){
+
+			@Override
+			public void modifyText(ModifyEvent arg0) {
+				timeToWait=Integer.parseInt(timeToCheck.getText());
+				changed=true;
+			}
+        });
+		this.selSave = new Button(shell, SWT.PUSH);
+		selSave.setLayoutData(new GridData(SWT.BEGINNING, SWT.END, false, false));
+		selSave.setText("Select Folder where to save the data...");
+		Label l3 = new Label(shell, SWT.NONE);
+		selSave.setLayoutData(new GridData(SWT.BEGINNING, SWT.END, false, false));
+		
+		selSave.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+
+
+            	JFileChooser j = new JFileChooser();
+            	j.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            	int choice = j.showOpenDialog(null);
+            	
+            	if (choice!= JFileChooser.APPROVE_OPTION) return;
+            	savingDir=j.getSelectedFile().getAbsolutePath();
+            	l3.setText(savingDir);
+            	shell.update();
+             }
         });
 		new Label(shell,SWT.FILL);
 		new Label(shell,SWT.FILL);
@@ -103,11 +141,13 @@ public class ConfigurationDialog extends Dialog {
 			    String line = br.readLine();
 
 			    while (line != null) {
-			        sb.append(line);
+			        sb.append(line+"\n");
 			        line = br.readLine();
 			    }
 			    String everything = sb.toString();
-			    this.server=everything;
+			    String[] sp=everything.split("\n");
+			    this.server=sp[0];
+			    this.timeToWait=Integer.parseInt(sp[1]);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -131,6 +171,8 @@ public class ConfigurationDialog extends Dialog {
 		try{
 		    PrintWriter writer = new PrintWriter(filePath, "UTF-8");
 		    writer.println(this.server);
+		   writer.println(this.timeToWait);
+		   writer.println(this.savingDir);
 		    writer.close();
 		} catch (IOException e) {
 		   // do something
