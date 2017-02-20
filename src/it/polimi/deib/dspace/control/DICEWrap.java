@@ -124,7 +124,7 @@ public class DICEWrap {
 		Resource res = set.getResource(URI.createFileURI(umlModelPath), true);
 		result = builder.createAnalyzableModel((Model)res.getContents().get(0), new BasicEList<PrimitiveVariableAssignment>());
 		
-		System.out.println("Model built");
+		System.out.println("Model built for file: " + umlModelPath);
 		
 		/*PetriNet pnd = ((PetriNetDoc)result.getModel().get(0)).getNets().get(0);
 		File aFile = new File("small.pnml"); 
@@ -147,14 +147,12 @@ public class DICEWrap {
 		result = builder.createAnalyzableModel((Model)res.getContents().get(0), new BasicEList<PrimitiveVariableAssignment>());
 	}
 	
+	//TODO: set all these methods to private
 	public void extractHadoopInitialMarking(){
-		System.out.println("Extracting marking\n");
-		System.err.println(result.getTraceSet().getTraces().size());
 		for(Trace i: result.getTraceSet().getTraces()){
-			System.out.println("Traversing traces");
-			if (i.getFromDomainElement() instanceof FinalNode  && i.getToAnalyzableElement() instanceof Transition){
-				initialMarking = ((Place)i.getToAnalyzableElement()).getInitialMarking().getText().toString();
-				System.err.println(initialMarking);
+			if (i.getFromDomainElement() instanceof FinalNode && i.getToAnalyzableElement() instanceof Transition){
+				String a = ((Place)i.getToAnalyzableElement()).getId();
+				System.err.println(a + " . AAAAAA.\n");
 			}
 		}
 	} 
@@ -163,6 +161,6 @@ public class DICEWrap {
 		File targetFolder = new File(FileManager.getInstance().getPath()+"tmp/");
 		GenerateGspn gspn = new GenerateGspn(((PetriNetDoc)result.getModel().get(0)).getNets().get(0),targetFolder, new ArrayList<EObject>());
 		gspn.doGenerate(new BasicMonitor());
-		System.out.println("GSPN generated");
+		System.out.println("GSPN generated for file");
 	}
 }

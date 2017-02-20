@@ -16,6 +16,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 import it.polimi.deib.dspace.control.Configuration;
+import it.polimi.deib.dspace.control.DICEWrap;
 import it.polimi.deib.dspace.ui.ConfigurationDialog;
 import it.polimi.deib.dspace.ui.DSpaceWizard;
 
@@ -47,10 +48,17 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 			WizardDialog dialog = new WizardDialog(null, new DSpaceWizard());
 			dialog.open();
 			System.out.println("Starting");
-//			DICEWrap.getWrapper().buildHadoopAnalyzableModel("/home/kom/Downloads/wikistats4opt/model_1_class.uml");
-//			DICEWrap.getWrapper().start();
-//			DICEWrap.getWrapper().generateInputJson();
+//			DICEWrap.getWrapper().buildHadoopAnalyzableModel("/home/kom/Wikistats-Models/dtsm-hadoopmr/model_1_class.uml");
+//			DICEWrap.getWrapper().extractHadoopInitialMarking();
+//			try {
+//				DICEWrap.getWrapper().genGSPN();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+			DICEWrap.getWrapper().start();
 //			DICEWrap.getWrapper().sendModel();
+//			FileManager.getInstance().generateInputJson();
 		}else{
 			System.out.println("Set up options");
 			ConfigurationDialog con=new ConfigurationDialog(new Shell());

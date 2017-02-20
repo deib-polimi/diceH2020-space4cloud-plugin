@@ -1,5 +1,10 @@
 package it.polimi.deib.dspace.net;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.List;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -14,11 +19,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.List;
-
 /**
  * Manages interaction with the backend
  * @author Giorgio Pea <giorgio.pea@mail.polimi.it>
@@ -26,9 +26,11 @@ import java.util.List;
 public class NetworkManager {
 	
 	private static NetworkManager instance;
-	private static String rootEndpoint = "http://9a3c748a.ngrok.io";
+	private static String rootEndpoint = "http://localhost:8000";
 	private static String vmConfigsEndpoint = rootEndpoint+"/vm-types";
-	private static String modelUploadEndpoint = rootEndpoint+"/files/upload";
+	private static String alternativesEndpoint = rootEndpoint+"/alternatives";
+	private static String modelUploadEndpoint = rootEndpoint+"/files/view/upload";
+	private static String simulationSetupEndpoint = rootEndpoint+"/launch/simulationSetup";
 	
 	public static NetworkManager getInstance(){
 		if(instance != null){
