@@ -79,7 +79,7 @@ public class DSpaceWizard extends Wizard{
 		if(currentPage==this.folPage){
 			
 			fileHandler.setFolder(folPage.getSelectedFolder());
-			fileHandler.setScenario(!Configuration.getCurrent().getIsPrivate(),Configuration.getCurrent().getHasLtc());
+			fileHandler.setScenario(false,false);
 			fileHandler.sendFile();
 			finish = true;
 			return fpage;

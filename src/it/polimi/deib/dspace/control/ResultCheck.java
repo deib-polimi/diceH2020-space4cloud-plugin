@@ -23,16 +23,21 @@ public class ResultCheck extends TimerTask{
 	//file path that contains all the links to go check for solution
 	String filePath;
 	List<String> urls;
+	List<String> fileNames;
 	
-	ResultCheck(String filePath){
+	public ResultCheck(String filePath){
 		this.filePath=filePath;
 		urls=new ArrayList<String>();
+		fileNames=new ArrayList<String>();
 	}
 	@Override
 	public void run() {
+		File f = new File("results");
+		if(f.exists()){
 		urls.clear();
 		load();
 		this.checkSolExcistence();
+		}
 	}
 	private void load(){
 		BufferedReader br=null;
@@ -52,8 +57,12 @@ public class ResultCheck extends TimerTask{
 		    }
 		    String everything = sb.toString();
 		    String[] st=everything.split("\n");
-		    for(String s:st){
-		    	this.urls.add(s);
+		    for(int i=0;i<st.length;i++){
+		    	if(i%2==0){
+		    		this.fileNames.add(st[i]+"OUT.json");
+		    	}else{
+		    		this.urls.add(st[i]);	
+		    	}
 		    }
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -69,20 +78,19 @@ public class ResultCheck extends TimerTask{
 	}
 	//TODO add about default saving directory
 	private void checkSolExcistence(){
-		for(String s:this.urls){
+		for(int i=0;i<this.urls.size();i++){
 			try {
-				String fPath=this.downloadFile(s);
+				String fPath=this.downloadFile(urls.get(i));
 				 
 				if(!fPath.equals("")){
 					  
 					  JOptionPane.showMessageDialog(null, "Results availble", "InfoBox: " , JOptionPane.INFORMATION_MESSAGE);
 					  
 					  JSonReader j=new JSonReader(fPath);
-			          //TODO add string here
-			          j.createMap("Add String here");
+			        /*  j.createMap(this.fileNames.get(i));
 			          j.read();
-			          j.write();
-			          
+			          j.write();*/
+			        
 				}
 			} catch (IOException e) {
 				
@@ -91,7 +99,7 @@ public class ResultCheck extends TimerTask{
 	}
 	
 	
-	public static String downloadFile(String urlString) throws IOException{
+	private String downloadFile(String urlString) throws IOException{
 		String toReturn;
 		URL url = new URL(urlString);
 	        HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
@@ -117,7 +125,8 @@ public class ResultCheck extends TimerTask{
 	 
 	            // opens input stream from the HTTP connection
 	            InputStream inputStream = httpConn.getInputStream();
-	            String saveFilePath = Configuration.getCurrent().getSavingDir() + File.separator + fileName;
+	            //Configuration.getCurrent().getSavingDir() + File.separator;
+	            String saveFilePath =  fileName;
 	             
 	            // opens an output stream to save into file
 	            FileOutputStream outputStream = new FileOutputStream(saveFilePath);
@@ -168,61 +177,4 @@ public class ResultCheck extends TimerTask{
 	 
 	}
 	
-	
-	 /**
-     * Unzip it
-     * @param zipFile input zip file
-     * @param output zip file output folder
-     */
-    public static void unZipIt(String zipFile, String outputFolder){
-
-     byte[] buffer = new byte[1024];
-
-     try{
-
-    	//create output directory is not exists
-    	File folder = new File(outputFolder);
-    	if(!folder.exists()){
-    		folder.mkdir();
-    	}
-
-    	//get the zip file content
-    	ZipInputStream zis =
-    		new ZipInputStream(new FileInputStream(zipFile));
-    	//get the zipped file list entry
-    	ZipEntry ze = zis.getNextEntry();
-
-    	while(ze!=null){
-
-    	   String fileName = ze.getName();
-           File newFile = new File(outputFolder + File.separator + fileName);
-
-           System.out.println("file unzip : "+ newFile.getAbsoluteFile());
-
-            //create all non exists folders
-            //else you will hit FileNotFoundException for compressed folder
-            new File(newFile.getParent()).mkdirs();
-
-            FileOutputStream fos = new FileOutputStream(newFile);
-
-            int len;
-            while ((len = zis.read(buffer)) > 0) {
-       		fos.write(buffer, 0, len);
-            }
-
-            fos.close();
-            ze = zis.getNextEntry();
-    	}
-
-        zis.closeEntry();
-    	zis.close();
-
-    	System.out.println("Done");
-
-    }catch(IOException ex){
-       ex.printStackTrace();
-    }
-   }
-	
-
 }

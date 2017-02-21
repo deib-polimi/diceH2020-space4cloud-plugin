@@ -2949,3 +2949,403 @@ java.lang.NullPointerException
 	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
 	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
 	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2017-02-21 11:07:51.575 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.platform.ide
+Command-line arguments:  -product org.eclipse.platform.ide -data /home/arlind/git/DICE_plugin -dev file:/home/arlind/workspace/.metadata/.plugins/org.eclipse.pde.core/Eclipse Application/dev.properties -os linux -ws gtk -arch x86 -consoleLog
+
+!ENTRY org.eclipse.oomph.setup.ui 2 0 2017-02-21 11:08:16.244
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.performStartup(SetupUIPlugin.java:443)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2017-02-21 11:10:32.518 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.platform.ide
+Command-line arguments:  -product org.eclipse.platform.ide -data /home/arlind/git/DICE_plugin -dev file:/home/arlind/workspace/.metadata/.plugins/org.eclipse.pde.core/Eclipse Application/dev.properties -os linux -ws gtk -arch x86 -consoleLog
+
+!ENTRY org.eclipse.oomph.setup.ui 2 0 2017-02-21 11:10:44.992
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.performStartup(SetupUIPlugin.java:443)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2017-02-21 11:14:07.433 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.platform.ide
+Command-line arguments:  -product org.eclipse.platform.ide -data /home/arlind/git/DICE_plugin -dev file:/home/arlind/workspace/.metadata/.plugins/org.eclipse.pde.core/Eclipse Application/dev.properties -os linux -ws gtk -arch x86 -consoleLog
+
+!ENTRY org.eclipse.oomph.setup.ui 2 0 2017-02-21 11:14:19.039
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.performStartup(SetupUIPlugin.java:443)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2017-02-21 11:16:09.117 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.platform.ide
+Command-line arguments:  -product org.eclipse.platform.ide -data /home/arlind/git/DICE_plugin -dev file:/home/arlind/workspace/.metadata/.plugins/org.eclipse.pde.core/Eclipse Application/dev.properties -os linux -ws gtk -arch x86 -consoleLog
+
+!ENTRY org.eclipse.oomph.setup.ui 2 0 2017-02-21 11:16:19.510
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.performStartup(SetupUIPlugin.java:443)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2017-02-21 11:24:39.598 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.platform.ide
+Command-line arguments:  -product org.eclipse.platform.ide -data /home/arlind/git/DICE_plugin -dev file:/home/arlind/workspace/.metadata/.plugins/org.eclipse.pde.core/Eclipse Application/dev.properties -os linux -ws gtk -arch x86 -consoleLog
+
+!ENTRY org.eclipse.oomph.setup.ui 2 0 2017-02-21 11:24:50.105
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.performStartup(SetupUIPlugin.java:443)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2017-02-21 11:32:27.601 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.platform.ide
+Command-line arguments:  -product org.eclipse.platform.ide -data /home/arlind/git/DICE_plugin -dev file:/home/arlind/workspace/.metadata/.plugins/org.eclipse.pde.core/Eclipse Application/dev.properties -os linux -ws gtk -arch x86 -consoleLog
+
+!ENTRY org.eclipse.oomph.setup.ui 2 0 2017-02-21 11:32:38.898
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.performStartup(SetupUIPlugin.java:443)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2017-02-21 11:35:31.497 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.platform.ide
+Command-line arguments:  -product org.eclipse.platform.ide -data /home/arlind/git/DICE_plugin -dev file:/home/arlind/workspace/.metadata/.plugins/org.eclipse.pde.core/Eclipse Application/dev.properties -os linux -ws gtk -arch x86 -consoleLog
+
+!ENTRY org.eclipse.oomph.setup.ui 2 0 2017-02-21 11:35:42.741
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.performStartup(SetupUIPlugin.java:443)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2017-02-21 11:37:21.640 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.platform.ide
+Command-line arguments:  -product org.eclipse.platform.ide -data /home/arlind/git/DICE_plugin -dev file:/home/arlind/workspace/.metadata/.plugins/org.eclipse.pde.core/Eclipse Application/dev.properties -os linux -ws gtk -arch x86 -consoleLog
+
+!ENTRY org.eclipse.oomph.setup.ui 2 0 2017-02-21 11:37:33.956
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.performStartup(SetupUIPlugin.java:443)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2017-02-21 12:27:47.522 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.platform.ide
+Command-line arguments:  -product org.eclipse.platform.ide -data /home/arlind/git/DICE_plugin -dev file:/home/arlind/workspace/.metadata/.plugins/org.eclipse.pde.core/Eclipse Application/dev.properties -os linux -ws gtk -arch x86 -consoleLog
+
+!ENTRY org.eclipse.oomph.setup.ui 2 0 2017-02-21 12:28:08.881
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.performStartup(SetupUIPlugin.java:443)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2017-02-21 12:29:52.449 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.platform.ide
+Command-line arguments:  -product org.eclipse.platform.ide -data /home/arlind/git/DICE_plugin -dev file:/home/arlind/workspace/.metadata/.plugins/org.eclipse.pde.core/Eclipse Application/dev.properties -os linux -ws gtk -arch x86 -consoleLog
+
+!ENTRY org.eclipse.oomph.setup.ui 2 0 2017-02-21 12:30:03.403
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.performStartup(SetupUIPlugin.java:443)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2017-02-21 12:33:46.873 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.platform.ide
+Command-line arguments:  -product org.eclipse.platform.ide -data /home/arlind/git/DICE_plugin -dev file:/home/arlind/workspace/.metadata/.plugins/org.eclipse.pde.core/Eclipse Application/dev.properties -os linux -ws gtk -arch x86 -consoleLog
+
+!ENTRY org.eclipse.oomph.setup.ui 2 0 2017-02-21 12:33:58.958
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.performStartup(SetupUIPlugin.java:443)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2017-02-21 12:39:59.824 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.platform.ide
+Command-line arguments:  -product org.eclipse.platform.ide -data /home/arlind/git/DICE_plugin -dev file:/home/arlind/workspace/.metadata/.plugins/org.eclipse.pde.core/Eclipse Application/dev.properties -os linux -ws gtk -arch x86 -consoleLog
+
+!ENTRY org.eclipse.oomph.setup.ui 2 0 2017-02-21 12:40:10.940
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.performStartup(SetupUIPlugin.java:443)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2017-02-21 12:43:11.332 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.platform.ide
+Command-line arguments:  -product org.eclipse.platform.ide -data /home/arlind/git/DICE_plugin -dev file:/home/arlind/workspace/.metadata/.plugins/org.eclipse.pde.core/Eclipse Application/dev.properties -os linux -ws gtk -arch x86 -consoleLog
+
+!ENTRY org.eclipse.oomph.setup.ui 2 0 2017-02-21 12:43:21.988
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.performStartup(SetupUIPlugin.java:443)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2017-02-21 12:45:53.900 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.platform.ide
+Command-line arguments:  -product org.eclipse.platform.ide -data /home/arlind/git/DICE_plugin -dev file:/home/arlind/workspace/.metadata/.plugins/org.eclipse.pde.core/Eclipse Application/dev.properties -os linux -ws gtk -arch x86 -consoleLog
+
+!ENTRY org.eclipse.oomph.setup.ui 2 0 2017-02-21 12:46:10.529
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.performStartup(SetupUIPlugin.java:443)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2017-02-21 12:55:37.716 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.platform.ide
+Command-line arguments:  -product org.eclipse.platform.ide -data /home/arlind/git/DICE_plugin -dev file:/home/arlind/workspace/.metadata/.plugins/org.eclipse.pde.core/Eclipse Application/dev.properties -os linux -ws gtk -arch x86 -consoleLog
+
+!ENTRY org.eclipse.oomph.setup.ui 2 0 2017-02-21 12:55:48.742
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.performStartup(SetupUIPlugin.java:443)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2017-02-21 12:58:00.400 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.platform.ide
+Command-line arguments:  -product org.eclipse.platform.ide -data /home/arlind/git/DICE_plugin -dev file:/home/arlind/workspace/.metadata/.plugins/org.eclipse.pde.core/Eclipse Application/dev.properties -os linux -ws gtk -arch x86 -consoleLog
+
+!ENTRY org.eclipse.oomph.setup.ui 2 0 2017-02-21 12:58:16.387
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.performStartup(SetupUIPlugin.java:443)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2017-02-21 13:03:24.331 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.platform.ide
+Command-line arguments:  -product org.eclipse.platform.ide -data /home/arlind/git/DICE_plugin -dev file:/home/arlind/workspace/.metadata/.plugins/org.eclipse.pde.core/Eclipse Application/dev.properties -os linux -ws gtk -arch x86 -consoleLog
+
+!ENTRY org.eclipse.oomph.setup.ui 2 0 2017-02-21 13:03:41.869
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.performStartup(SetupUIPlugin.java:443)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2017-02-21 13:10:22.007 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.platform.ide
+Command-line arguments:  -product org.eclipse.platform.ide -data /home/arlind/git/DICE_plugin -dev file:/home/arlind/workspace/.metadata/.plugins/org.eclipse.pde.core/Eclipse Application/dev.properties -os linux -ws gtk -arch x86 -consoleLog
+
+!ENTRY org.eclipse.oomph.setup.ui 2 0 2017-02-21 13:10:33.090
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.performStartup(SetupUIPlugin.java:443)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2017-02-21 14:33:54.803 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.platform.ide
+Command-line arguments:  -product org.eclipse.platform.ide -data /home/arlind/git/DICE_plugin -dev file:/home/arlind/workspace/.metadata/.plugins/org.eclipse.pde.core/Eclipse Application/dev.properties -os linux -ws gtk -arch x86 -consoleLog
+
+!ENTRY org.eclipse.oomph.setup.ui 2 0 2017-02-21 14:34:06.092
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.performStartup(SetupUIPlugin.java:443)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2017-02-21 14:38:58.923 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.platform.ide
+Command-line arguments:  -product org.eclipse.platform.ide -data /home/arlind/git/DICE_plugin -dev file:/home/arlind/workspace/.metadata/.plugins/org.eclipse.pde.core/Eclipse Application/dev.properties -os linux -ws gtk -arch x86 -consoleLog
+
+!ENTRY org.eclipse.oomph.setup.ui 2 0 2017-02-21 14:39:09.332
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.performStartup(SetupUIPlugin.java:443)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2017-02-21 14:44:33.549 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.platform.ide
+Command-line arguments:  -product org.eclipse.platform.ide -data /home/arlind/git/DICE_plugin -dev file:/home/arlind/workspace/.metadata/.plugins/org.eclipse.pde.core/Eclipse Application/dev.properties -os linux -ws gtk -arch x86 -consoleLog
+
+!ENTRY org.eclipse.oomph.setup.ui 2 0 2017-02-21 14:44:43.716
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.performStartup(SetupUIPlugin.java:443)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2017-02-21 14:54:51.772 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.platform.ide
+Command-line arguments:  -product org.eclipse.platform.ide -data /home/arlind/git/DICE_plugin -dev file:/home/arlind/workspace/.metadata/.plugins/org.eclipse.pde.core/Eclipse Application/dev.properties -os linux -ws gtk -arch x86 -consoleLog
+
+!ENTRY org.eclipse.oomph.setup.ui 2 0 2017-02-21 14:55:02.125
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.performStartup(SetupUIPlugin.java:443)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2017-02-21 14:57:01.040 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.platform.ide
+Command-line arguments:  -product org.eclipse.platform.ide -data /home/arlind/git/DICE_plugin -dev file:/home/arlind/workspace/.metadata/.plugins/org.eclipse.pde.core/Eclipse Application/dev.properties -os linux -ws gtk -arch x86 -consoleLog
+
+!ENTRY org.eclipse.oomph.setup.ui 2 0 2017-02-21 14:57:11.461
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.performStartup(SetupUIPlugin.java:443)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2017-02-21 15:29:51.642 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.platform.ide
+Command-line arguments:  -product org.eclipse.platform.ide -data /home/arlind/git/DICE_plugin -dev file:/home/arlind/workspace/.metadata/.plugins/org.eclipse.pde.core/Eclipse Application/dev.properties -os linux -ws gtk -arch x86 -consoleLog
+
+!ENTRY org.eclipse.oomph.setup.ui 2 0 2017-02-21 15:30:14.480
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.performStartup(SetupUIPlugin.java:443)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2017-02-21 15:36:58.616 -----------------------------------------------
+eclipse.buildId=4.6.2.M20161124-1400
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.platform.ide
+Command-line arguments:  -product org.eclipse.platform.ide -data /home/arlind/git/DICE_plugin -dev file:/home/arlind/workspace/.metadata/.plugins/org.eclipse.pde.core/Eclipse Application/dev.properties -os linux -ws gtk -arch x86 -consoleLog
+
+!ENTRY org.eclipse.oomph.setup.ui 2 0 2017-02-21 15:37:08.579
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.performStartup(SetupUIPlugin.java:443)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin.access$5(SetupUIPlugin.java:414)
+	at org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1.run(SetupUIPlugin.java:253)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
