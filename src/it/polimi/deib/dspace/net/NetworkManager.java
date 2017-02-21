@@ -183,10 +183,14 @@ public class NetworkManager {
 			}else{
 
 				Writer output;
-				output = new BufferedWriter(new FileWriter("results",true));  //clears file every time
+				output = new BufferedWriter(new FileWriter("results",true)); 
 				output.append(Configuration.getCurrent().getID());
-				output.append(link);
 				output.close();
+				Writer out;
+				out = new BufferedWriter(new FileWriter("results",true)); 
+				out.append(link);
+				out.close();
+				
 			}
 			
 		} catch (ParseException | IOException e) {

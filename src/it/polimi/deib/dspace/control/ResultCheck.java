@@ -8,6 +8,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -83,14 +85,14 @@ public class ResultCheck extends TimerTask{
 				String fPath=this.downloadFile(urls.get(i));
 				 
 				if(!fPath.equals("")){
-					  
+					  this.removeLine(urls.get(i));
 					  JOptionPane.showMessageDialog(null, "Results availble", "InfoBox: " , JOptionPane.INFORMATION_MESSAGE);
 					  
 					  JSonReader j=new JSonReader(fPath);
-			        /*  j.createMap(this.fileNames.get(i));
+			          j.createMap(this.fileNames.get(i));
 			          j.read();
-			          j.write();*/
-			        
+			          j.write();
+			       
 				}
 			} catch (IOException e) {
 				
@@ -147,34 +149,58 @@ public class ResultCheck extends TimerTask{
 	        httpConn.disconnect();
 	        return toReturn;
 	}
-	private boolean checkSolutionExists(String urlString){
-		boolean toReturn;
-		URL url=null;
+	
+	private void removeLine(String url){
+		BufferedReader br=null;
+		int urlPos=-1;
 		try {
-			url = new URL(urlString);
-		} catch (MalformedURLException e1) {
+			br = new BufferedReader(new FileReader(filePath));
+		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			e.printStackTrace();
 		}
-	        HttpURLConnection httpConn=null;
-			try {
-				httpConn = (HttpURLConnection) url.openConnection();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-	        int responseCode;
-			try {
-				responseCode = httpConn.getResponseCode();
+		try {
+		    StringBuilder sb = new StringBuilder();
+		    String line = br.readLine();
+
+		    while (line != null) {
+		        sb.append(line+"\n");
+		        line = br.readLine();
+		    }
+		    String everything = sb.toString();
+		    String[] st=everything.split("\n");
+		    for(int i=0;i<st.length;i++){
+		    	if(st[i].equals(url)){
+		    		urlPos=i/2;
+		    		break;
+		    	}
+		    }
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+		    try {
+				br.close();
 			} catch (IOException e) {
-				return false;
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-	        if(responseCode == HttpURLConnection.HTTP_OK){
-	        	return true;
-	        }else{
-	        	return false;
-	        }
-	 
+		}
+		 PrintWriter writer;
+		try {
+			writer = new PrintWriter("results", "UTF-8");
+			 for(int i=0;i<this.urls.size();i++){
+				 if(i==urlPos)
+					 continue;
+				 writer.println(this.fileNames.get(i));
+				 writer.println(this.urls.get(i));
+				 writer.close();
+			 }
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 }
