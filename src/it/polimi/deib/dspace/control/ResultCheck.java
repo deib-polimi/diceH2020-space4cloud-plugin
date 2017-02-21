@@ -2,6 +2,7 @@ package it.polimi.deib.dspace.control;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -15,9 +16,10 @@ import java.util.List;
 import java.util.TimerTask;
 
 import javax.swing.JOptionPane;
-
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 public class ResultCheck extends TimerTask{
-	private final int BUFFER_SIZE = 4096;
+	private static final int BUFFER_SIZE = 4096;
 	//file path that contains all the links to go check for solution
 	String filePath;
 	List<String> urls;
@@ -70,9 +72,12 @@ public class ResultCheck extends TimerTask{
 		for(String s:this.urls){
 			try {
 				String fPath=this.downloadFile(s);
+				 
 				if(!fPath.equals("")){
+					  
 					  JOptionPane.showMessageDialog(null, "Results availble", "InfoBox: " , JOptionPane.INFORMATION_MESSAGE);
-			          JSonReader j=new JSonReader(fPath);
+					  
+					  JSonReader j=new JSonReader(fPath);
 			          //TODO add string here
 			          j.createMap("Add String here");
 			          j.read();
@@ -86,7 +91,7 @@ public class ResultCheck extends TimerTask{
 	}
 	
 	
-	private String downloadFile(String urlString) throws IOException{
+	public static String downloadFile(String urlString) throws IOException{
 		String toReturn;
 		URL url = new URL(urlString);
 	        HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
@@ -162,6 +167,62 @@ public class ResultCheck extends TimerTask{
 	        }
 	 
 	}
+	
+	
+	 /**
+     * Unzip it
+     * @param zipFile input zip file
+     * @param output zip file output folder
+     */
+    public static void unZipIt(String zipFile, String outputFolder){
+
+     byte[] buffer = new byte[1024];
+
+     try{
+
+    	//create output directory is not exists
+    	File folder = new File(outputFolder);
+    	if(!folder.exists()){
+    		folder.mkdir();
+    	}
+
+    	//get the zip file content
+    	ZipInputStream zis =
+    		new ZipInputStream(new FileInputStream(zipFile));
+    	//get the zipped file list entry
+    	ZipEntry ze = zis.getNextEntry();
+
+    	while(ze!=null){
+
+    	   String fileName = ze.getName();
+           File newFile = new File(outputFolder + File.separator + fileName);
+
+           System.out.println("file unzip : "+ newFile.getAbsoluteFile());
+
+            //create all non exists folders
+            //else you will hit FileNotFoundException for compressed folder
+            new File(newFile.getParent()).mkdirs();
+
+            FileOutputStream fos = new FileOutputStream(newFile);
+
+            int len;
+            while ((len = zis.read(buffer)) > 0) {
+       		fos.write(buffer, 0, len);
+            }
+
+            fos.close();
+            ze = zis.getNextEntry();
+    	}
+
+        zis.closeEntry();
+    	zis.close();
+
+    	System.out.println("Done");
+
+    }catch(IOException ex){
+       ex.printStackTrace();
+    }
+   }
 	
 
 }
