@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.swing.JFileChooser;
-import javax.swing.JPanel;
+import javax.swing.JOptionPane;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -35,6 +35,8 @@ public class ConfigurationDialog extends Dialog {
 	private int timeToWait;
 	private final String filePath="ConfigFile.txt";
 	private Button selSave;
+	private int loadwaitTime;
+	private String loadServer;
 	
 	public ConfigurationDialog(Shell parent) {
 		super(parent);
@@ -56,19 +58,25 @@ public class ConfigurationDialog extends Dialog {
 			@Override
 			public void modifyText(ModifyEvent arg0) {
 				server=serverId.getText();
-				changed=true;
 			}
         });
 		Label l2=new Label(shell,SWT.FILL);
-		l2.setText("Set server address:");
-		timeToCheck=new Text(shell,SWT.NONE);
+		l2.setText("Set time to wait before searching for solutions:");
+		timeToCheck=new Text(shell,SWT.BORDER);
 		timeToCheck.setText(""+this.timeToWait);
+		Label l8=new Label(shell,SWT.FILL);
+		l8.setText("Error: Not a Valid Number");
+		l8.setVisible(false);
 		timeToCheck.addModifyListener(new ModifyListener(){
 
 			@Override
 			public void modifyText(ModifyEvent arg0) {
+				try{
 				timeToWait=Integer.parseInt(timeToCheck.getText());
-				changed=true;
+				l8.setVisible(false);
+				}catch(NumberFormatException e){
+					l8.setVisible(true);
+				}
 			}
         });
 		this.selSave = new Button(shell, SWT.PUSH);
@@ -106,6 +114,7 @@ public class ConfigurationDialog extends Dialog {
 		save.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
             save();
+      	 	
             shell.close();
              }
 		});
@@ -116,20 +125,24 @@ public class ConfigurationDialog extends Dialog {
 	
 	public void load() {
 		String defaultId="http://specclient1.dei.polimi.it:8018/";
+		int defaultTime=5;
 		File f = new File(filePath);
 		System.out.println(f.getAbsolutePath());
 		if(!f.exists()) { 
 			try{
 			    PrintWriter writer = new PrintWriter(filePath, "UTF-8");
 			    writer.println(defaultId);
+			    writer.println(Integer.toString(defaultTime));
 			    writer.close();
 			} catch (IOException e) {
 			   // do something
 			}
 			this.server=defaultId;
+			this.loadServer=defaultId;
+			this.loadwaitTime=defaultTime;
+			this.timeToWait=defaultTime;
 		}else{
 			BufferedReader br=null;
-			System.out.println("here");
 			try {
 				br = new BufferedReader(new FileReader(filePath));
 			} catch (FileNotFoundException e) {
@@ -147,7 +160,9 @@ public class ConfigurationDialog extends Dialog {
 			    String everything = sb.toString();
 			    String[] sp=everything.split("\n");
 			    this.server=sp[0];
+			    this.loadServer=server;
 			    this.timeToWait=Integer.parseInt(sp[1]);
+			    this.loadwaitTime=timeToWait;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -164,10 +179,11 @@ public class ConfigurationDialog extends Dialog {
 	}
 	
 	private void save(){
+		setChanged();
 		if(!changed){
 			return;
 		}
-		System.out.println(server);
+		 JOptionPane.showMessageDialog(null, "You will have to restart eclipse for the changes to take place", "InfoBox: " , JOptionPane.INFORMATION_MESSAGE);
 		try{
 		    PrintWriter writer = new PrintWriter(filePath, "UTF-8");
 		    writer.println(this.server);
@@ -178,7 +194,13 @@ public class ConfigurationDialog extends Dialog {
 		   // do something
 		}
 	}
-	
+	private void setChanged(){
+		if(this.loadwaitTime!=this.timeToWait||!this.loadServer.equals(this.server)){
+			this.changed=true;
+		}else{
+		this.changed=false;
+		}
+	}
 	
 	
 }

@@ -37,6 +37,7 @@ public class ResultCheck extends TimerTask{
 		File f = new File("results");
 		if(f.exists()){
 		urls.clear();
+		fileNames.clear();
 		load();
 		this.checkSolExcistence();
 		}
@@ -83,16 +84,15 @@ public class ResultCheck extends TimerTask{
 		for(int i=0;i<this.urls.size();i++){
 			try {
 				String fPath=this.downloadFile(urls.get(i));
-				 
 				if(!fPath.equals("")){
-					  this.removeLine(urls.get(i));
 					  JOptionPane.showMessageDialog(null, "Results availble", "InfoBox: " , JOptionPane.INFORMATION_MESSAGE);
 					  
 					  JSonReader j=new JSonReader(fPath);
 			          j.createMap(this.fileNames.get(i));
 			          j.read();
 			          j.write();
-			       
+			    	  this.removeLine(urls.get(i));
+						   
 				}
 			} catch (IOException e) {
 				
@@ -127,7 +127,6 @@ public class ResultCheck extends TimerTask{
 	 
 	            // opens input stream from the HTTP connection
 	            InputStream inputStream = httpConn.getInputStream();
-	            //Configuration.getCurrent().getSavingDir() + File.separator;
 	            String saveFilePath =  fileName;
 	             
 	            // opens an output stream to save into file

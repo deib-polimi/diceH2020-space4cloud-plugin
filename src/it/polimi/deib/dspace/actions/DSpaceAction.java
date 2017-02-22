@@ -44,6 +44,7 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 	public void run(IAction action) {
 		System.out.println("Hola "+action.getId());
 		if(action.getId().endsWith("Start")){
+			Configuration.getCurrent().reset();
 			WizardDialog dialog = new WizardDialog(null, new DSpaceWizard());
 			dialog.open();
 			System.out.println("Starting");
@@ -58,7 +59,6 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 //			DICEWrap.getWrapper().sendModel();
 //			FileManager.getInstance().generateInputJson();
 		}else{
-			System.out.println("Set up options");
 			ConfigurationDialog con=new ConfigurationDialog(new Shell());
 			con.load();
 			con.setView();
@@ -91,50 +91,6 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 	 */
 	public void init(IWorkbenchWindow window) {
 	}
-	private void loadConfiguration(){
-		String filePath="configFile/ConfigFile.txt";
-		String defaultId="http://specclient1.dei.polimi.it:8018/";
-		File f = new File(filePath);
-		if(!(f.exists() && !f.isDirectory())) { 
-			try{
-			    PrintWriter writer = new PrintWriter(filePath, "UTF-8");
-			    Configuration.getCurrent().setServerID(defaultId);
-			    writer.println(defaultId);
-			    writer.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}else{
-			BufferedReader br=null;
-			try {
-				br = new BufferedReader(new FileReader(filePath));
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			try {
-			    StringBuilder sb = new StringBuilder();
-			    String line = br.readLine();
-
-			    while (line != null) {
-			        sb.append(line);
-			        sb.append(System.lineSeparator());
-			        line = br.readLine();
-			    }
-			    String everything = sb.toString();
-			    Configuration.getCurrent().setServerID(everything);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} finally {
-			    try {
-					br.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-	}
+	
 	
 }

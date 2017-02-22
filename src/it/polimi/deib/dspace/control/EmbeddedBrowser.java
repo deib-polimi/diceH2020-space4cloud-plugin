@@ -66,10 +66,10 @@ public final class EmbeddedBrowser {
         browser.addLocationListener(new LocationListener(){
 			@Override
 			public void changing(LocationEvent event) {
-				if(event.location.contains("asdkljflak")){
-					
+				if(event.location.equals("http://localhost:8000/")){
+					browser.setUrl(URL);
 				}
-				if(event.location.contains("downloadZipOpt")){
+				if(event.location.contains("download/")){
 		        	JFileChooser j = new JFileChooser();
 		        	j.setDialogTitle("Choose folder to save file");
 		        	j.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -145,11 +145,10 @@ public final class EmbeddedBrowser {
             outputStream.close();
             inputStream.close();
  
-            System.out.println("File downloaded");
             JOptionPane.showMessageDialog(null, "Download Complete", "InfoBox: " , JOptionPane.INFORMATION_MESSAGE);
 
         } else {
-            System.out.println("No file to download. Server replied HTTP code: " + responseCode);
+            
         }
         httpConn.disconnect();
     }

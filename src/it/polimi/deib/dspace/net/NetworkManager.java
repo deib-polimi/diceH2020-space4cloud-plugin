@@ -89,7 +89,8 @@ public class NetworkManager {
 	 * @param scenario The scenario parameter
 	 * @throws UnsupportedEncodingException 
 	 */
-	/*public void sendModel(List<File> files, String scenario) throws UnsupportedEncodingException{
+	/*
+	public void sendModel(List<File> files, String scenario) throws UnsupportedEncodingException{
 		HttpClient httpclient = HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build();
 		HttpResponse response;
 		HttpPost post = new HttpPost(modelUploadEndpoint);
@@ -113,8 +114,8 @@ public class NetworkManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}*/
-	
+	}
+	*/
 	
 	/**
 	 * Sends to the backend the models to be simulated
@@ -126,8 +127,7 @@ public class NetworkManager {
 	public void sendModel(List<File> files, String scenario) throws UnsupportedEncodingException{
 		HttpClient httpclient =HttpClients.createDefault();
 		HttpResponse response;
-		HttpPost post = new HttpPost(this.uploadRest);
-		
+		HttpPost post = new HttpPost(this.uploadRest);	
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();  
 		builder.addPart("scenario",new StringBody(scenario,ContentType.DEFAULT_TEXT));
 		for(File file:files){
@@ -141,11 +141,11 @@ public class NetworkManager {
 	    	response=httpclient.execute(repost);
 	    	String js = EntityUtils.toString(response.getEntity());
 	    	parseJson(js);
-	    	if(response.getStatusLine().getStatusCode() != 302){
+	    	System.out.println("Code : "+response.getStatusLine().getStatusCode());
+	    	if(response.getStatusLine().getStatusCode() != 200){
 				System.err.println("Error: POST not succesfull");
 			}
 			else{
-				//response.close();
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -182,18 +182,20 @@ public class NetworkManager {
 				
 			}else{
 
-				Writer output;
-				output = new BufferedWriter(new FileWriter("results",true)); 
-				output.append(Configuration.getCurrent().getID());
-				output.close();
-				Writer out;
-				out = new BufferedWriter(new FileWriter("results",true)); 
-				out.append(link);
-				out.close();
-				
+				try(FileWriter fw = new FileWriter("results", true);
+					    BufferedWriter bw = new BufferedWriter(fw);
+					    PrintWriter out = new PrintWriter(bw))
+					{
+					    out.println(Configuration.getCurrent().getID());
+					    //more code
+					    out.println(link);
+					    //more code
+					} catch (IOException e) {
+					    //exception handling left as an exercise for the reader
+					}
 			}
 			
-		} catch (ParseException | IOException e) {
+		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
