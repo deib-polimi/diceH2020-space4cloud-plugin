@@ -124,7 +124,7 @@ public class ClassPage extends WizardPage{
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 		Button button = new Button(container, SWT.PUSH);
-		button.setText("Refresh alternatives");
+		button.setText("Refresh vm configurations");
 		button.addSelectionListener(new SelectionAdapter(){
 			public void widgetSelected(SelectionEvent e) {
 				refreshAlternatives();
