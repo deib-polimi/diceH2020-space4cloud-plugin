@@ -121,9 +121,6 @@ public class ClassPage extends WizardPage{
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
-		label_error = new Label(container, SWT.NONE);
-		label_error.setText("Error: Unable to get vm configurations");
-		label_error.setVisible(false);
 		Button button = new Button(container, SWT.PUSH);
 		button.setText("Refresh alternatives");
 		button.addSelectionListener(new SelectionAdapter(){
@@ -131,6 +128,12 @@ public class ClassPage extends WizardPage{
 				refreshAlternatives();
             }
 		});
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		label_error = new Label(container, SWT.NONE);
+		label_error.setText("Error: Unable to get vm configurations from the webservice");
+		label_error.setVisible(false);
 		fileName.setLayoutData(new GridData(SWT.BEGINNING, SWT.END, false, false));	
 
 		browse.addSelectionListener(new SelectionAdapter() {
@@ -178,7 +181,13 @@ public class ClassPage extends WizardPage{
 
 	}
 	private void refreshAlternatives(){
-		l1.setItems(JsonDatabase.getInstance().refreshDbContents());
+		String[] vmConfigs = JsonDatabase.getInstance().refreshDbContents();
+		if(vmConfigs == null){
+			label_error.setVisible(true);
+		}
+		else{
+			l1.setItems(JsonDatabase.getInstance().getVmConfigs());
+		}
 	}
 	
 	public String getDDSMPath(){
