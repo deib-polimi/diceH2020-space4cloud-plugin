@@ -41,7 +41,7 @@ public class ClassPage extends WizardPage{
 		layout.numColumns = 4;
 		
 		Label l = new Label(container, SWT.NONE);
-		l.setText("Choose alternatives");
+		l.setText("Choose a vm configuration");
 		l.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
 		
 		new Label(container, SWT.NONE);
@@ -60,7 +60,9 @@ public class ClassPage extends WizardPage{
 		remove.setText("<<");
 		
 		l2 = new List(container, SWT.BORDER);
-		l2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		GridData gdata = new GridData(SWT.BEGINNING, SWT.FILL, true,true);
+		gdata.widthHint = 300;
+		l2.setLayoutData(gdata);
 		
 		add.addSelectionListener(new SelectionAdapter() {
 	          public void widgetSelected(SelectionEvent e) {
