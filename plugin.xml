@@ -25,7 +25,7 @@
          </action>
          <action
                label="&amp;Open Wizard"
-               icon="icons/sample.gif"
+               icon="icons/simulateIcon.png"
                class="it.polimi.deib.dspace.actions.DSpaceAction"
                tooltip=""
                menubarPath="openWizard/wizardGroup"
@@ -34,7 +34,7 @@
          </action>
          <action
                label="&amp;Show Public Results"
-               icon="icons/sample.gif"
+               icon="icons/resultsIcon.png"
                class="it.polimi.deib.dspace.actions.DSpaceResult"
                tooltip=""
                menubarPath="openWizard/wizardGroup"
