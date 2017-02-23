@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:DICERProfile="http:///schemas/DICERProfile/_vnnkAPggEea76vYzSt-GIA/84" xmlns:DICERProfile.Library="http:///DICERProfile/Library.ecore" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xsi:schemaLocation="http:///schemas/DICERProfile/_vnnkAPggEea76vYzSt-GIA/84 model.profile.uml#_vnoLEPggEea76vYzSt-GIA http:///DICERProfile/Library.ecore model.profile.uml#_vnoLYvggEea76vYzSt-GIA">
+  <uml:Model xmi:id="_I-hIkOvxEeaKv6SJY-IkfA" name="depl">
+    <packagedElement xmi:type="uml:Device" xmi:id="_Jp_ugOvxEeaKv6SJY-IkfA" name="Cluster1">
+      <nestedNode xmi:type="uml:ExecutionEnvironment" xmi:id="_orH3cPGHEea76vYzSt-GIA" name="storm1"/>
+    </packagedElement>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="_df_V8O99Eeahp-5ka2ckiw">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_w0XrAPggEea76vYzSt-GIA" source="PapyrusVersion">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_w0XrAfggEea76vYzSt-GIA" key="Version" value="0.0.85"/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_w0XrAvggEea76vYzSt-GIA" key="Comment" value=""/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_w0XrA_ggEea76vYzSt-GIA" key="Copyright" value=""/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_w0XrBPggEea76vYzSt-GIA" key="Date" value="2017-02-21"/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_w0XrBfggEea76vYzSt-GIA" key="Author" value=""/>
+      </eAnnotations>
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_df_9AO99Eeahp-5ka2ckiw" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="model.profile.uml#_vnoLEPggEea76vYzSt-GIA"/>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="model.profile.uml#_FD47gOvwEeaXf_D_Uk9xRg"/>
+    </profileApplication>
+  </uml:Model>
+  <DICERProfile:VMsCluster xmi:id="_7g-dUO99Eeahp-5ka2ckiw" base_Node="_Jp_ugOvxEeaKv6SJY-IkfA" base_Device="_Jp_ugOvxEeaKv6SJY-IkfA" genericSize="Large" vmInstance="3">
+    <provider xmi:type="DICERProfile.Library:Provider" xmi:id="_KowVsPeKEea76vYzSt-GIA" type="openstack"/>
+  </DICERProfile:VMsCluster>
+  <DICERProfile:StormCluster xmi:id="_E0IeoPGKEea76vYzSt-GIA" base_Node="_orH3cPGHEea76vYzSt-GIA" protected="true" base_ExecutionEnvironment="_orH3cPGHEea76vYzSt-GIA" queueSize="0"/>
+</xmi:XMI>
