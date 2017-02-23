@@ -45,7 +45,7 @@ public class FileManager {
 	private String placeHolder = "@@CORES@@";
 	
 	private FileManager(){
-		path = "/home/arlind/eclipse/java-neon2/eclipse/"; // to be replaced by fetching this info in tools
+		path = "/home/kom/eclipse/java-neon/eclipse/"; // to be replaced by fetching this info in tools
 	}
 	
 	public static FileManager getInstance(){
@@ -186,30 +186,37 @@ public class FileManager {
 		data.setMapClassParameters(new ClassParametersMap(classdesc));
 		
 		if(!conf.getIsPrivate()){
-			//Set PublicCloudParameters
-			classdesc = new HashMap<String,Map>();
-			for(ClassDesc c : conf.getClasses()){
-				Map alternatives = new HashMap<String,Map>();
-				for (String alt: c.getAltDtsm().keySet()){
-					String split[] = alt.split("-");
-					
-					PublicCloudParameters params = PublicCloudParametersGenerator.build(2);
-					params.setR(conf.getR());
-					params.setEta(conf.getSpsr());
-					
-					Map size = new HashMap<String, Map>();
-					size.put(split[1], params);
-					
-					alternatives.put(split[0], size);
+			if(conf.getHasLtc()){
+				//Set PublicCloudParameters
+				classdesc = new HashMap<String,Map>();
+				for(ClassDesc c : conf.getClasses()){
+					Map alternatives = new HashMap<String,Map>();
+					for (String alt: c.getAltDtsm().keySet()){
+						String split[] = alt.split("-");
+						
+						PublicCloudParameters params = PublicCloudParametersGenerator.build(2);
+						params.setR(conf.getR());
+						params.setEta(conf.getSpsr());
+						
+						Map size = new HashMap<String, Map>();
+						size.put(split[1], params);
+						
+						alternatives.put(split[0], size);
+					}
+					classdesc.put(String.valueOf(c.getId()), alternatives);
 				}
-				classdesc.put(String.valueOf(c.getId()), alternatives);
+				
+				PublicCloudParametersMap pub = PublicCloudParametersMapGenerator.build();
+				pub.setMapPublicCloudParameters(classdesc);
+				
+				data.setMapPublicCloudParameters(pub);
+				data.setPrivateCloudParameters(null);
+			}
+			else{
+				data.setMapPublicCloudParameters(null);
+				data.setPrivateCloudParameters(null);
 			}
 			
-			PublicCloudParametersMap pub = PublicCloudParametersMapGenerator.build();
-			pub.setMapPublicCloudParameters(classdesc);
-			
-			data.setMapPublicCloudParameters(pub);
-			data.setPrivateCloudParameters(null);
 		}
 		else{
 			//TODO: private case

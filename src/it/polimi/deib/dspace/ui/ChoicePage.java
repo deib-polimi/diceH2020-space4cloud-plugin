@@ -160,7 +160,7 @@ public class ChoicePage extends WizardPage{
         layoutRow_4.pack = false;
         rTextComposite.setLayout(layoutRow_4);
         Label rTextLabel = new Label(rTextComposite, SWT.NONE);
-        rTextLabel.setText("R");
+        rTextLabel.setText("# reserved");
         this.rTextField = new Text(rTextComposite, SWT.BORDER);
         this.rTextField.setEditable(true);
   
@@ -171,7 +171,7 @@ public class ChoicePage extends WizardPage{
         layoutRow_3.pack = false;
         tTextComposite.setLayout(layoutRow_3);
         Label tTextLabel = new Label(tTextComposite, SWT.NONE);
-        tTextLabel.setText("Spsr");
+        tTextLabel.setText("Spot ratio");
         this.SpsrTextField = new Text(tTextComposite,SWT.BORDER);
         this.SpsrTextField.setEditable(true);
         this.existingLTC = new Button(ltcComposite,SWT.RADIO);

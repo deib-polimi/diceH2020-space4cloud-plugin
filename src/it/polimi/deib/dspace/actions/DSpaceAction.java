@@ -1,13 +1,6 @@
 package it.polimi.deib.dspace.actions;
 
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -16,7 +9,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 import it.polimi.deib.dspace.control.Configuration;
-import it.polimi.deib.dspace.control.DICEWrap;
+import it.polimi.deib.dspace.control.FileManager;
 import it.polimi.deib.dspace.ui.ConfigurationDialog;
 import it.polimi.deib.dspace.ui.DSpaceWizard;
 
@@ -55,9 +48,9 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 //				// TODO Auto-generated catch block
 //				e.printStackTrace();
 //			}
-			DICEWrap.getWrapper().start();
+//			DICEWrap.getWrapper().start();
 //			DICEWrap.getWrapper().sendModel();
-//			FileManager.getInstance().generateInputJson();
+			FileManager.getInstance().generateInputJson();
 		}else{
 			ConfigurationDialog con=new ConfigurationDialog(new Shell());
 			con.load();
