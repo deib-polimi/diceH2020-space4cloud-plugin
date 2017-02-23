@@ -1,8 +1,9 @@
 package it.polimi.deib.dspace.control;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
 import org.eclipse.emf.common.util.BasicEList;
@@ -15,7 +16,6 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.uml2.uml.Device;
 import org.eclipse.uml2.uml.FinalNode;
 import org.eclipse.uml2.uml.Model;
-import org.eclipse.uml2.uml.Transition;
 
 import es.unizar.disco.pnml.m2m.builder.HadoopActivityDiagram2PnmlResourceBuilder;
 import es.unizar.disco.pnml.m2m.builder.StormActivityDiagram2PnmlResourceBuilder;
@@ -23,18 +23,15 @@ import es.unizar.disco.pnml.m2t.templates.gspn.GenerateGspn;
 import es.unizar.disco.simulation.models.builders.IAnalyzableModelBuilder.ModelResult;
 import es.unizar.disco.simulation.models.datatypes.PrimitiveVariableAssignment;
 import es.unizar.disco.simulation.models.traces.Trace;
+import fr.lip6.move.pnml.ptnet.PetriNet;
 import fr.lip6.move.pnml.ptnet.PetriNetDoc;
 import fr.lip6.move.pnml.ptnet.Place;
-import it.polimi.deib.dspace.net.NetworkManager;
+import fr.lip6.move.pnml.ptnet.Transition;
 
 public class DICEWrap {
 	private static DICEWrap diceWrap;
 	private ModelResult result;
 	private Configuration conf;
-//	private String fileNames[] = {"1_h8_D500000.0MapJ1Cineca5xlarge.txt","1_h8_D500000.0RSJ1Cineca5xlarge.txt",
-//	"1_h8_D500000.0.json"}; //to be replaced with conf content once web serice is ready to process it
-	private String fileNames[] = {"aaa0MapJ1Cineca5xlarge.txt","aaa0RSJ1Cineca5xlarge.txt",
-	"aaa0.json"}; //to be replaced with conf content once web service is ready to process it
 	private String scenario;
 	private String initialMarking;
 	
@@ -64,7 +61,7 @@ public class DICEWrap {
 						try {
 							buildStormAnalyzableModel(c.getAltDtsm().get(alt));
 							genGSPN(); 
-							FileManager.getInstance().editFiles(c.getId(),alt,extractId());
+							FileManager.getInstance().editFiles(c.getId(), alt, extractStormId());
 						} catch (IOException e) {
 							System.out.println(e.getMessage());
 						}
@@ -73,28 +70,29 @@ public class DICEWrap {
 				break;
 			case "Hadoop":
 				for (ClassDesc c : conf.getClasses()){
-					try {
-						buildHadoopAnalyzableModel(c.getDdsmPath());
-						extractHadoopInitialMarking();
-						genGSPN();
-					} catch (Exception e) {
-						System.err.println("HADOOP EXCEPTION");
-						System.out.println(e.getMessage());
-					}
+					for(String alt : c.getAltDtsm().keySet())
+						try {
+							buildHadoopAnalyzableModel(c.getAltDtsm().get(alt));
+							genGSPN();
+							FileManager.getInstance().editFiles(c.getId(), "", extractHadoopId());
+						} catch (Exception e) {
+							System.err.println("HADOOP EXCEPTION");
+							System.out.println(e.getMessage());
+						}
 				}
 				break;
 			default:
 				System.err.println("Unknown technology: "+conf.getTechnology());
 		}
 		
-		FileManager.getInstance().generateInputJson();
-		FileManager.getInstance().generateOutputJson();
-		try {
-			NetworkManager.getInstance().sendModel(FileManager.getInstance().selectFiles(), scenario);
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		FileManager.getInstance().generateInputJson();
+//		FileManager.getInstance().generateOutputJson();
+//		try {
+//			NetworkManager.getInstance().sendModel(FileManager.getInstance().selectFiles(), scenario);
+//		} catch (UnsupportedEncodingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	
 	public void extractStormInitialMarking(){
@@ -106,7 +104,7 @@ public class DICEWrap {
 		}
 	}
 	
-	private String extractId(){
+	private String extractStormId(){
 		System.out.println("Extracting");
 		for(Trace i: result.getTraceSet().getTraces()){
 			if (i.getFromDomainElement() instanceof Device  && i.getToAnalyzableElement() instanceof Place){
@@ -117,6 +115,17 @@ public class DICEWrap {
 		return null;
 	}
 	
+//	private String extractHadoopId(){
+//		System.out.println("Extracting");
+//		for(Trace i: result.getTraceSet().getTraces()){
+//			if (i.getFromDomainElement() instanceof Device  && i.getToAnalyzableElement() instanceof Place){
+//				System.out.println("Found "+ ((Place)i.getToAnalyzableElement()).getId());
+//				return ((Place)i.getToAnalyzableElement()).getId();
+//			}
+//		}
+//		return null;
+//	}
+	
 	public void buildStormAnalyzableModel(String umlModelPath){
 		StormActivityDiagram2PnmlResourceBuilder builder = new StormActivityDiagram2PnmlResourceBuilder();
 		
@@ -126,8 +135,8 @@ public class DICEWrap {
 		
 		System.out.println("Model built for file: " + umlModelPath);
 		
-		/*PetriNet pnd = ((PetriNetDoc)result.getModel().get(0)).getNets().get(0);
-		File aFile = new File("small.pnml"); 
+		PetriNet pnd = ((PetriNetDoc)result.getModel().get(0)).getNets().get(0);
+		File aFile = new File("storm.pnml"); 
 	    FileOutputStream outputFile = null; 
 	    try {
 	      outputFile = new FileOutputStream(aFile, true);
@@ -136,7 +145,7 @@ public class DICEWrap {
 	      e.printStackTrace(System.err);
 	    }
 	    FileChannel outChannel = outputFile.getChannel();
-	    pnd.toPNML(outChannel);*/
+	    pnd.toPNML(outChannel);
 	}
 	
 	public void buildHadoopAnalyzableModel(String umlModelPath){
@@ -145,16 +154,28 @@ public class DICEWrap {
 		ResourceSet set = new ResourceSetImpl();
 		Resource res = set.getResource(URI.createFileURI(umlModelPath), true);
 		result = builder.createAnalyzableModel((Model)res.getContents().get(0), new BasicEList<PrimitiveVariableAssignment>());
+		
+		PetriNet pnd = ((PetriNetDoc)result.getModel().get(0)).getNets().get(0);
+		File aFile = new File("hadoop.pnml"); 
+	    FileOutputStream outputFile = null; 
+	    try {
+	      outputFile = new FileOutputStream(aFile, true);
+	      System.out.println("File stream created successfully.");
+	    } catch (Exception e) {
+	      e.printStackTrace(System.err);
+	    }
+	    FileChannel outChannel = outputFile.getChannel();
+	    pnd.toPNML(outChannel);
 	}
 	
 	//TODO: set all these methods to private
-	public void extractHadoopInitialMarking(){
+	public String extractHadoopId(){
 		for(Trace i: result.getTraceSet().getTraces()){
 			if (i.getFromDomainElement() instanceof FinalNode && i.getToAnalyzableElement() instanceof Transition){
-				String a = ((Place)i.getToAnalyzableElement()).getId();
-				System.err.println(a + " . AAAAAA.\n");
+				return ((Transition)i.getToAnalyzableElement()).getId();
 			}
 		}
+		return null;
 	} 
 	
 	public void genGSPN() throws IOException{

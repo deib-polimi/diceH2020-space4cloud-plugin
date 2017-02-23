@@ -13,8 +13,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONObject;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -286,5 +293,90 @@ public class FileManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public Map<String, String> parseXmlFile(){
+		Map<String, String> res = new HashMap<String, String>();
+		SAXParserFactory factory = SAXParserFactory.newInstance();
+		
+		
+		try {
+			SAXParser saxParser = factory.newSAXParser();
+			DefaultHandler handler = new DefaultHandler() {
+
+				boolean ntasks = false;
+				boolean hostdemand = false;
+				boolean population = false;
+				
+				public void startElement(String uri, String localName,String qName,
+			                Attributes attributes) throws SAXException {
+					//System.out.println("Start Element :" + qName);
+
+					if (qName.equalsIgnoreCase("ntasks")) {
+						ntasks = true;
+					}
+					if(qName.equalsIgnoreCase("hadooppopulation")){
+						population = true;
+					}
+					if(qName.equalsIgnoreCase("hostdemand")){
+						hostdemand = true;
+					}
+				}
+
+				public void endElement(String uri, String localName,
+					String qName) throws SAXException {
+					//System.out.println("End Element :" + qName);
+
+				}
+
+				public void characters(char ch[], int start, int length) throws SAXException {
+					String sp[];
+					
+					if (ntasks) {
+						res.put("nTasks", new String(ch, start, length));
+//						String s = new String(ch, start, length);
+//						if (s.contains("hadoopPopulation")){
+//							sp = s.split(";");System.err.println("hadoopPopulation = " + 
+//									sp[0].substring(sp[0].indexOf('[') + 1, sp[0].indexOf(']') - 1));System.err.println("hadoopPopulation = " + sp[0].charAt(s.indexOf('=') + 2));
+//						}
+//						if (s.contains("nTasks")){
+//							sp = s.split(";");
+//							System.err.println("nTasks = " + 
+//									sp[0].substring(sp[0].indexOf('[') + 1, sp[0].indexOf(']')));
+//						}
+						ntasks = false;
+					}
+					if(population){
+						res.put("hadoopPopulation", new String(ch, start, length));
+						population = false;
+					}
+					if(hostdemand){
+						res.put("hostDemand", new String(ch, start, length));
+						hostdemand = false;
+					}
+
+				}
+
+			     };
+			     
+			     saxParser.parse("/home/kom/it.polimi.deib.dspace/input_models/hadoop/model_1_class.uml", handler);
+
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		for(String i : res.keySet()){
+			System.err.println(i + "\t" + res.get(i));
+		}
+		
+		return res;
+		
 	}
 }

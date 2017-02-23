@@ -48,8 +48,7 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 			WizardDialog dialog = new WizardDialog(null, new DSpaceWizard());
 			dialog.open();
 			System.out.println("Starting");
-//			DICEWrap.getWrapper().buildHadoopAnalyzableModel("/home/kom/Wikistats-Models/dtsm-hadoopmr/model_1_class.uml");
-//			DICEWrap.getWrapper().extractHadoopInitialMarking();
+//			FileManager.getInstance().parseXmlFile();
 //			try {
 //				DICEWrap.getWrapper().genGSPN();
 //			} catch (IOException e) {
