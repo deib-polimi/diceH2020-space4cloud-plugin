@@ -43,7 +43,7 @@
          </action>
          <action
                label="&amp;Show Private Results"
-               icon="icons/sample.gif"
+               icon="icons/privateResults_icon.png"
                class="it.polimi.deib.dspace.actions.DSpacePrivateResult"
                tooltip=""
                menubarPath="openWizard/wizardGroup"
