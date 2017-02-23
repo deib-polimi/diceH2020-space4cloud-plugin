@@ -24,15 +24,6 @@
                id="it.polimi.deib.wizard.actions.Preferencies">
          </action>
          <action
-               label="&amp;Open Wizard"
-               icon="icons/simulateIcon.png"
-               class="it.polimi.deib.dspace.actions.DSpaceAction"
-               tooltip=""
-               menubarPath="openWizard/wizardGroup"
-               toolbarPath="Normal/wizardGroup"
-               id="it.polimi.deib.wizard.actions.Start">
-         </action>
-         <action
                label="&amp;Show Public Results"
                icon="icons/resultsIcon.png"
                class="it.polimi.deib.dspace.actions.DSpaceResult"
@@ -49,6 +40,15 @@
                menubarPath="openWizard/wizardGroup"
                toolbarPath="Normal/wizardGroup"
                id="it.polimi.deib.wizard.actions.PrivateResult">
+         </action>
+         <action
+               label="&amp;Open Wizard"
+               icon="icons/simulateIcon.png"
+               class="it.polimi.deib.dspace.actions.DSpaceAction"
+               tooltip=""
+               menubarPath="openWizard/wizardGroup"
+               toolbarPath="Normal/wizardGroup"
+               id="it.polimi.deib.wizard.actions.Start">
          </action>
          
       </actionSet>
