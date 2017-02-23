@@ -48,7 +48,7 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 //				// TODO Auto-generated catch block
 //				e.printStackTrace();
 //			}
-//			DICEWrap.getWrapper().start();
+			DICEWrap.getWrapper().start();
 //			DICEWrap.getWrapper().sendModel();
 			FileManager.getInstance().generateInputJson();
 		}else{

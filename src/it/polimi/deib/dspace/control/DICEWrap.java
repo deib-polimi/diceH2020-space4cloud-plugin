@@ -86,14 +86,14 @@ public class DICEWrap {
 				System.err.println("Unknown technology: "+conf.getTechnology());
 		}
 		
-//		FileManager.getInstance().generateInputJson();
-//		FileManager.getInstance().generateOutputJson();
-//		try {
-//			NetworkManager.getInstance().sendModel(FileManager.getInstance().selectFiles(), scenario);
-//		} catch (UnsupportedEncodingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		FileManager.getInstance().generateInputJson();
+		FileManager.getInstance().generateOutputJson();
+		try {
+			NetworkManager.getInstance().sendModel(FileManager.getInstance().selectFiles(), scenario);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void extractStormInitialMarking(){
