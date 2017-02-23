@@ -13,6 +13,7 @@ public class DSpaceWizard extends Wizard{
 	private ChoicePage choice;
 	private ClassPage classp;
 	private FinalPage fpage;
+	private HadoopDataPage hPage;
 	private SelectFolderPage folPage;
 	private int n = 0;
 	private int classes;
@@ -37,8 +38,10 @@ public class DSpaceWizard extends Wizard{
 		classp = new ClassPage("Class page", "Select page parameters and alternatives");
 		fpage = new FinalPage("Goodbye", ".");
 		folPage=new SelectFolderPage("Select folder");
+		hPage=new HadoopDataPage("Set Hadoop parameters");
 		addPage(choice);
 		addPage(folPage);
+		addPage(hPage);
 		addPage(classp);
 		addPage(fpage);
 		
@@ -49,8 +52,8 @@ public class DSpaceWizard extends Wizard{
 		if (currentPage == choice){
 			classes = choice.getClasses();
 			Configuration.getCurrent().setNumClasses(classes);
-			if(Configuration.getCurrent().getIsPrivate()){
-				return folPage;
+			if(Configuration.getCurrent().getTechnology().equals("Hadoop")){
+				return hPage;
 			}else{
 				if (Configuration.getCurrent().getHasLtc()){
 					Configuration.getCurrent().setR(choice.getR());
@@ -61,6 +64,16 @@ public class DSpaceWizard extends Wizard{
 			}
 			
 		}
+		if(currentPage==hPage){
+			Configuration.getCurrent().setHadoopD(hPage.getHadoopD());
+			Configuration.getCurrent().setHlow(hPage.getHlow());
+			Configuration.getCurrent().setHup(hPage.getHup());
+			Configuration.getCurrent().setThinkTime(hPage.getThinkTime());
+			return classp;
+			
+		}
+		
+		
 		
 		if(currentPage == classp){
 			c = new ClassDesc(++n);

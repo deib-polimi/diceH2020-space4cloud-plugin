@@ -3,6 +3,7 @@ package it.polimi.deib.dspace.control;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
@@ -27,6 +28,7 @@ import fr.lip6.move.pnml.ptnet.PetriNet;
 import fr.lip6.move.pnml.ptnet.PetriNetDoc;
 import fr.lip6.move.pnml.ptnet.Place;
 import fr.lip6.move.pnml.ptnet.Transition;
+import it.polimi.deib.dspace.net.NetworkManager;
 
 public class DICEWrap {
 	private static DICEWrap diceWrap;

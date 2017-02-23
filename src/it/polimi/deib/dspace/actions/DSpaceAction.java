@@ -9,6 +9,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 import it.polimi.deib.dspace.control.Configuration;
+import it.polimi.deib.dspace.control.DICEWrap;
 import it.polimi.deib.dspace.control.FileManager;
 import it.polimi.deib.dspace.ui.ConfigurationDialog;
 import it.polimi.deib.dspace.ui.DSpaceWizard;
