@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.BasicMonitor;
@@ -30,6 +31,11 @@ import fr.lip6.move.pnml.ptnet.Place;
 import fr.lip6.move.pnml.ptnet.Transition;
 import it.polimi.deib.dspace.net.NetworkManager;
 
+/**
+ * Manage models transformations and analysis using DICE-plugin APIs and internal methods.
+ * @author kom
+ *
+ */
 public class DICEWrap {
 	private static DICEWrap diceWrap;
 	private ModelResult result;
@@ -77,11 +83,22 @@ public class DICEWrap {
 						try {
 							buildHadoopAnalyzableModel(c.getAltDtsm().get(alt));
 							genGSPN();
-							FileManager.getInstance().editFiles(c.getId(), "", extractHadoopId());
+							FileManager.getInstance().editFiles(c.getId(), alt, extractHadoopId());
+							extractParametersFromHadoopModel(c, alt);
 						} catch (Exception e) {
 							System.err.println("HADOOP EXCEPTION");
 							System.out.println(e.getMessage());
 						}
+				}
+				//TODO: just for debug, remove this cycle
+				for(ClassDesc c : conf.getClasses()){
+					System.err.println("Class: " + c.getId());
+					for(String alt : c.getAltDtsmHadoop().keySet()){
+						System.err.println("\t" + alt);
+						for (String a : c.getAltDtsmHadoop().get(alt).keySet()){
+							System.err.println("\t\t" + a + " : " + c.getAltDtsmHadoop().get(alt).get(a));
+						}
+					}
 				}
 				break;
 			default:
@@ -89,15 +106,26 @@ public class DICEWrap {
 		}
 		
 		FileManager.getInstance().generateInputJson();
-		FileManager.getInstance().generateOutputJson();
-		try {
-			NetworkManager.getInstance().sendModel(FileManager.getInstance().selectFiles(), scenario);
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		FileManager.getInstance().generateOutputJson();
+//		try {
+//			NetworkManager.getInstance().sendModel(FileManager.getInstance().selectFiles(), scenario);
+//		} catch (UnsupportedEncodingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	
+	/**
+	 * Extracts parameters from Hadoop model and appends them to the internal class structure
+	 * @param c Current class
+	 * @param alt Current alternative to expand
+	 */
+	private void extractParametersFromHadoopModel(ClassDesc c, String alt) {
+		String srcFile = c.getAltDtsm().get(alt);
+		Map<String, String> par = FileManager.getInstance().parseDOMXmlFile(srcFile);
+		c.expandAltDtsmHadoop(alt, par);
+	}
+
 	public void extractStormInitialMarking(){
 		for(Trace i: result.getTraceSet().getTraces()){
 			if (i.getFromDomainElement() instanceof Device  && i.getToAnalyzableElement() instanceof Place){

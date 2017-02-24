@@ -11,12 +11,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.json.simple.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -28,6 +34,8 @@ import it.polimi.diceH2020.SPACE4Cloud.shared.generators.ClassParametersGenerato
 import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.InstanceDataMultiProviderGenerator;
 import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.JobMLProfileGenerator;
 import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.JobMLProfilesMapGenerator;
+import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.JobProfileGenerator;
+import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.JobProfilesMapGenerator;
 import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.PublicCloudParametersGenerator;
 import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.PublicCloudParametersMapGenerator;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.ClassParameters;
@@ -35,9 +43,11 @@ import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.ClassParame
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.InstanceDataMultiProvider;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.JobMLProfile;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.JobMLProfilesMap;
+import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.JobProfile;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.JobProfilesMap;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.PublicCloudParameters;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.PublicCloudParametersMap;
+
 
 public class FileManager {
 	private static FileManager fm;
@@ -134,43 +144,52 @@ public class FileManager {
 		Configuration conf = Configuration.getCurrent(); //TODO: REMOVE
 		InstanceDataMultiProvider data = InstanceDataMultiProviderGenerator.build();
 		
-		data.setId(conf.getID());
+		data.setId(conf.getID());		
 		
 		//Set MapJobProfile
-		Map classdesc = new HashMap<String,Map>();
+		JobProfilesMap classdesc = JobProfilesMapGenerator.build();
+		
+		Map<String,Map<String, Map<String, JobProfile>>> classMap = new HashMap<String,Map<String, Map<String, JobProfile>>>();
+		
 		for(ClassDesc c : conf.getClasses()){
-			Map alternatives = new HashMap<String,Map>();
+			Map<String,Map<String, JobProfile>> alternative = new HashMap<String, Map<String, JobProfile>>();
 			for (String alt: c.getAltDtsm().keySet()){
-				//createTxtFiles(c,alt);
+				
+				TreeMap<String, Double> profile = new TreeMap<String, Double>();
 				String split[] = alt.split("-");
 				
-				Map profile = new HashMap<>();
-				profile.put("datasize", new Float(148.0));
-				profile.put("mavg", new Float(148.0));
-				profile.put("mmax", new Float(148.0));
-				profile.put("nm", new Float(148.0));
-				profile.put("nr", new Float(148.0));
-				profile.put("ravg", new Float(148.0));
-				profile.put("rmax", new Float(148.0));
-				profile.put("shbytesavg", new Float(148.0));
-				profile.put("shbytesmax", new Float(148.0));
-				profile.put("shtypavg", new Float(148.0));
-				profile.put("shtypmax", new Float(148.0));
+				JobProfile jp;
+				if(conf.getTechnology().equals("Hadoop")){
+					jp = JobProfileGenerator.build(c.getAltDtsmHadoop().get(alt).keySet().size()-1);
+					for(String par : c.getAltDtsmHadoop().get(alt).keySet()){
+						if(!par.equals("file")){
+							profile.put(par, Double.parseDouble(c.getAltDtsmHadoop().get(alt).get(par)));
+						}
+					}
+				}
+				else{
+					jp = JobProfileGenerator.build(3); //TODO: how many parameters do we need?
+					profile.put("datasize", 66.6);
+					profile.put("mavg", 666.6);
+					profile.put("mmax", 666.6);
+				}
 				
-				Map profilemap = new HashMap<String,Map>();
-				profilemap.put("profileMap", profile);
+				jp.setProfileMap(profile);
 				
-				Map size = new HashMap<String, Map>();
-				size.put(split[1], profilemap);
 				
-				alternatives.put(split[0], size);
+				Map<String,JobProfile> profilemap = new HashMap<String,JobProfile>();
+				profilemap.put(split[1], jp);
+				
+				alternative.put(split[0], profilemap);
 			}
-			classdesc.put(String.valueOf(c.getId()), alternatives);
+			classMap.put(String.valueOf(c.getId()), alternative);
+			//classdesc.put(String.valueOf(c.getId()), alternatives);
 		}
-		data.setMapJobProfiles(new JobProfilesMap(classdesc));
+		classdesc.setMapJobProfile(classMap);
+		data.setMapJobProfiles(classdesc);
 		
 		//Set MapClassParameter
-		classdesc = new HashMap<String, ClassParameters>();
+		Map<String, ClassParameters> classdesc1 = new HashMap<String, ClassParameters>();
 		for(ClassDesc c : conf.getClasses()){
 			ClassParameters clpm = ClassParametersGenerator.build(7);
 			clpm.setD(500000.0);
@@ -180,17 +199,17 @@ public class FileManager {
 			clpm.setHup(1);
 			clpm.setM(6.0);
 			clpm.setV(0.0);
-			classdesc.put(String.valueOf(c.getId()), clpm);
+			classdesc1.put(String.valueOf(c.getId()), clpm);
 		}
 		
-		data.setMapClassParameters(new ClassParametersMap(classdesc));
+		data.setMapClassParameters(new ClassParametersMap(classdesc1));
 		
 		if(!conf.getIsPrivate()){
 			if(conf.getHasLtc()){
 				//Set PublicCloudParameters
-				classdesc = new HashMap<String,Map>();
+				Map<String,Map<String,Map<String, PublicCloudParameters>>> classdesc2 = new HashMap<String,Map<String,Map<String, PublicCloudParameters>>>();
 				for(ClassDesc c : conf.getClasses()){
-					Map alternatives = new HashMap<String,Map>();
+					Map<String,Map<String, PublicCloudParameters>> alternatives = new HashMap<String,Map<String, PublicCloudParameters>>();
 					for (String alt: c.getAltDtsm().keySet()){
 						String split[] = alt.split("-");
 						
@@ -198,16 +217,16 @@ public class FileManager {
 						params.setR(conf.getR());
 						params.setEta(conf.getSpsr());
 						
-						Map size = new HashMap<String, Map>();
+						Map<String, PublicCloudParameters> size = new HashMap<String, PublicCloudParameters>();
 						size.put(split[1], params);
 						
 						alternatives.put(split[0], size);
 					}
-					classdesc.put(String.valueOf(c.getId()), alternatives);
+					classdesc2.put(String.valueOf(c.getId()), alternatives);
 				}
 				
 				PublicCloudParametersMap pub = PublicCloudParametersMapGenerator.build();
-				pub.setMapPublicCloudParameters(classdesc);
+				pub.setMapPublicCloudParameters(classdesc2);
 				
 				data.setMapPublicCloudParameters(pub);
 				data.setPrivateCloudParameters(null);
@@ -247,7 +266,7 @@ public class FileManager {
 		String s="";
 		try {
 			s = mapper.writeValueAsString(data);
-			mapper.writerWithDefaultPrettyPrinter().writeValue(new File(conf.getID()+".json"), data);
+			mapper.writerWithDefaultPrettyPrinter().writeValue(new File(path + conf.getID()+".json"), data);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -298,6 +317,45 @@ public class FileManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public Map<String, String> parseDOMXmlFile(String fileName){
+		File src = new File(fileName);
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder;
+		Map<String, String> res = new HashMap<String, String>();
+		try {
+			builder = factory.newDocumentBuilder();
+			Document doc = builder.parse(src);
+			NodeList group = doc.getElementsByTagName("group");
+			
+			for(int i = 0; i < group.getLength(); i++){
+				Element e = (Element)group.item(i);
+				if(e.getAttribute("name").equals("Reducer")){
+					String data = group.item(i).getTextContent().trim();
+					res.put("rTasks", data.substring(data.indexOf('[') + 1, data.indexOf(']')));
+					res.put("rDemand", data.substring(data.indexOf('x') + 4, data.indexOf('u') - 1));
+				}
+				if(e.getAttribute("name").equals("Mapper")){
+					String data = group.item(i).getTextContent().trim();
+					res.put("mTasks", data.substring(data.indexOf('[') + 1, data.indexOf(']')));
+					res.put("mDemand", data.substring(data.indexOf('x') + 4, data.indexOf('u') - 1));
+				}
+			}
+			
+			group = doc.getElementsByTagName("hadoopPopulation");
+			res.put("hadoopPopulation", group.item(0).getTextContent());
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return res;
 	}
 	
 	public Map<String, String> parseXmlFile(){

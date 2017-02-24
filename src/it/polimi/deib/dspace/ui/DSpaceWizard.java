@@ -52,14 +52,13 @@ public class DSpaceWizard extends Wizard{
 		if (currentPage == choice){
 			classes = choice.getClasses();
 			Configuration.getCurrent().setNumClasses(classes);
+			if (Configuration.getCurrent().getHasLtc()){
+				Configuration.getCurrent().setR(choice.getR());
+				Configuration.getCurrent().setSpsr(choice.getSpsr());
+			}
 			if(Configuration.getCurrent().getTechnology().equals("Hadoop")){
 				return hPage;
 			}else{
-				if (Configuration.getCurrent().getHasLtc()){
-					Configuration.getCurrent().setR(choice.getR());
-					Configuration.getCurrent().setSpsr(choice.getSpsr());
-				}
-				
 				return classp;
 			}
 			

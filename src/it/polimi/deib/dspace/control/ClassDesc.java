@@ -1,11 +1,13 @@
 package it.polimi.deib.dspace.control;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class ClassDesc {
 	private final int id;
-	private HashMap<String, String> altDtsm;
+	private Map<String, String> altDtsm;
 	private String ddsmPath;
+	private Map<String, Map<String,String>> altDtsmHadoop;
 	
 	public ClassDesc(int id){
 		this.id = id;
@@ -15,7 +17,7 @@ public class ClassDesc {
 		return id;
 	}
 	
-	public HashMap<String, String> getAltDtsm() {
+	public Map<String, String> getAltDtsm() {
 		return altDtsm;
 	}
 	
@@ -30,4 +32,22 @@ public class ClassDesc {
 	public String getDdsmPath(){
 		return ddsmPath;
 	}
+
+	public Map<String, Map<String,String>> getAltDtsmHadoop() {
+		return altDtsmHadoop;
+	}
+	
+	/**
+	 * Expands alternatives with given Hadoop parameters
+	 * @param alt Alternative to expand with Hadoop params
+	 * @param exp Map of Hadoop parameters
+	 */
+	public void expandAltDtsmHadoop(String alt, Map<String, String> exp){
+		if (altDtsmHadoop == null){
+			altDtsmHadoop = new HashMap<String, Map<String, String>>();
+		}
+		exp.put("file", altDtsm.get(alt));
+		altDtsmHadoop.put(alt, exp);
+	}
+ 
 }
