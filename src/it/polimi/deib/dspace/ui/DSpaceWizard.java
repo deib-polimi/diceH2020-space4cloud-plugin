@@ -64,15 +64,21 @@ public class DSpaceWizard extends Wizard{
 			if(Configuration.getCurrent().getTechnology().equals("Hadoop")){
 				return hPage;
 			}else{
+				classp.udpate();
+				classp.setNumClasses(classes);
 				return classp;
 			}
 			
 		}
 		if(currentPage==hPage){
-			Configuration.getCurrent().setHadoopD(hPage.getHadoopD());
-			Configuration.getCurrent().setHlow(hPage.getHlow());
-			Configuration.getCurrent().setHup(hPage.getHup());
-			Configuration.getCurrent().setThinkTime(hPage.getThinkTime());
+			
+			//c.setHadoopParUD(hPage.getHadoopParUD());
+			if(n == classes){
+				finish = true;
+				Configuration.getCurrent().dump();
+				return fpage;
+			}
+			classp.reset();
 			return classp;
 			
 		}
@@ -85,13 +91,8 @@ public class DSpaceWizard extends Wizard{
 			c.setDdsmPath(classp.getDDSMPath());
 			c.setAltDtsm(classp.getAltDtsm());
 			Configuration.getCurrent().getClasses().add(c);
-			if(n == classes){
-				finish = true;
-				Configuration.getCurrent().dump();
-				return fpage;
-			}
-			classp.reset();
-			return classp;
+			return hPage;
+			
 		}
 		if(currentPage==this.folPage){
 			

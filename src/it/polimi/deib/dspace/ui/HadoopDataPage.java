@@ -1,5 +1,8 @@
 package it.polimi.deib.dspace.ui;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -18,11 +21,13 @@ public class HadoopDataPage extends WizardPage{
 	private int thinkTime;
 	private int hlow;
 	private int hup;
+	private Map<String,String> hadoopParUD;
 	private double hadoopD;
 	private Text thinkTextField,hlowTextField,hupTextField,hadoopDTextField;
 	
 	protected HadoopDataPage(String pageName) {
 		super("Select data for hadoop Technology");
+		hadoopParUD=new HashMap<String,String>();
 		setTitle(pageName);
 		thinkTime=-1;
 		hlow=-1;
@@ -47,8 +52,8 @@ public class HadoopDataPage extends WizardPage{
 			@Override
 			public void modifyText(ModifyEvent arg0) {
 				try{
-				thinkTime=Integer.parseInt(thinkTextField.getText());
-				System.out.println(thinkTime);
+				Integer.parseInt(thinkTextField.getText());
+				hadoopParUD.put("think", thinkTextField.getText());
 				}catch(NumberFormatException e){
 					
 				}
@@ -66,7 +71,7 @@ public class HadoopDataPage extends WizardPage{
 			public void modifyText(ModifyEvent arg0) {
 				try{
 				hadoopD=Double.parseDouble(hadoopDTextField.getText());
-				System.out.println(hadoopD);
+				hadoopParUD.put("h", hadoopDTextField.getText());
 				}catch(NumberFormatException e){
 					
 				}
@@ -84,9 +89,8 @@ public class HadoopDataPage extends WizardPage{
 			@Override
 			public void modifyText(ModifyEvent arg0) {
 				try{
-				hlow=Integer.parseInt(hlowTextField.getText());
-
-				System.out.println(hlow);
+				Integer.parseInt(hlowTextField.getText());
+				hadoopParUD.put("hlow", hlowTextField.getText());
 				}catch(NumberFormatException e){
 					
 				}
@@ -105,9 +109,8 @@ public class HadoopDataPage extends WizardPage{
 			@Override
 			public void modifyText(ModifyEvent arg0) {
 				try{
-				hup=Integer.parseInt(hupTextField.getText());
-
-				System.out.println(hup);
+				Integer.parseInt(hupTextField.getText());
+				hadoopParUD.put("hup", hupTextField.getText());
 				}catch(NumberFormatException e){
 					
 				}
@@ -151,6 +154,11 @@ public class HadoopDataPage extends WizardPage{
 	public int getHup() {
 		return hup;
 	}
+
+	public Map<String,String> getHadoopParUD() {
+		return hadoopParUD;
+	}
+
 
 	
 	

@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 
+import it.polimi.deib.dspace.control.Configuration;
 import utils.JsonDatabase;
 /**
  * Allows user to set parameters for this class.
@@ -29,7 +30,8 @@ public class ClassPage extends WizardPage{
 	private String ddsmPath = "";
 	private Label fileName, label_error;
 	private HashMap<String, String> altDtsm;
-
+	private Button mlProfile ;
+	private String mlPath="";
 	protected ClassPage(String title, String description) {
 		super("Browse Files");
 		setTitle(title);
@@ -141,7 +143,37 @@ public class ClassPage extends WizardPage{
 		label_error.setText("Error: Unable to get vm configurations from the webservice");
 		label_error.setVisible(false);
 		fileName.setLayoutData(new GridData(SWT.BEGINNING, SWT.END, false, false));	
+		
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		
+		
+		mlProfile = new Button(container, SWT.PUSH);
+		mlProfile.setText("Choose machine learning profile");
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		
+		
+		mlProfile.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+            	JFileChooser chooser= new JFileChooser();
+            	chooser.setMultiSelectionEnabled(false); //JUST ONE UML FILE
+            	
+            	int choice = chooser.showOpenDialog(null);
 
+            	if (choice != JFileChooser.APPROVE_OPTION) return;
+            	
+            	mlPath = chooser.getSelectedFile().getPath();
+            	
+            	fileName.setText(chooser.getSelectedFile().getName());
+            	//setPageComplete(true);
+            	container.layout();
+            	getWizard().getContainer().updateButtons();
+            }
+        });
+		
 		browse.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
             	JFileChooser chooser= new JFileChooser();
@@ -212,9 +244,25 @@ public class ClassPage extends WizardPage{
 		getWizard().getContainer().updateButtons();
 		container.layout();
 		altDtsm = new HashMap<String, String>();
+		mlPath="";
 	}
 	
 	public String[] getSelectedAlternatives() {
 		return l2.getItems();
+	}
+
+	public void setNumClasses(int numClasses){
+	}
+	
+	public void udpate(){
+		if(Configuration.getCurrent().getTechnology().contains("Hadoop")){
+			mlProfile.setVisible(true);
+		}else{
+			mlProfile.setVisible(false);
+		}
+	}
+	
+	public String getMlPath(){
+		return mlPath;
 	}
 }
