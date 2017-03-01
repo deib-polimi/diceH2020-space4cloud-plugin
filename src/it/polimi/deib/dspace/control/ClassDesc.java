@@ -61,15 +61,15 @@ public class ClassDesc {
 		altDtsmHadoop.put(alt, exp);
 	}
 
-	public Map<String, String> getHadoopPar() {
+	public Map<String, String> getHadoopParUD() {
 		if(!Configuration.getCurrent().getTechnology().equals("Hadoop")){
 			return null;
 		}
 		return hadoopParUD;
 	}
 
-	public void setHadoopPar(Map<String, String> hadoopPar) {
-		this.hadoopParUD = hadoopPar;
+	public void setHadoopParUD(Map<String, String> hadoopParUD) {
+		this.hadoopParUD = hadoopParUD;
 	}
  
 }

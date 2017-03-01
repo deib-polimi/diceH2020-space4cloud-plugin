@@ -67,7 +67,7 @@ public class FileManager {
 	}
 	
 	/**
-	 * Renames files to be standard compliant and put placeholder
+	 * Renames files to be standard compliant and puts placeholder
 	 * @param cdid ClassDesc id
 	 * @param alt Alternative name
 	 * @param s String be replaced
@@ -199,19 +199,28 @@ public class FileManager {
 		
 		//Set MapClassParameter
 		Map<String, ClassParameters> classdesc1 = new HashMap<String, ClassParameters>();
-		for(ClassDesc c : conf.getClasses()){
-			ClassParameters clpm = ClassParametersGenerator.build(7);
-			
-			clpm.setD(500000.0);
-			clpm.setPenalty(6.0);
-			clpm.setThink(10000.0);
-			clpm.setHlow(1);
-			clpm.setHup(1);
-			clpm.setM(6.0);
-			clpm.setV(0.0);
-			classdesc1.put(String.valueOf(c.getId()), clpm);
+		if(conf.getTechnology().equals("Hadoop")){
+			for(ClassDesc c : conf.getClasses()){
+				ClassParameters clpm = ClassParametersGenerator.build(c.getHadoopParUD().size());
+				clpm.setD(Double.parseDouble(c.getHadoopParUD().get("d")));
+				clpm.setHlow(Integer.parseInt(c.getHadoopParUD().get("hlow")));
+				clpm.setHup(Integer.parseInt(c.getHadoopParUD().get("hup")));
+				clpm.setThink(Double.parseDouble(c.getHadoopParUD().get("think")));
+			}
+		}else{
+			for(ClassDesc c : conf.getClasses()){
+				ClassParameters clpm = ClassParametersGenerator.build(7);
+				
+				clpm.setD(500000.0);
+				clpm.setPenalty(6.0);
+				clpm.setThink(10000.0);
+				clpm.setHlow(1);
+				clpm.setHup(1);
+				clpm.setM(6.0);
+				clpm.setV(0.0);
+				classdesc1.put(String.valueOf(c.getId()), clpm);
+			}
 		}
-		
 		data.setMapClassParameters(new ClassParametersMap(classdesc1));
 		
 		if(!conf.getIsPrivate()){
