@@ -18,6 +18,14 @@ import org.eclipse.swt.widgets.Text;
 import it.polimi.deib.dspace.control.Configuration;
 import it.polimi.deib.dspace.net.NetworkManager;
 
+/**
+ * Initial page. The user can:
+ * 		-choose among private/public solution
+ * 		-select computation technology
+ * 		-tune some general parameters (e.g. number of classes)
+ * @author kom
+ *
+ */
 public class ChoicePage extends WizardPage{
 	private Composite container;
 	private GridLayout layout;

@@ -7,6 +7,11 @@ import it.polimi.deib.dspace.control.ClassDesc;
 import it.polimi.deib.dspace.control.Configuration;
 import it.polimi.deib.dspace.control.FileHandler;
 
+/**
+ * Class needed by Eclipse to manage wizards. The core of this class is getNextPage() method.
+ * @author kom
+ *
+ */
 
 public class DSpaceWizard extends Wizard{
 	private FileHandler fileHandler;

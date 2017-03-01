@@ -12,7 +12,10 @@ public class ClassDesc {
 	private final int id;
 	private Map<String, String> altDtsm;
 	private String ddsmPath;
-	private Map<String, Map<String,String>> altDtsmHadoop;
+	
+	//Hadoop-only parameters
+	private Map<String, Map<String,String>> altDtsmHadoop; //Parameters from DTSM files
+	private Map<String, String> hadoopParUD; //User defined parameters
 	
 	public ClassDesc(int id){
 		this.id = id;
@@ -37,8 +40,11 @@ public class ClassDesc {
 	public String getDdsmPath(){
 		return ddsmPath;
 	}
-
+	
 	public Map<String, Map<String,String>> getAltDtsmHadoop() {
+		if(!Configuration.getCurrent().getTechnology().equals("Hadoop")){
+			return null;
+		}
 		return altDtsmHadoop;
 	}
 	
@@ -53,6 +59,17 @@ public class ClassDesc {
 		}
 		exp.put("file", altDtsm.get(alt));
 		altDtsmHadoop.put(alt, exp);
+	}
+
+	public Map<String, String> getHadoopPar() {
+		if(!Configuration.getCurrent().getTechnology().equals("Hadoop")){
+			return null;
+		}
+		return hadoopParUD;
+	}
+
+	public void setHadoopPar(Map<String, String> hadoopPar) {
+		this.hadoopParUD = hadoopPar;
 	}
  
 }

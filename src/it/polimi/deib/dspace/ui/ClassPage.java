@@ -16,7 +16,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 
 import utils.JsonDatabase;
-
+/**
+ * Allows user to set parameters for this class.
+ * @author kom
+ *
+ */
 public class ClassPage extends WizardPage{
 	private Composite container;
 	private GridLayout layout;

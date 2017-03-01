@@ -106,6 +106,7 @@ public class DICEWrap {
 				break;
 			default:
 				System.err.println("Unknown technology: "+conf.getTechnology());
+				return;
 		}
 		
 		FileManager.getInstance().generateInputJson();
