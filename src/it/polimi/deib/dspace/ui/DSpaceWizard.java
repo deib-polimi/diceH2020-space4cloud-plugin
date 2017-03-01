@@ -61,24 +61,23 @@ public class DSpaceWizard extends Wizard{
 				Configuration.getCurrent().setR(choice.getR());
 				Configuration.getCurrent().setSpsr(choice.getSpsr());
 			}
-			if(Configuration.getCurrent().getTechnology().equals("Hadoop")){
-				return hPage;
-			}else{
+			
 				classp.udpate();
 				classp.setNumClasses(classes);
 				return classp;
-			}
+			
 			
 		}
 		if(currentPage==hPage){
 			
-			//c.setHadoopParUD(hPage.getHadoopParUD());
+			c.setHadoopPar(hPage.getHadoopParUD());
 			if(n == classes){
 				finish = true;
 				Configuration.getCurrent().dump();
 				return fpage;
 			}
 			classp.reset();
+			hPage.reset();
 			return classp;
 			
 		}

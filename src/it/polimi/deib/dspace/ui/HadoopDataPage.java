@@ -52,7 +52,7 @@ public class HadoopDataPage extends WizardPage{
 			@Override
 			public void modifyText(ModifyEvent arg0) {
 				try{
-				Integer.parseInt(thinkTextField.getText());
+				thinkTime=Integer.parseInt(thinkTextField.getText());
 				hadoopParUD.put("think", thinkTextField.getText());
 				}catch(NumberFormatException e){
 					
@@ -89,7 +89,7 @@ public class HadoopDataPage extends WizardPage{
 			@Override
 			public void modifyText(ModifyEvent arg0) {
 				try{
-				Integer.parseInt(hlowTextField.getText());
+				hlow=Integer.parseInt(hlowTextField.getText());
 				hadoopParUD.put("hlow", hlowTextField.getText());
 				}catch(NumberFormatException e){
 					
@@ -109,7 +109,7 @@ public class HadoopDataPage extends WizardPage{
 			@Override
 			public void modifyText(ModifyEvent arg0) {
 				try{
-				Integer.parseInt(hupTextField.getText());
+				hup=Integer.parseInt(hupTextField.getText());
 				hadoopParUD.put("hup", hupTextField.getText());
 				}catch(NumberFormatException e){
 					
@@ -159,7 +159,17 @@ public class HadoopDataPage extends WizardPage{
 		return hadoopParUD;
 	}
 
-
+	public void reset(){
+		this.hadoopParUD.clear();
+		thinkTime=-1;
+		hlow=-1;
+		hup=-1;
+		hadoopD=-1;
+		thinkTextField.setText("");
+		hlowTextField.setText("");
+		hupTextField.setText("");;
+		hadoopDTextField.setText("");
+	}
 	
 	
 	
