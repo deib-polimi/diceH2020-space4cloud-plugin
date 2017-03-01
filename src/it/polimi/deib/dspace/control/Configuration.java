@@ -3,6 +3,11 @@ package it.polimi.deib.dspace.control;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Holds current run information (i.e. classes list, parameters, technology)
+ * @author kom
+ *
+ */
 public class Configuration {
 	private static Configuration currentConf;
 	

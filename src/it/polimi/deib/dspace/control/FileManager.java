@@ -48,7 +48,12 @@ import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.JobProfiles
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.PublicCloudParameters;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.PublicCloudParametersMap;
 
-
+/**
+ * Contains all the methods related with file generation/transformation that we 
+ * weren't forced to put elsewhere
+ * @author kom
+ *
+ */
 public class FileManager {
 	private static FileManager fm;
 	private String path;
@@ -66,7 +71,7 @@ public class FileManager {
 	}
 	
 	/**
-	 * Rename files to be standard compliant and put placeholder
+	 * Renames files to be standard compliant and put placeholder
 	 * @param cdid ClassDesc id
 	 * @param alt Alternative name
 	 * @param s String be replaced
@@ -90,6 +95,11 @@ public class FileManager {
 		}
 	}
 	
+	/**
+	 * Scans the input file and replaces id String with a placeholder
+	 * @param id String to be replaced
+	 * @param file Input file path
+	 */
 	public void putPlaceHolder(String id, String file){
 		File f = new File(path + "tmp/" + file);
 		System.out.println("Putting placeholder over "+ id +" in file " + file);
@@ -140,6 +150,9 @@ public class FileManager {
 		}
 	}
 	
+	/**
+	 * Builds the JSON representation of the current Configuration and eventually dumps it on a file.
+	 */
 	public void generateInputJson(){
 		Configuration conf = Configuration.getCurrent(); //TODO: REMOVE
 		InstanceDataMultiProvider data = InstanceDataMultiProviderGenerator.build();
@@ -283,6 +296,10 @@ public class FileManager {
 		return path;
 	}
 
+	/**
+	 * Builds the list of files to be sent to the web service
+	 * @return
+	 */
 	public List<File> selectFiles() {
 		File folder = new File(path);
 		File files[] = folder.listFiles();
@@ -293,10 +310,12 @@ public class FileManager {
 				toSend.add(f);
 			}
 		}
-		
 		return toSend;
 	}
 
+	/**
+	 * Generates the JSON file used to compose the result
+	 */
 	public void generateOutputJson() {
 		Map<Integer, String> map = new HashMap<Integer, String>();
 		
@@ -319,6 +338,11 @@ public class FileManager {
 		}
 	}
 	
+	/**
+	 * Scans Hadoop model to extract information
+	 * @param fileName XML file path
+	 * @return A map containing the parameters extracted from the model 
+	 */
 	public Map<String, String> parseDOMXmlFile(String fileName){
 		File src = new File(fileName);
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -358,88 +382,89 @@ public class FileManager {
 		return res;
 	}
 	
-	public Map<String, String> parseXmlFile(){
-		Map<String, String> res = new HashMap<String, String>();
-		SAXParserFactory factory = SAXParserFactory.newInstance();
-		
-		
-		try {
-			SAXParser saxParser = factory.newSAXParser();
-			DefaultHandler handler = new DefaultHandler() {
-
-				boolean ntasks = false;
-				boolean hostdemand = false;
-				boolean population = false;
-				
-				public void startElement(String uri, String localName,String qName,
-			                Attributes attributes) throws SAXException {
-					//System.out.println("Start Element :" + qName);
-
-					if (qName.equalsIgnoreCase("ntasks")) {
-						ntasks = true;
-					}
-					if(qName.equalsIgnoreCase("hadooppopulation")){
-						population = true;
-					}
-					if(qName.equalsIgnoreCase("hostdemand")){
-						hostdemand = true;
-					}
-				}
-
-				public void endElement(String uri, String localName,
-					String qName) throws SAXException {
-					//System.out.println("End Element :" + qName);
-
-				}
-
-				public void characters(char ch[], int start, int length) throws SAXException {
-					String sp[];
-					
-					if (ntasks) {
-						res.put("nTasks", new String(ch, start, length));
-//						String s = new String(ch, start, length);
-//						if (s.contains("hadoopPopulation")){
-//							sp = s.split(";");System.err.println("hadoopPopulation = " + 
-//									sp[0].substring(sp[0].indexOf('[') + 1, sp[0].indexOf(']') - 1));System.err.println("hadoopPopulation = " + sp[0].charAt(s.indexOf('=') + 2));
-//						}
-//						if (s.contains("nTasks")){
-//							sp = s.split(";");
-//							System.err.println("nTasks = " + 
-//									sp[0].substring(sp[0].indexOf('[') + 1, sp[0].indexOf(']')));
-//						}
-						ntasks = false;
-					}
-					if(population){
-						res.put("hadoopPopulation", new String(ch, start, length));
-						population = false;
-					}
-					if(hostdemand){
-						res.put("hostDemand", new String(ch, start, length));
-						hostdemand = false;
-					}
-
-				}
-
-			     };
-			     
-			     saxParser.parse("/home/kom/it.polimi.deib.dspace/input_models/hadoop/model_1_class.uml", handler);
-
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		for(String i : res.keySet()){
-			System.err.println(i + "\t" + res.get(i));
-		}
-		
-		return res;
-		
-	}
+	//TODO: may be useless
+//	public Map<String, String> parseXmlFile(){
+//		Map<String, String> res = new HashMap<String, String>();
+//		SAXParserFactory factory = SAXParserFactory.newInstance();
+//		
+//		
+//		try {
+//			SAXParser saxParser = factory.newSAXParser();
+//			DefaultHandler handler = new DefaultHandler() {
+//
+//				boolean ntasks = false;
+//				boolean hostdemand = false;
+//				boolean population = false;
+//				
+//				public void startElement(String uri, String localName,String qName,
+//			                Attributes attributes) throws SAXException {
+//					//System.out.println("Start Element :" + qName);
+//
+//					if (qName.equalsIgnoreCase("ntasks")) {
+//						ntasks = true;
+//					}
+//					if(qName.equalsIgnoreCase("hadooppopulation")){
+//						population = true;
+//					}
+//					if(qName.equalsIgnoreCase("hostdemand")){
+//						hostdemand = true;
+//					}
+//				}
+//
+//				public void endElement(String uri, String localName,
+//					String qName) throws SAXException {
+//					//System.out.println("End Element :" + qName);
+//
+//				}
+//
+//				public void characters(char ch[], int start, int length) throws SAXException {
+//					String sp[];
+//					
+//					if (ntasks) {
+//						res.put("nTasks", new String(ch, start, length));
+////						String s = new String(ch, start, length);
+////						if (s.contains("hadoopPopulation")){
+////							sp = s.split(";");System.err.println("hadoopPopulation = " + 
+////									sp[0].substring(sp[0].indexOf('[') + 1, sp[0].indexOf(']') - 1));System.err.println("hadoopPopulation = " + sp[0].charAt(s.indexOf('=') + 2));
+////						}
+////						if (s.contains("nTasks")){
+////							sp = s.split(";");
+////							System.err.println("nTasks = " + 
+////									sp[0].substring(sp[0].indexOf('[') + 1, sp[0].indexOf(']')));
+////						}
+//						ntasks = false;
+//					}
+//					if(population){
+//						res.put("hadoopPopulation", new String(ch, start, length));
+//						population = false;
+//					}
+//					if(hostdemand){
+//						res.put("hostDemand", new String(ch, start, length));
+//						hostdemand = false;
+//					}
+//
+//				}
+//
+//			     };
+//			     
+//			     saxParser.parse("/home/kom/it.polimi.deib.dspace/input_models/hadoop/model_1_class.uml", handler);
+//
+//		} catch (ParserConfigurationException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (SAXException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//		for(String i : res.keySet()){
+//			System.err.println(i + "\t" + res.get(i));
+//		}
+//		
+//		return res;
+//		
+//	}
 }

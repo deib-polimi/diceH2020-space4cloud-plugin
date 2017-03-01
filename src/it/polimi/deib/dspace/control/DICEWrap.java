@@ -32,7 +32,7 @@ import fr.lip6.move.pnml.ptnet.Transition;
 import it.polimi.deib.dspace.net.NetworkManager;
 
 /**
- * Manage models transformations and analysis using DICE-plugin APIs and internal methods.
+ * Manages models transformations and analysis using DICE-plugin APIs and internal methods.
  * @author kom
  *
  */
@@ -55,6 +55,9 @@ public class DICEWrap {
 		return diceWrap;
 	}
 	
+	/**
+	 * Creates models from input files and upload them to the web service
+	 */
 	public void start(){
 		conf = Configuration.getCurrent();
 		System.out.println(conf.getID());
@@ -126,6 +129,7 @@ public class DICEWrap {
 		c.expandAltDtsmHadoop(alt, par);
 	}
 
+	//TODO: may be useless
 	public void extractStormInitialMarking(){
 		for(Trace i: result.getTraceSet().getTraces()){
 			if (i.getFromDomainElement() instanceof Device  && i.getToAnalyzableElement() instanceof Place){
@@ -135,6 +139,10 @@ public class DICEWrap {
 		}
 	}
 	
+	/**
+	 * Analyzes current model looking for the Trace to be replaced w/ placeholder
+	 * @return String ID of the Trace
+	 */
 	private String extractStormId(){
 		System.out.println("Extracting");
 		for(Trace i: result.getTraceSet().getTraces()){
@@ -157,6 +165,10 @@ public class DICEWrap {
 //		return null;
 //	}
 	
+	/**
+	 * Builds an analyzable Storm ModelResult from the given model
+	 * @param umlModelPath Input file path
+	 */
 	public void buildStormAnalyzableModel(String umlModelPath){
 		StormActivityDiagram2PnmlResourceBuilder builder = new StormActivityDiagram2PnmlResourceBuilder();
 		
@@ -165,41 +177,51 @@ public class DICEWrap {
 		result = builder.createAnalyzableModel((Model)res.getContents().get(0), new BasicEList<PrimitiveVariableAssignment>());
 		
 		System.out.println("Model built for file: " + umlModelPath);
-		
-		PetriNet pnd = ((PetriNetDoc)result.getModel().get(0)).getNets().get(0);
-		File aFile = new File("storm.pnml"); 
-	    FileOutputStream outputFile = null; 
-	    try {
-	      outputFile = new FileOutputStream(aFile, true);
-	      System.out.println("File stream created successfully.");
-	    } catch (Exception e) {
-	      e.printStackTrace(System.err);
-	    }
-	    FileChannel outChannel = outputFile.getChannel();
-	    pnd.toPNML(outChannel);
+		//TODO: may be useless
+//		PetriNet pnd = ((PetriNetDoc)result.getModel().get(0)).getNets().get(0);
+//		File aFile = new File("storm.pnml"); 
+//	    FileOutputStream outputFile = null; 
+//	    try {
+//	      outputFile = new FileOutputStream(aFile, true);
+//	      System.out.println("File stream created successfully.");
+//	    } catch (Exception e) {
+//	      e.printStackTrace(System.err);
+//	    }
+//	    FileChannel outChannel = outputFile.getChannel();
+//	    pnd.toPNML(outChannel);
 	}
 	
+	
+	/**
+	 * Builds an analyzable Hadoop ModelResult from the given model
+	 * @param umlModelPath Input file path
+	 */	
 	public void buildHadoopAnalyzableModel(String umlModelPath){
 		HadoopActivityDiagram2PnmlResourceBuilder builder = new HadoopActivityDiagram2PnmlResourceBuilder();
 		
 		ResourceSet set = new ResourceSetImpl();
 		Resource res = set.getResource(URI.createFileURI(umlModelPath), true);
 		result = builder.createAnalyzableModel((Model)res.getContents().get(0), new BasicEList<PrimitiveVariableAssignment>());
-		
-		PetriNet pnd = ((PetriNetDoc)result.getModel().get(0)).getNets().get(0);
-		File aFile = new File("hadoop.pnml"); 
-	    FileOutputStream outputFile = null; 
-	    try {
-	      outputFile = new FileOutputStream(aFile, true);
-	      System.out.println("File stream created successfully.");
-	    } catch (Exception e) {
-	      e.printStackTrace(System.err);
-	    }
-	    FileChannel outChannel = outputFile.getChannel();
-	    pnd.toPNML(outChannel);
+//		TODO: may be useless
+//		PetriNet pnd = ((PetriNetDoc)result.getModel().get(0)).getNets().get(0);
+//		File aFile = new File("hadoop.pnml"); 
+//	    FileOutputStream outputFile = null; 
+//	    try {
+//	      outputFile = new FileOutputStream(aFile, true);
+//	      System.out.println("File stream created successfully.");
+//	    } catch (Exception e) {
+//	      e.printStackTrace(System.err);
+//	    }
+//	    FileChannel outChannel = outputFile.getChannel();
+//	    pnd.toPNML(outChannel);
 	}
 	
 	//TODO: set all these methods to private
+	
+	/**
+	 * Analyzes current model looking for the Trace to be replaced w/ placeholder
+	 * @return String ID of the Trace
+	 */
 	public String extractHadoopId(){
 		for(Trace i: result.getTraceSet().getTraces()){
 			if (i.getFromDomainElement() instanceof FinalNode && i.getToAnalyzableElement() instanceof Transition){
@@ -209,10 +231,15 @@ public class DICEWrap {
 		return null;
 	} 
 	
+	
+	/**
+	 * Creates GSPN model (.net and .def files) in the given directory.
+	 * @throws IOException
+	 */
 	public void genGSPN() throws IOException{
 		File targetFolder = new File(FileManager.getInstance().getPath()+"tmp/");
 		GenerateGspn gspn = new GenerateGspn(((PetriNetDoc)result.getModel().get(0)).getNets().get(0),targetFolder, new ArrayList<EObject>());
 		gspn.doGenerate(new BasicMonitor());
-		System.out.println("GSPN generated for file");
+		System.out.println("GSPN generated");
 	}
 }

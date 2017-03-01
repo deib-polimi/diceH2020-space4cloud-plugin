@@ -3,6 +3,11 @@ package it.polimi.deib.dspace.control;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Class descriptor. Holds all information about a class (i.e. parameters, alternatives).
+ * @author kom
+ *
+ */
 public class ClassDesc {
 	private final int id;
 	private Map<String, String> altDtsm;

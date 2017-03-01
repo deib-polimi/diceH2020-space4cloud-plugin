@@ -20,6 +20,7 @@ import it.polimi.deib.dspace.ui.DSpaceWizard;
  * shown in the UI. When the user tries to use the action,
  * this delegate will be created and execution will be 
  * delegated to it.
+ * TODO: remove auto generated doc
  * @see IWorkbenchWindowActionDelegate
  */
 public class DSpaceAction implements IWorkbenchWindowActionDelegate {
@@ -52,7 +53,7 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 			DICEWrap.getWrapper().start();
 //			DICEWrap.getWrapper().sendModel();
 //			FileManager.getInstance().generateInputJson();
-//			FileManager.getInstance().parseDOMXmlFile("/home/kom/it.polimi.deib.dspace/DICE_plugin/input_models/hadoop/model_1_class.uml");
+			FileManager.getInstance().parseDOMXmlFile("/home/kom/it.polimi.deib.dspace/DICE_plugin/input_models/hadoop/model_1_class.uml");
 		}else{
 			ConfigurationDialog con=new ConfigurationDialog(new Shell());
 			con.load();
