@@ -20,6 +20,7 @@ public class DSpaceWizard extends Wizard{
 	private FinalPage fpage;
 	private HadoopDataPage hPage;
 	private SelectFolderPage folPage;
+	private StormDataPage stPage;
 	private int n = 0;
 	private int classes;
 	private ClassDesc c;
@@ -44,8 +45,10 @@ public class DSpaceWizard extends Wizard{
 		fpage = new FinalPage("Goodbye", ".");
 		folPage=new SelectFolderPage("Select folder");
 		hPage=new HadoopDataPage("Set Hadoop parameters");
+		stPage=new StormDataPage("Set Storm parameter");
 		addPage(choice);
 		addPage(folPage);
+		addPage(stPage);
 		addPage(hPage);
 		addPage(classp);
 		addPage(fpage);
@@ -70,7 +73,7 @@ public class DSpaceWizard extends Wizard{
 		}
 		if(currentPage==hPage){
 			
-			c.setHadoopPar(hPage.getHadoopParUD());
+			c.setHadoopParUD(hPage.getHadoopParUD());
 			if(n == classes){
 				finish = true;
 				Configuration.getCurrent().dump();
@@ -78,8 +81,21 @@ public class DSpaceWizard extends Wizard{
 			}
 			classp.reset();
 			hPage.reset();
+			
 			return classp;
 			
+		}
+		if(currentPage==stPage){
+			c.setStormU(stPage.getStormU());
+			if(n == classes){
+				finish = true;
+				Configuration.getCurrent().dump();
+				return fpage;
+			}
+			classp.reset();
+			stPage.reset();
+			
+			return classp;
 		}
 		
 		
@@ -90,7 +106,11 @@ public class DSpaceWizard extends Wizard{
 			c.setDdsmPath(classp.getDDSMPath());
 			c.setAltDtsm(classp.getAltDtsm());
 			Configuration.getCurrent().getClasses().add(c);
+			if(Configuration.getCurrent().getTechnology().contains("Hadoop")){
 			return hPage;
+			}else{
+				return stPage;
+			}
 			
 		}
 		if(currentPage==this.folPage){
