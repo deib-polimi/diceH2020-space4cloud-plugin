@@ -15,7 +15,7 @@ public class StormDataPage extends WizardPage{
 	private double stormU;
 	private Text stormUTextField;
 	protected StormDataPage(String pageName) {
-		super("Select data for hadoop Technology");
+		super("Select data for Storm Technology");
 		setTitle(pageName);
 		stormU=-1;
 	}
@@ -28,7 +28,7 @@ public class StormDataPage extends WizardPage{
 		container.setLayout(layout);
 		Label l1;
 		l1 = new Label(container, SWT.None);
-		l1.setText("Set U parameter");
+		l1.setText("Set Utilization threshhold");
 		this.stormUTextField = new Text(container, SWT.BORDER);
 		//t1.setLayoutData(g3);
 		stormUTextField.setEditable(true);

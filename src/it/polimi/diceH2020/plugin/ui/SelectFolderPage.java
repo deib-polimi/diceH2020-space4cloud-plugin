@@ -12,7 +12,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 
 
 
@@ -45,15 +47,8 @@ public class SelectFolderPage extends WizardPage{
             public void widgetSelected(SelectionEvent e) {
 
 
-            	JFileChooser j = new JFileChooser();
-            	j.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            	int choice = j.showOpenDialog(null);
-            	
-            	if (choice!= JFileChooser.APPROVE_OPTION) return;
-            	selectedFolder=j.getSelectedFile().getAbsolutePath();
-            	checkFolder();
-            	container.layout();
-            	getWizard().getContainer().updateButtons();
+            //	Dialog dialog=new Dialog(new Shell());
+            	//getWizard().getContainer().updateButtons();
             }
         });
 		setPageComplete(false);
