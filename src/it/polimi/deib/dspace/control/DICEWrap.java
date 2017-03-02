@@ -72,6 +72,7 @@ public class DICEWrap {
 					for(String alt : c.getAltDtsm().keySet()){
 						try {
 							buildStormAnalyzableModel(c.getAltDtsm().get(alt));
+							generatePNML(String.valueOf(c.getId()), alt);
 							genGSPN(); 
 							FileManager.getInstance().editFiles(c.getId(), alt, extractStormId());
 						} catch (IOException e) {
@@ -85,6 +86,7 @@ public class DICEWrap {
 					for(String alt : c.getAltDtsm().keySet())
 						try {
 							buildHadoopAnalyzableModel(c.getAltDtsm().get(alt));
+							generatePNML(String.valueOf(c.getId()), alt);
 							genGSPN();
 							FileManager.getInstance().editFiles(c.getId(), alt, extractHadoopId());
 							extractParametersFromHadoopModel(c, alt);
@@ -110,13 +112,13 @@ public class DICEWrap {
 		}
 		
 		FileManager.getInstance().generateInputJson();
-//		FileManager.getInstance().generateOutputJson();
-//		try {
-//			NetworkManager.getInstance().sendModel(FileManager.getInstance().selectFiles(), scenario);
-//		} catch (UnsupportedEncodingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		FileManager.getInstance().generateOutputJson();
+		try {
+			NetworkManager.getInstance().sendModel(FileManager.getInstance().selectFiles(), scenario);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -178,18 +180,6 @@ public class DICEWrap {
 		result = builder.createAnalyzableModel((Model)res.getContents().get(0), new BasicEList<PrimitiveVariableAssignment>());
 		
 		System.out.println("Model built for file: " + umlModelPath);
-		//TODO: may be useless
-//		PetriNet pnd = ((PetriNetDoc)result.getModel().get(0)).getNets().get(0);
-//		File aFile = new File("storm.pnml"); 
-//	    FileOutputStream outputFile = null; 
-//	    try {
-//	      outputFile = new FileOutputStream(aFile, true);
-//	      System.out.println("File stream created successfully.");
-//	    } catch (Exception e) {
-//	      e.printStackTrace(System.err);
-//	    }
-//	    FileChannel outChannel = outputFile.getChannel();
-//	    pnd.toPNML(outChannel);
 	}
 	
 	
@@ -203,18 +193,25 @@ public class DICEWrap {
 		ResourceSet set = new ResourceSetImpl();
 		Resource res = set.getResource(URI.createFileURI(umlModelPath), true);
 		result = builder.createAnalyzableModel((Model)res.getContents().get(0), new BasicEList<PrimitiveVariableAssignment>());
-//		TODO: may be useless
-//		PetriNet pnd = ((PetriNetDoc)result.getModel().get(0)).getNets().get(0);
-//		File aFile = new File("hadoop.pnml"); 
-//	    FileOutputStream outputFile = null; 
-//	    try {
-//	      outputFile = new FileOutputStream(aFile, true);
-//	      System.out.println("File stream created successfully.");
-//	    } catch (Exception e) {
-//	      e.printStackTrace(System.err);
-//	    }
-//	    FileChannel outChannel = outputFile.getChannel();
-//	    pnd.toPNML(outChannel);
+	}
+	
+	/**
+	 * Builds PNML model file from ModelResult.  
+	 * @param classID
+	 * @param alt
+	 */
+	public void generatePNML(String classID, String alt){
+		PetriNet pnd = ((PetriNetDoc)result.getModel().get(0)).getNets().get(0);
+		File aFile = new File(conf.getID() + "J" + classID + alt.replaceAll("-", "") + ".pnml"); 
+	    FileOutputStream outputFile = null; 
+	    try {
+	      outputFile = new FileOutputStream(aFile, true);
+	      System.out.println("File stream created successfully.");
+	    } catch (Exception e) {
+	      e.printStackTrace(System.err);
+	    }
+	    FileChannel outChannel = outputFile.getChannel();
+	    pnd.toPNML(outChannel);
 	}
 	
 	//TODO: set all these methods to private

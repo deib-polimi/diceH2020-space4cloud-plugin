@@ -16,9 +16,8 @@ public class GeneralConfig {
 	private String serverID;
 	private int timeToWait;
 	public GeneralConfig(){
-		
 		loadConfiguration();
-			}
+	}
 	
 	public static GeneralConfig getCurrent(){
 		if (currentConf == null){
