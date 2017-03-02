@@ -32,6 +32,7 @@ import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.JobMLP
 import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.JobMLProfilesMapGenerator;
 import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.JobProfileGenerator;
 import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.JobProfilesMapGenerator;
+import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.PrivateCloudParametersGenerator;
 import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.PublicCloudParametersGenerator;
 import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.PublicCloudParametersMapGenerator;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.ClassParameters;
@@ -41,6 +42,7 @@ import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.JobMLProfil
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.JobMLProfilesMap;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.JobProfile;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.JobProfilesMap;
+import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.PrivateCloudParameters;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.PublicCloudParameters;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.PublicCloudParametersMap;
 
@@ -199,19 +201,19 @@ public class FileManager {
 		
 		//Set MapClassParameter
 		Map<String, ClassParameters> classdesc1 = new HashMap<String, ClassParameters>();
-		if(conf.getTechnology().equals("Hadoop")){
+		if(conf.getTechnology().contains("Hadoop")){
 			for(ClassDesc c : conf.getClasses()){
 				ClassParameters clpm = ClassParametersGenerator.build(c.getHadoopParUD().size());
 				clpm.setD(Double.parseDouble(c.getHadoopParUD().get("d")));
 				clpm.setHlow(Integer.parseInt(c.getHadoopParUD().get("hlow")));
 				clpm.setHup(Integer.parseInt(c.getHadoopParUD().get("hup")));
 				clpm.setThink(Double.parseDouble(c.getHadoopParUD().get("think")));
+				classdesc1.put(String.valueOf(c.getId()), clpm);
 			}
 		}else{
 			for(ClassDesc c : conf.getClasses()){
 				ClassParameters clpm = ClassParametersGenerator.build(7);
-				
-				clpm.setD(500000.0);
+				clpm.setD(c.getStormU());
 				clpm.setPenalty(6.0);
 				clpm.setThink(10000.0);
 				clpm.setHlow(1);

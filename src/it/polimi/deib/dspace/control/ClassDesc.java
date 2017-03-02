@@ -13,10 +13,13 @@ public class ClassDesc {
 	private Map<String, String> altDtsm;
 	private String ddsmPath;
 	
+	//Storm only parameter
+	private double stormU;
+	
 	//Hadoop-only parameters
 	private Map<String, Map<String,String>> altDtsmHadoop; //Parameters from DTSM files
 	private Map<String, String> hadoopParUD; //User defined parameters
-	private double stormU;
+	
 	public ClassDesc(int id){
 		this.id = id;
 	}

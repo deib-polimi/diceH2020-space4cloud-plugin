@@ -71,7 +71,7 @@ public class HadoopDataPage extends WizardPage{
 			public void modifyText(ModifyEvent arg0) {
 				try{
 				hadoopD=Double.parseDouble(hadoopDTextField.getText());
-				hadoopParUD.put("h", hadoopDTextField.getText());
+				hadoopParUD.put("d", hadoopDTextField.getText());
 				}catch(NumberFormatException e){
 					
 				}

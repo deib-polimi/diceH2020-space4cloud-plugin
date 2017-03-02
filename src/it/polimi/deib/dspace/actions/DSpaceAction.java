@@ -53,7 +53,7 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 			DICEWrap.getWrapper().start();
 //			DICEWrap.getWrapper().sendModel();
 //			FileManager.getInstance().generateInputJson();
-			FileManager.getInstance().parseDOMXmlFile("/home/kom/it.polimi.deib.dspace/DICE_plugin/input_models/hadoop/model_1_class.uml");
+//			FileManager.getInstance().parseDOMXmlFile("/home/kom/it.polimi.deib.dspace/DICE_plugin/input_models/hadoop/model_1_class.uml");
 		}else{
 			ConfigurationDialog con=new ConfigurationDialog(new Shell());
 			con.load();

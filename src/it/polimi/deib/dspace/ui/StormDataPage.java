@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Text;
 public class StormDataPage extends WizardPage{
 	private Composite container;
 	private GridLayout layout;
-	private int stormU;
+	private double stormU;
 	private Text stormUTextField;
 	protected StormDataPage(String pageName) {
 		super("Select data for hadoop Technology");
@@ -40,7 +40,7 @@ public class StormDataPage extends WizardPage{
 			@Override
 			public void modifyText(ModifyEvent arg0) {
 				try{
-					stormU=Integer.parseInt(stormUTextField.getText());
+					stormU=Double.parseDouble(stormUTextField.getText());
 				}catch(NumberFormatException e){
 					
 				}
