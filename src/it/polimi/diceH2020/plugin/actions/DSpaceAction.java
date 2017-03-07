@@ -10,6 +10,7 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 import it.polimi.diceH2020.plugin.control.Configuration;
 import it.polimi.diceH2020.plugin.control.DICEWrap;
+import it.polimi.diceH2020.plugin.control.PrivateConfiguration;
 import it.polimi.diceH2020.plugin.ui.ConfigurationDialog;
 import it.polimi.diceH2020.plugin.ui.DSpaceWizard;
 
@@ -39,6 +40,7 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 		System.out.println("Hola "+action.getId());
 		if(action.getId().endsWith("Start")){
 			Configuration.getCurrent().reset();
+			PrivateConfiguration.getCurrent().clear();
 			WizardDialog dialog = new WizardDialog(null, new DSpaceWizard());
 			dialog.open();
 			System.out.println("Starting");

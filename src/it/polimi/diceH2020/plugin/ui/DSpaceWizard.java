@@ -6,6 +6,7 @@ import org.eclipse.jface.wizard.Wizard;
 import it.polimi.diceH2020.plugin.control.ClassDesc;
 import it.polimi.diceH2020.plugin.control.Configuration;
 import it.polimi.diceH2020.plugin.control.FileHandler;
+import it.polimi.diceH2020.plugin.control.PrivateConfiguration;
 
 /**
  * Class needed by Eclipse to manage wizards. The core of this class is getNextPage() method.
@@ -48,8 +49,9 @@ public class DSpaceWizard extends Wizard{
 		stPage=new StormDataPage("Set Storm parameter");
 		prConfigPage=new PrivateConfigPage("Set cluster parameters");
 		
-		addPage(prConfigPage);
+		
 		addPage(choice);
+		addPage(prConfigPage);
 		addPage(folPage);
 		addPage(stPage);
 		addPage(hPage);
@@ -67,10 +69,12 @@ public class DSpaceWizard extends Wizard{
 				Configuration.getCurrent().setR(choice.getR());
 				Configuration.getCurrent().setSpsr(choice.getSpsr());
 			}
-
-			classp.udpate();
-			classp.setNumClasses(classes);
-			return classp;
+			if(Configuration.getCurrent().getIsPrivate()){
+				return prConfigPage;
+			}
+				classp.udpate();
+				classp.setNumClasses(classes);
+				return classp;
 		}
 
 		if(currentPage==hPage){
@@ -83,6 +87,8 @@ public class DSpaceWizard extends Wizard{
 
 			classp.reset();
 			hPage.reset();
+			if(Configuration.getCurrent().getIsPrivate())
+				classp.privateCase();
 			return classp;
 		}
 
@@ -95,6 +101,8 @@ public class DSpaceWizard extends Wizard{
 			}
 			classp.reset();
 			stPage.reset();
+			if(Configuration.getCurrent().getIsPrivate())
+				classp.privateCase();
 
 			return classp;
 		}
@@ -119,6 +127,16 @@ public class DSpaceWizard extends Wizard{
 			fileHandler.sendFile();
 			finish = true;
 			return fpage;
+		}
+		
+		if(currentPage==this.prConfigPage){
+			PrivateConfiguration.getCurrent().setPriE(prConfigPage.getCostNode());
+			PrivateConfiguration.getCurrent().setPriM(prConfigPage.getMemForNode());
+			PrivateConfiguration.getCurrent().setPriN(prConfigPage.getNumNodes());
+			PrivateConfiguration.getCurrent().setPriV(prConfigPage.getCpuNode());
+			classp.privateCase();
+			classp.udpate();
+			return classp;
 		}
 
 		return null;

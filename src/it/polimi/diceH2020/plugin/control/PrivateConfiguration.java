@@ -70,6 +70,10 @@ public class PrivateConfiguration {
 		vmList.remove(getVmFromName(name));
 	}
 	
+	public void clear(){
+		this.vmList.clear();
+	}
+	
 	
 	
 }

@@ -106,8 +106,6 @@ public class PrivateConfigPage extends WizardPage{
 		loadConfig.setText("Load");
 
 		//Listeners
-
-
 		nNodesText.addModifyListener(new ModifyListener(){
 			@Override
 			public void modifyText(ModifyEvent arg0) {
@@ -119,6 +117,7 @@ public class PrivateConfigPage extends WizardPage{
 				getWizard().getContainer().updateButtons();
 			}
 		});
+
 		cpuText.addModifyListener(new ModifyListener(){
 			@Override
 			public void modifyText(ModifyEvent arg0){
@@ -155,7 +154,6 @@ public class PrivateConfigPage extends WizardPage{
 			}
 		});
 
-
 		addConfig.addSelectionListener(new SelectionListener(){
 			public void widgetSelected(SelectionEvent e) {
 				String name="";
@@ -179,41 +177,42 @@ public class PrivateConfigPage extends WizardPage{
 
 				int result = JOptionPane.showConfirmDialog(null, myPanel, 
 						"Please Enter VM parameters", JOptionPane.OK_CANCEL_OPTION);
+
 				if (result == JOptionPane.OK_OPTION) {
 					boolean canCreate=true;
 					name=nameField.getText();
+
 					try{
 						mem=Double.parseDouble(memField.getText());
 					}catch(NumberFormatException e1){
 						canCreate=false;
 					}
+
 					try{
 						cores=Double.parseDouble(coreField.getText());
 					}catch(NumberFormatException e1){
 						canCreate=false;
 					}
+
 					try{
 						cost=Double.parseDouble(costField.getText());
 					}catch(NumberFormatException e1){
 						canCreate=false;
 					}
+
 					if(!name.isEmpty()&&canCreate){
 						PrivateConfiguration.getCurrent().addVmConfig(new VmClass(name,cores,cost,mem));
 						vmConfigsList.add(name);
 					}else{
 						JOptionPane.showConfirmDialog(null, "Some of the parameters are wrong.. VM not created");
 					}
-
 				}
 				getWizard().getContainer().updateButtons();
-
 			}
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {
-
 			}
-
 		});
 
 		vmConfigsList.addSelectionListener(new SelectionAdapter() {
@@ -224,8 +223,6 @@ public class PrivateConfigPage extends WizardPage{
 			}
 
 		});
-
-
 
 		removeConfig.addSelectionListener(new SelectionListener(){
 
@@ -241,20 +238,13 @@ public class PrivateConfigPage extends WizardPage{
 				PrivateConfiguration.getCurrent().removeVmConfig(selectedVmConfig);
 				selectedVmConfig="";
 			}
-
-
-
-
-
 		});
-
 
 		saveConfig.addSelectionListener(new SelectionListener() {
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {
 				// TODO Auto-generated method stub
-
 			}
 
 			@Override
@@ -262,15 +252,9 @@ public class PrivateConfigPage extends WizardPage{
 				if(memForNode!=-1&&costNode!=-1&&cpuForNode!=-1&&numNodes!=-1){
 					saveFile();
 				}else{
-
 					JOptionPane.showMessageDialog(null, "Can not save the configuration check parameters","Info",JOptionPane.INFORMATION_MESSAGE);
 				}
-
 			}
-
-
-
-
 		});
 
 		loadConfig.addSelectionListener(new SelectionListener(){
@@ -284,29 +268,13 @@ public class PrivateConfigPage extends WizardPage{
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				loadFile();
-
+				getWizard().getContainer().updateButtons();
 			}
-
-
 		});
-
-
-
-
-
-
-
-
-
-
 
 		setControl(container);
 		setPageComplete(false);
 	}
-
-
-
-
 
 	public String getVmList() {
 		return selectedVmConfig;
@@ -317,6 +285,7 @@ public class PrivateConfigPage extends WizardPage{
 			vmConfigsList.add(vm.getName());
 		}
 	}
+
 	@Override
 	public boolean canFlipToNextPage(){
 		if(this.memForNode!=-1&&this.costNode!=-1&&this.cpuForNode!=-1&&this.numNodes!=-1&&this.vmConfigsList.getItemCount()!=0){
@@ -325,13 +294,8 @@ public class PrivateConfigPage extends WizardPage{
 		return false;
 	}
 
-
-
-
-
 	private void saveFile(){
 		try {
-
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
@@ -357,11 +321,9 @@ public class PrivateConfigPage extends WizardPage{
 			nPar.appendChild(doc.createTextNode(String.valueOf(numNodes)));
 			cloud.appendChild(nPar);
 
-
 			Element ePar = doc.createElement("e");
 			ePar.appendChild(doc.createTextNode(String.valueOf(costNode)));
 			cloud.appendChild(ePar);
-
 
 			Element vmConf=doc.createElement("VMConfigurations");
 			rootElement.appendChild(vmConf);
@@ -385,19 +347,13 @@ public class PrivateConfigPage extends WizardPage{
 				Element cost=doc.createElement("cost");
 				cost.appendChild(doc.createTextNode(String.valueOf(v.getCost())));
 				vm.appendChild(cost);
-
 			}
-
-
 
 			// write the content into xml file
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
 			DOMSource source = new DOMSource(doc);
 			StreamResult result = new StreamResult(new File(FileManager.getInstance().getPath()+"VMConfig.xml"));
-
-			// Output to console for testing
-			// StreamResult result = new StreamResult(System.out);
 
 			transformer.transform(source, result);
 
@@ -409,9 +365,6 @@ public class PrivateConfigPage extends WizardPage{
 			tfe.printStackTrace();
 		}
 	}
-
-
-
 
 	private void loadFile(){
 		if(!new File(FileManager.getInstance().getPath()+"VMConfig.xml").isFile()){
@@ -472,11 +425,19 @@ public class PrivateConfigPage extends WizardPage{
 		}
 	}
 
+	public int getNumNodes(){
+		return this.numNodes;
+	}
 
+	public double getMemForNode(){
+		return this.memForNode;
+	}
 
+	public double getCostNode(){
+		return this.costNode;
+	}
 
-
-
-
-
+	public double getCpuNode(){
+		return this.cpuForNode;
+	}
 }
