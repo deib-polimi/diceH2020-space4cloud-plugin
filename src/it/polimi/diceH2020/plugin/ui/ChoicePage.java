@@ -41,12 +41,15 @@ public class ChoicePage extends WizardPage{
 	private Button existingLTC,nExistingLTC;
 	private Text rTextField,SpsrTextField;
 	private Composite ltcCompositeText;
+	private boolean canSwitch;
+	private Label errSR;
 	
 
 	protected ChoicePage(String title, String description) {
 		super("Choose service type");
 		setTitle(title);
 		setDescription(description);
+		canSwitch=false;
 	}
 
 	@Override
@@ -182,6 +185,17 @@ public class ChoicePage extends WizardPage{
         tTextLabel.setText("Spot ratio");
         this.SpsrTextField = new Text(tTextComposite,SWT.BORDER);
         this.SpsrTextField.setEditable(true);
+        
+        Composite err = new Composite(ltcCompositeText, SWT.NONE);
+        RowLayout errRow_3 = new RowLayout();
+        errRow_3.type = SWT.HORIZONTAL;
+        errRow_3.pack = false;
+        err.setLayout(errRow_3);
+      
+        this.errSR=new Label(err,SWT.BORDER);
+        
+        errSR.setText("Not a valid spot ratio");
+        errSR.setVisible(false);
         this.existingLTC = new Button(ltcComposite,SWT.RADIO);
         this.existingLTC.setText("Existing LTC");
         this.nExistingLTC = new Button(ltcComposite, SWT.RADIO);
@@ -219,6 +233,7 @@ public class ChoicePage extends WizardPage{
         this.existingLTC.addSelectionListener(new SelectionAdapter(){
         	 public void widgetSelected(SelectionEvent e) {
              	ltcCompositeText.setVisible(true);
+             	canSwitch=false;
              	getWizard().getContainer().updateButtons();
              	Configuration.getCurrent().setLTC(true);
              }
@@ -234,12 +249,26 @@ public class ChoicePage extends WizardPage{
 
 			@Override
 			public void modifyText(ModifyEvent arg0) {
+				try{
+					if(Float.parseFloat(SpsrTextField.getText())<=1){
+						errSR.setVisible(false);
+						canSwitch=true;
+					}else{
+						errSR.setVisible(true);
+						canSwitch=false;
+					}
+				}catch(NumberFormatException e){
+					canSwitch=false;
+				}
+				
+				
 				getWizard().getContainer().updateButtons();
 			}
         });
         this.nExistingLTC.addSelectionListener(new SelectionAdapter(){
        	 public void widgetSelected(SelectionEvent e) {
             	ltcCompositeText.setVisible(false);
+            	canSwitch=true;
             	getWizard().getContainer().updateButtons();
             	Configuration.getCurrent().setLTC(false);
             }
@@ -278,7 +307,7 @@ public class ChoicePage extends WizardPage{
 	
 	@Override
 	public boolean canFlipToNextPage(){
-		if(this.getChoice() && t2.getSelectionCount() > 0 && (pri.getSelection() || pub.getSelection()) && getClasses() != 0){
+		if(this.getChoice() && t2.getSelectionCount() > 0 && (pri.getSelection() || pub.getSelection()) && getClasses() != 0&&canSwitch){
 			return true;
 		}
 		return false;

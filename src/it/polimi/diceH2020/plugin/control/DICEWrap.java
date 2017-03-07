@@ -94,16 +94,6 @@ public class DICEWrap {
 						System.out.println(e.getMessage());
 					}
 			}
-			//TODO: just for debug, remove this cycle
-			for(ClassDesc c : conf.getClasses()){
-				System.err.println("Class: " + c.getId());
-				for(String alt : c.getAltDtsmHadoop().keySet()){
-					System.err.println("\t" + alt);
-					for (String a : c.getAltDtsmHadoop().get(alt).keySet()){
-						System.err.println("\t\t" + a + " : " + c.getAltDtsmHadoop().get(alt).get(a));
-					}
-				}
-			}
 			break;
 		default:
 			System.err.println("Unknown technology: "+conf.getTechnology());

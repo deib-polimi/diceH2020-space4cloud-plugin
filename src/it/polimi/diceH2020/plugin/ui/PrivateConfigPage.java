@@ -75,7 +75,7 @@ public class PrivateConfigPage extends WizardPage{
 		Label nNodeLab=new Label(container,SWT.NONE);
 		nNodeLab.setText("Set number of nodes");
 		Label cpuLabel=new Label(container,SWT.NONE);
-		cpuLabel.setText("Cpu per cluster");        
+		cpuLabel.setText("Cpu per node");
 		nNodesText=new Text(container,SWT.BORDER);
 		cpuText=new Text(container,SWT.BORDER);
 		Label memLabel=new Label(container,SWT.NONE);
@@ -177,7 +177,6 @@ public class PrivateConfigPage extends WizardPage{
 
 				int result = JOptionPane.showConfirmDialog(null, myPanel, 
 						"Please Enter VM parameters", JOptionPane.OK_CANCEL_OPTION);
-
 				if (result == JOptionPane.OK_OPTION) {
 					boolean canCreate=true;
 					name=nameField.getText();
@@ -221,14 +220,12 @@ public class PrivateConfigPage extends WizardPage{
 				System.out.println(selectedVmConfig);
 				getWizard().getContainer().updateButtons();
 			}
-
 		});
 
 		removeConfig.addSelectionListener(new SelectionListener(){
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {
-
 			}
 
 			@Override
@@ -262,7 +259,6 @@ public class PrivateConfigPage extends WizardPage{
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {
 				// TODO Auto-generated method stub
-
 			}
 
 			@Override
@@ -358,7 +354,6 @@ public class PrivateConfigPage extends WizardPage{
 			transformer.transform(source, result);
 
 			System.out.println("File saved!");
-
 		} catch (ParserConfigurationException pce) {
 			pce.printStackTrace();
 		} catch (TransformerException tfe) {

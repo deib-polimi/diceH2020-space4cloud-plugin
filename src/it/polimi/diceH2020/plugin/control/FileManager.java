@@ -303,6 +303,8 @@ public class FileManager {
 		JobMLProfilesMap jML = JobMLProfilesMapGenerator.build();
 		jML.setMapJobMLProfile(jmlMap);
 		data.setMapJobMLProfiles(jML);
+
+		
 	}
 
 	public String getPath(){

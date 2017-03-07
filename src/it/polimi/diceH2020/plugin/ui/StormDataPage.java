@@ -13,6 +13,7 @@ public class StormDataPage extends WizardPage{
 	private Composite container;
 	private GridLayout layout;
 	private double stormU;
+	private Label errLabel;
 	private Text stormUTextField;
 	protected StormDataPage(String pageName) {
 		super("Select data for Storm Technology");
@@ -28,18 +29,31 @@ public class StormDataPage extends WizardPage{
 		container.setLayout(layout);
 		Label l1;
 		l1 = new Label(container, SWT.None);
-		l1.setText("Set Utilization threshhold");
+		l1.setText("Set Utilization threshhold (in %)");
 		this.stormUTextField = new Text(container, SWT.BORDER);
-		//t1.setLayoutData(g3);
+		errLabel=new Label(container,SWT.None);
+		errLabel.setText("Not acceptable value for utilization");
+		errLabel.setVisible(false);
 		stormUTextField.setEditable(true);
 
 		stormUTextField.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent arg0) {
 				try{
-					stormU=Double.parseDouble(stormUTextField.getText());
+					stormU=(double)Integer.parseInt(stormUTextField.getText())/100;
+					System.out.println(stormU);
+					if(stormU>1||stormU<0){
+						stormU=-1;
+						errLabel.setVisible(true);
+						
+					}else{
+						errLabel.setVisible(false);
+					}
+					
 				}catch(NumberFormatException e){
-
+					errLabel.setVisible(true);
+					stormU=-1;
+					errLabel.setText("Not acceptable value for utilization");
 				}
 				getWizard().getContainer().updateButtons();
 			}

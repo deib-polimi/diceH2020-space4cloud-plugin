@@ -56,12 +56,11 @@ public class HadoopDataPage extends WizardPage{
 				}
 				getWizard().getContainer().updateButtons();
 			}
-
-		});
-		Label l2=new Label(container,SWT.None);
-		l2.setText("Set D parameter");
-		this.hadoopDTextField=new Text(container,SWT.BORDER);
-		hadoopDTextField.setEditable(true);
+        });
+        Label l2=new Label(container,SWT.None);
+		l2.setText("Set deadline");
+        this.hadoopDTextField=new Text(container,SWT.BORDER);
+        hadoopDTextField.setEditable(true);
 		hadoopDTextField.addModifyListener(new ModifyListener(){
 
 			@Override
@@ -78,9 +77,9 @@ public class HadoopDataPage extends WizardPage{
 
 		});
 		Label l3=new Label(container,SWT.None);
-		l3.setText("Set hlow parameter");
-		hlowTextField=new Text(container,SWT.BORDER);
-		hlowTextField.setEditable(true);
+		l3.setText("Set minimum level of concurrency");
+        hlowTextField=new Text(container,SWT.BORDER);
+        hlowTextField.setEditable(true);
 		hlowTextField.addModifyListener(new ModifyListener(){
 
 			@Override
@@ -98,9 +97,9 @@ public class HadoopDataPage extends WizardPage{
 		});
 
 		Label l4=new Label(container,SWT.None);
-		l4.setText("Set hup parameter");
-		hupTextField=new Text(container,SWT.BORDER);
-		hupTextField.setEditable(true);
+		l4.setText("Set maximum level of concurrency");
+        hupTextField=new Text(container,SWT.BORDER);
+        hupTextField.setEditable(true);
 		hupTextField.addModifyListener(new ModifyListener(){
 
 			@Override
