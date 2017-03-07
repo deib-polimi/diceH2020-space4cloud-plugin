@@ -66,6 +66,10 @@ public class PrivateConfiguration {
 		return null;
 	}
 	
+	public void removeVmConfig(String name){
+		vmList.remove(getVmFromName(name));
+	}
+	
 	
 	
 }
