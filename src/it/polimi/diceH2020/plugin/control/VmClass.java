@@ -6,6 +6,14 @@ public class VmClass {
 	private double core;
 	private double cost;
 	private double memory;
+	
+	public VmClass(String name,double core,double mem,double cost){
+		this.name=name;
+		this.core=core;
+		this.cost=cost;
+		this.memory=mem;
+	}
+	
 	public String getName() {
 		return name;
 	}

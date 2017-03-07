@@ -1,5 +1,14 @@
 package it.polimi.diceH2020.plugin.ui;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+
+import javax.swing.Box;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -13,6 +22,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import it.polimi.diceH2020.plugin.control.PrivateConfiguration;
@@ -140,7 +150,53 @@ public class PrivateConfigPage extends WizardPage{
         
         addConfig.addSelectionListener(new SelectionListener(){
         	public void widgetSelected(SelectionEvent e) {
-
+        		String name="";
+        		double mem=0;
+        		double cost=0;
+        		double cores=0;
+        		GridBagConstraints c = new GridBagConstraints();
+        		JTextField coreField = new JTextField(5);
+        	      JTextField memField = new JTextField(5);
+        	      JTextField costField= new JTextField(5);
+        	      JTextField nameField=new JTextField(5);
+        	      JPanel myPanel = new JPanel();
+        	      myPanel.add(new JLabel("Name of VM :"),c);
+        	      myPanel.add(nameField,c);
+        	      myPanel.add(new JLabel("Num Cores :"),c);
+        	      myPanel.add(coreField);
+        	      myPanel.add(new JLabel("Memory :"),c);
+        	      myPanel.add(memField);
+        	      myPanel.add(new JLabel("Cost :"),c);
+        	      myPanel.add(costField);
+        	      
+        	      int result = JOptionPane.showConfirmDialog(null, myPanel, 
+        	               "Please Enter VM parameters", JOptionPane.OK_CANCEL_OPTION);
+        	      if (result == JOptionPane.OK_OPTION) {
+        	    	  boolean canCreate=true;
+        	    	  name=nameField.getText();
+        	    	  try{
+              			mem=Double.parseDouble(memField.getText());
+              		}catch(NumberFormatException e1){
+              			canCreate=false;
+              		}
+        	    	  try{
+                			cores=Double.parseDouble(coreField.getText());
+                		}catch(NumberFormatException e1){
+                			canCreate=false;
+                		}
+        	    	  try{
+                			cost=Double.parseDouble(costField.getText());
+                		}catch(NumberFormatException e1){
+                			canCreate=false;
+                		}
+        	    	  if(!name.isEmpty()&&canCreate){
+        	    		  PrivateConfiguration.getCurrent().addVmConfig(new VmClass(name,cores,cost,mem));
+        	    		  vmConfigsList.add(name);
+        	    	  }else{
+        	    		  JOptionPane.showConfirmDialog(null, "Some of the parameters are wrong.. VM not created");
+        	    	  }
+        	      
+        	      }
         		
             }
 
@@ -152,7 +208,23 @@ public class PrivateConfigPage extends WizardPage{
         });
         
         
+        removeConfig.addSelectionListener(new SelectionListener(){
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+			//	vmConfigsList.remove(selectedVmConfig);
+			}
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				
+			}
         
+        
+        
+        
+        
+        });
         
         
         

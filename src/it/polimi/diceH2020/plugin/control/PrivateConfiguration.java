@@ -57,7 +57,14 @@ public class PrivateConfiguration {
 	public void addVmConfig(VmClass vmConf){
 		this.vmList.add(vmConf);
 	}
-	
+	public VmClass getVmFromName(String name){
+		for(VmClass v:this.vmList){
+			if(v.getName().equals(name)){
+				return v;
+			}
+		}
+		return null;
+	}
 	
 	
 	
