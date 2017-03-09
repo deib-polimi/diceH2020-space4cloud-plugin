@@ -19,6 +19,7 @@ public class ClassDesc {
 	//Hadoop-only parameters
 	private Map<String, Map<String,String>> altDtsmHadoop; //Parameters from DTSM files
 	private Map<String, String> hadoopParUD; //User defined parameters
+	private String mlPath;
 	
 	public ClassDesc(int id){
 		this.id = id;
@@ -81,6 +82,14 @@ public class ClassDesc {
 
 	public void setStormU(double stormU) {
 		this.stormU = stormU;
+	}
+
+	public String getMlPath() {
+		return mlPath;
+	}
+
+	public void setMlPath(String mlPath) {
+		this.mlPath = mlPath;
 	}
  
 }

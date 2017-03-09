@@ -212,6 +212,7 @@ public class ChoicePage extends WizardPage{
             	getWizard().getContainer().updateButtons();
             	System.out.println("Choice: PRIVATE");
             	ltcCompositeText.setVisible(false);
+            	canSwitch=true;
             	ltcComposite.setVisible(false);
             	Configuration.getCurrent().setPrivate(true);
             }

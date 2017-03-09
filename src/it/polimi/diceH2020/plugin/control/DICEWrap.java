@@ -43,7 +43,6 @@ public class DICEWrap {
 	private String initialMarking;
 
 	public DICEWrap(){
-		scenario = "PublicAvgWorkLoad";
 		initialMarking = "";
 	}
 
@@ -103,6 +102,7 @@ public class DICEWrap {
 		FileManager.getInstance().generateInputJson();
 		FileManager.getInstance().generateOutputJson();
 		try {
+			setScenario();
 			NetworkManager.getInstance().sendModel(FileManager.getInstance().selectFiles(), scenario);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
@@ -215,5 +215,17 @@ public class DICEWrap {
 		GenerateGspn gspn = new GenerateGspn(((PetriNetDoc)result.getModel().get(0)).getNets().get(0),targetFolder, new ArrayList<EObject>());
 		gspn.doGenerate(new BasicMonitor());
 		System.out.println("GSPN generated");
+	}
+	
+	public void setScenario(){
+		if(!Configuration.getCurrent().getIsPrivate()){
+			if(Configuration.getCurrent().getHasLtc()){
+				this.scenario="PublicPeakWorkload";
+			}else{
+				this.scenario="PublicAvgWorkLoad";
+			}
+		}else{
+			this.scenario="PrivateAdmissionControl";
+		}
 	}
 }

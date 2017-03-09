@@ -112,9 +112,11 @@ public class DSpaceWizard extends Wizard{
 			System.out.println("N: "+n+" classes: "+classes);
 			c.setDdsmPath(classp.getDDSMPath());
 			c.setAltDtsm(classp.getAltDtsm());
+			
 			Configuration.getCurrent().getClasses().add(c);
 
 			if(Configuration.getCurrent().getTechnology().contains("Hadoop")){
+				c.setMlPath(classp.getMlPath());
 				return hPage;
 			}else{
 				return stPage;

@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -18,6 +19,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -43,6 +45,7 @@ import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.JobProfile;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.JobProfilesMap;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.PublicCloudParameters;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.PublicCloudParametersMap;
+import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.SVRFeature;
 
 /**
  * Contains all the methods related with file generation/transformation that we 
@@ -161,6 +164,8 @@ public class FileManager {
 		setMapClassParameters(data,conf);
 
 		if(!conf.getIsPrivate()){
+			//Set MapVMConfigurations
+			data.setMapVMConfigurations(null);
 			data.setPrivateCloudParameters(null);
 			if(conf.getHasLtc()){
 				setEtaR(data, conf);
@@ -173,8 +178,6 @@ public class FileManager {
 			//TODO: private case
 		}	
 		setMachineLearningProfile(data, conf);
-		//Set MapVMConfigurations
-		data.setMapVMConfigurations(null);
 
 		//Generate Json
 		ObjectMapper mapper = new ObjectMapper();
@@ -223,9 +226,14 @@ public class FileManager {
 
 
 				Map<String,JobProfile> profilemap = new HashMap<String,JobProfile>();
-				profilemap.put(split[1], jp);
-
-				alternative.put(split[0], profilemap);
+				
+				if(!Configuration.getCurrent().getIsPrivate()){
+					profilemap.put(split[1], jp);
+					alternative.put(split[0], profilemap);
+				}else{
+					profilemap.put(split[0], jp);
+					alternative.put("inHouse", profilemap);
+				}
 			}
 			classMap.put(String.valueOf(c.getId()), alternative);
 			//classdesc.put(String.valueOf(c.getId()), alternatives);
@@ -289,6 +297,9 @@ public class FileManager {
 	}
 
 	private void setMachineLearningProfile(InstanceDataMultiProvider data, Configuration conf) {
+		if(conf.getTechnology().contains("Hadoop")){
+			this.setMachineLearningHadoop(data);
+		}else{
 		//Set mapJobMLProfile - MACHINE LEARNING
 		Map<String, JobMLProfile> jmlMap = new HashMap<String, JobMLProfile>();
 		List<String> par = new ArrayList<String>();
@@ -304,7 +315,7 @@ public class FileManager {
 		jML.setMapJobMLProfile(jmlMap);
 		data.setMapJobMLProfiles(jML);
 
-		
+		}
 	}
 
 	public String getPath(){
@@ -394,89 +405,39 @@ public class FileManager {
 		return res;
 	}
 
-	//TODO: may be useless
-	//	public Map<String, String> parseXmlFile(){
-	//		Map<String, String> res = new HashMap<String, String>();
-	//		SAXParserFactory factory = SAXParserFactory.newInstance();
-	//		
-	//		
-	//		try {
-	//			SAXParser saxParser = factory.newSAXParser();
-	//			DefaultHandler handler = new DefaultHandler() {
-	//
-	//				boolean ntasks = false;
-	//				boolean hostdemand = false;
-	//				boolean population = false;
-	//				
-	//				public void startElement(String uri, String localName,String qName,
-	//			                Attributes attributes) throws SAXException {
-	//					//System.out.println("Start Element :" + qName);
-	//
-	//					if (qName.equalsIgnoreCase("ntasks")) {
-	//						ntasks = true;
-	//					}
-	//					if(qName.equalsIgnoreCase("hadooppopulation")){
-	//						population = true;
-	//					}
-	//					if(qName.equalsIgnoreCase("hostdemand")){
-	//						hostdemand = true;
-	//					}
-	//				}
-	//
-	//				public void endElement(String uri, String localName,
-	//					String qName) throws SAXException {
-	//					//System.out.println("End Element :" + qName);
-	//
-	//				}
-	//
-	//				public void characters(char ch[], int start, int length) throws SAXException {
-	//					String sp[];
-	//					
-	//					if (ntasks) {
-	//						res.put("nTasks", new String(ch, start, length));
-	////						String s = new String(ch, start, length);
-	////						if (s.contains("hadoopPopulation")){
-	////							sp = s.split(";");System.err.println("hadoopPopulation = " + 
-	////									sp[0].substring(sp[0].indexOf('[') + 1, sp[0].indexOf(']') - 1));System.err.println("hadoopPopulation = " + sp[0].charAt(s.indexOf('=') + 2));
-	////						}
-	////						if (s.contains("nTasks")){
-	////							sp = s.split(";");
-	////							System.err.println("nTasks = " + 
-	////									sp[0].substring(sp[0].indexOf('[') + 1, sp[0].indexOf(']')));
-	////						}
-	//						ntasks = false;
-	//					}
-	//					if(population){
-	//						res.put("hadoopPopulation", new String(ch, start, length));
-	//						population = false;
-	//					}
-	//					if(hostdemand){
-	//						res.put("hostDemand", new String(ch, start, length));
-	//						hostdemand = false;
-	//					}
-	//
-	//				}
-	//
-	//			     };
-	//			     
-	//			     saxParser.parse("/home/kom/it.polimi.deib.dspace/input_models/hadoop/model_1_class.uml", handler);
-	//
-	//		} catch (ParserConfigurationException e) {
-	//			// TODO Auto-generated catch block
-	//			e.printStackTrace();
-	//		} catch (SAXException e) {
-	//			// TODO Auto-generated catch block
-	//			e.printStackTrace();
-	//		} catch (IOException e) {
-	//			// TODO Auto-generated catch block
-	//			e.printStackTrace();
-	//		}
-	//		
-	//		for(String i : res.keySet()){
-	//			System.err.println(i + "\t" + res.get(i));
-	//		}
-	//		
-	//		return res;
-	//		
-	//	}
+	private void setMachineLearningHadoop(InstanceDataMultiProvider data){
+		//Set mapJobMLProfile - MACHINE LEARNING
+				Map<String, JobMLProfile> jmlMap = new HashMap<String, JobMLProfile>();
+				  JSONParser parser = new JSONParser();
+				try {
+					for(ClassDesc cd : Configuration.getCurrent().getClasses()){
+						Map<String,SVRFeature> map=new HashMap<String,SVRFeature>();
+			            Object obj = parser.parse(new FileReader( cd.getMlPath()));
+			           
+			            JSONObject jsonObject = (JSONObject) obj;
+				            double b = (double) jsonObject.get("b");
+				            double mu_t = (double) jsonObject.get("mu_t");
+				            double sigma_t=(double) jsonObject.get("sigma_t");
+				            JSONObject parameter = (JSONObject) jsonObject.get("mlFeatures");
+				            Iterator iterator = parameter.keySet().iterator();
+				            while (iterator.hasNext()) {
+				            	String key=(String)iterator.next();
+				            	JSONObject locObj=(JSONObject) parameter.get(key);
+				            	SVRFeature feat=new SVRFeature();
+				            	feat.setMu((double)locObj.get("mu"));
+				            	feat.setSigma((double)locObj.get("sigma"));
+				            	feat.setW((double)locObj.get("w"));
+				            	map.put(key, feat);
+				            }
+				 
+						jmlMap.put(String.valueOf(cd.getId()), new JobMLProfile(map,b,mu_t,sigma_t));
+					}
+		           
+		        } catch (Exception e) {
+		            e.printStackTrace();
+		        }
+				JobMLProfilesMap jML = JobMLProfilesMapGenerator.build();
+				jML.setMapJobMLProfile(jmlMap);
+				data.setMapJobMLProfiles(jML);	
+	}
 }
