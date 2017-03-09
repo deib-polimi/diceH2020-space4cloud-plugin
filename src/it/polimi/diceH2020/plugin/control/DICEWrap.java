@@ -25,7 +25,6 @@ import es.unizar.disco.pnml.m2t.templates.gspn.GenerateGspn;
 import es.unizar.disco.simulation.models.builders.IAnalyzableModelBuilder.ModelResult;
 import es.unizar.disco.simulation.models.datatypes.PrimitiveVariableAssignment;
 import es.unizar.disco.simulation.models.traces.Trace;
-import fr.lip6.move.pnml.ptnet.PetriNet;
 import fr.lip6.move.pnml.ptnet.PetriNetDoc;
 import fr.lip6.move.pnml.ptnet.Place;
 import fr.lip6.move.pnml.ptnet.Transition;
@@ -189,7 +188,7 @@ public class DICEWrap {
 	 * @param alt
 	 */
 	public void generatePNML(String classID, String alt){
-		PetriNet pnd = ((PetriNetDoc)result.getModel().get(0)).getNets().get(0);
+		PetriNetDoc pnd = (PetriNetDoc)result.getModel().get(0);
 		File aFile = new File(conf.getID() + "J" + classID + alt.replaceAll("-", "") + ".pnml"); 
 		FileOutputStream outputFile = null; 
 		try {

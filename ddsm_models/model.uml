@@ -17,7 +17,7 @@
       <appliedProfile href="model.profile.uml#_FD47gOvwEeaXf_D_Uk9xRg" xmi:type="uml:Profile"/>
     </profileApplication>
   </uml:Model>
-  <DICERProfile:VMsCluster base_Device="_Jp_ugOvxEeaKv6SJY-IkfA" base_Node="_Jp_ugOvxEeaKv6SJY-IkfA" genericSize="medium" vmInstance="1" xmi:id="_7g-dUO99Eeahp-5ka2ckiw">
+  <DICERProfile:VMsCluster base_Device="_Jp_ugOvxEeaKv6SJY-IkfA" base_Node="_Jp_ugOvxEeaKv6SJY-IkfA" genericSize="medium" vmInstance="2" xmi:id="_7g-dUO99Eeahp-5ka2ckiw">
     <provider type="Amazon" xmi:id="_KowVsPeKEea76vYzSt-GIA" xmi:type="DICERProfile.Library:Provider"/>
   </DICERProfile:VMsCluster>
   <DICERProfile:StormCluster base_ExecutionEnvironment="_orH3cPGHEea76vYzSt-GIA" base_Node="_orH3cPGHEea76vYzSt-GIA" protected="true" queueSize="0" xmi:id="_E0IeoPGKEea76vYzSt-GIA"/>

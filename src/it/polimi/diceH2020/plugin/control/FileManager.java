@@ -79,12 +79,14 @@ public class FileManager {
 		for(File f : files){
 			if(f.getName().endsWith(".def")){
 				System.out.println("Renaming " + f.getName());
+				if(conf.getTechnology().equals("Hadoop"))
+					putPlaceHolder("(starta ", f.getName(), "def");
 				f.renameTo(new File(path + conf.getID() + "J" + cdid + alt.replaceAll("-", "") + ".def"));
 				f.delete();
 			}
 			if(f.getName().endsWith(".net")){
 				System.out.println("Renaming " + f.getName());
-				putPlaceHolder(s, f.getName());
+				putPlaceHolder(s, f.getName(), "net");
 				f.renameTo(new File(path + conf.getID() + "J" + cdid + alt.replaceAll("-", "") + ".net"));
 				f.delete();
 			}
@@ -96,7 +98,7 @@ public class FileManager {
 	 * @param id String to be replaced
 	 * @param file Input file path
 	 */
-	public void putPlaceHolder(String id, String file){
+	public void putPlaceHolder(String id, String file, String ext){
 		File f = new File(path + "tmp/" + file);
 		System.out.println("Putting placeholder over "+ id +" in file " + file);
 		try {
@@ -117,7 +119,7 @@ public class FileManager {
 			lines = s.split("\n");
 			for (i=0; i< lines.length; i++){
 				if(lines[i].contains(id)){
-					words = lines[i].split(" ");
+					words = ext.equals("net") ? lines[i].split(" ") : lines[++i].split("-");
 					break;
 				}
 			}
@@ -127,9 +129,9 @@ public class FileManager {
 				return;
 			}
 
-			words[1] = placeHolder;
+			words[1] = ext.equals("net") ? "@@CORES@@" : "@@CONCURRENCY@@}";
 
-			lines[i] = String.join(" ", words);
+			lines[i] = ext.equals("net") ? String.join(" ", words) : String.join("-", words);
 			s = String.join("\n", lines);
 
 			BufferedWriter out = new BufferedWriter(new FileWriter(f));
@@ -153,8 +155,42 @@ public class FileManager {
 		Configuration conf = Configuration.getCurrent(); //TODO: REMOVE
 		InstanceDataMultiProvider data = InstanceDataMultiProviderGenerator.build();
 
-		data.setId(conf.getID());		
+		data.setId(conf.getID());
 
+		setMapJobProfile(data, conf);
+		setMapClassParameters(data,conf);
+
+		if(!conf.getIsPrivate()){
+			data.setPrivateCloudParameters(null);
+			if(conf.getHasLtc()){
+				setEtaR(data, conf);
+			}
+			else{
+				data.setMapPublicCloudParameters(null);
+			}
+		}
+		else{
+			//TODO: private case
+		}	
+		setMachineLearningProfile(data, conf);
+		//Set MapVMConfigurations
+		data.setMapVMConfigurations(null);
+
+		//Generate Json
+		ObjectMapper mapper = new ObjectMapper();
+
+		try {
+			mapper.writerWithDefaultPrettyPrinter().writeValue(new File(path + conf.getID()+".json"), data);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private void setMapJobProfile(InstanceDataMultiProvider data, Configuration conf){
 		//Set MapJobProfile
 		JobProfilesMap classdesc = JobProfilesMapGenerator.build();
 
@@ -196,7 +232,9 @@ public class FileManager {
 		}
 		classdesc.setMapJobProfile(classMap);
 		data.setMapJobProfiles(classdesc);
+	}
 
+	private void setMapClassParameters(InstanceDataMultiProvider data, Configuration conf) {
 		//Set MapClassParameter
 		Map<String, ClassParameters> classdesc1 = new HashMap<String, ClassParameters>();
 		if(conf.getTechnology().contains("Hadoop")){
@@ -222,44 +260,35 @@ public class FileManager {
 			}
 		}
 		data.setMapClassParameters(new ClassParametersMap(classdesc1));
+	}
 
-		if(!conf.getIsPrivate()){
-			if(conf.getHasLtc()){
-				//Set PublicCloudParameters
-				Map<String,Map<String,Map<String, PublicCloudParameters>>> classdesc2 = new HashMap<String,Map<String,Map<String, PublicCloudParameters>>>();
-				for(ClassDesc c : conf.getClasses()){
-					Map<String,Map<String, PublicCloudParameters>> alternatives = new HashMap<String,Map<String, PublicCloudParameters>>();
-					for (String alt: c.getAltDtsm().keySet()){
-						String split[] = alt.split("-");
+	private void setEtaR(InstanceDataMultiProvider data, Configuration conf) {
+		//Set PublicCloudParameters
+		Map<String,Map<String,Map<String, PublicCloudParameters>>> classdesc2 = new HashMap<String,Map<String,Map<String, PublicCloudParameters>>>();
+		for(ClassDesc c : conf.getClasses()){
+			Map<String,Map<String, PublicCloudParameters>> alternatives = new HashMap<String,Map<String, PublicCloudParameters>>();
+			for (String alt: c.getAltDtsm().keySet()){
+				String split[] = alt.split("-");
 
-						PublicCloudParameters params = PublicCloudParametersGenerator.build(2);
-						params.setR(conf.getR());
-						params.setEta(conf.getSpsr());
+				PublicCloudParameters params = PublicCloudParametersGenerator.build(2);
+				params.setR(conf.getR());
+				params.setEta(conf.getSpsr());
 
-						Map<String, PublicCloudParameters> size = new HashMap<String, PublicCloudParameters>();
-						size.put(split[1], params);
+				Map<String, PublicCloudParameters> size = new HashMap<String, PublicCloudParameters>();
+				size.put(split[1], params);
 
-						alternatives.put(split[0], size);
-					}
-					classdesc2.put(String.valueOf(c.getId()), alternatives);
-				}
-
-				PublicCloudParametersMap pub = PublicCloudParametersMapGenerator.build();
-				pub.setMapPublicCloudParameters(classdesc2);
-
-				data.setMapPublicCloudParameters(pub);
-				data.setPrivateCloudParameters(null);
+				alternatives.put(split[0], size);
 			}
-			else{
-				data.setMapPublicCloudParameters(null);
-				data.setPrivateCloudParameters(null);
-			}
-
-		}
-		else{
-			//TODO: private case
+			classdesc2.put(String.valueOf(c.getId()), alternatives);
 		}
 
+		PublicCloudParametersMap pub = PublicCloudParametersMapGenerator.build();
+		pub.setMapPublicCloudParameters(classdesc2);
+
+		data.setMapPublicCloudParameters(pub);
+	}
+
+	private void setMachineLearningProfile(InstanceDataMultiProvider data, Configuration conf) {
 		//Set mapJobMLProfile - MACHINE LEARNING
 		Map<String, JobMLProfile> jmlMap = new HashMap<String, JobMLProfile>();
 		List<String> par = new ArrayList<String>();
@@ -274,28 +303,6 @@ public class FileManager {
 		JobMLProfilesMap jML = JobMLProfilesMapGenerator.build();
 		jML.setMapJobMLProfile(jmlMap);
 		data.setMapJobMLProfiles(jML);
-
-		//Set MapVMConfigurations
-
-		data.setMapVMConfigurations(null);
-
-		//Generate Json
-		ObjectMapper mapper = new ObjectMapper();
-
-		String s="";
-		try {
-			s = mapper.writeValueAsString(data);
-			mapper.writerWithDefaultPrettyPrinter().writeValue(new File(path + conf.getID()+".json"), data);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		System.out.println(s);
-
 	}
 
 	public String getPath(){
@@ -372,9 +379,6 @@ public class FileManager {
 					res.put("mDemand", data.substring(data.indexOf('x') + 4, data.indexOf('u') - 1));
 				}
 			}
-
-			group = doc.getElementsByTagName("hadoopPopulation");
-			res.put("hadoopPopulation", group.item(0).getTextContent());
 		} catch (ParserConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
