@@ -130,6 +130,7 @@ public class NetworkManager {
 			}
 			else{
 			}
+	    	System.out.println(Configuration.getCurrent().getID());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

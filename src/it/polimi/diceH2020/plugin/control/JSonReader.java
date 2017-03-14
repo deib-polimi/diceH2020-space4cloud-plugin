@@ -14,11 +14,9 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package it.polimi.diceH2020.plugin.control;
-
-
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -64,7 +62,6 @@ public class JSonReader {
 		idClassUmlFile=new HashMap<String,String>();
 	}
 
-
 	//Takes as input the file path of the JSon file 
 	public void read(){
 
@@ -88,7 +85,6 @@ public class JSonReader {
 				this.classTypeVM.put(idClass,type);
 				this.classes.add(idClass);
 			}
-
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -96,36 +92,36 @@ public class JSonReader {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	private void writeUml(String filePath,String id){
-		try {	
-
+		try {
 			File inputFile = new File(filePath);
-			DocumentBuilderFactory dbFactory 
-			= DocumentBuilderFactory.newInstance();
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(inputFile);
 			doc.getDocumentElement().normalize();
 			Element root=doc.getDocumentElement();
-			NodeList nodes=root.getElementsByTagName("DICERProfile:VMsCluster");
+			NodeList nodes=root.getElementsByTagName("DDSM:DdsmVMsCluster");
 			Node n=nodes.item(0);
 			NamedNodeMap atributes=n.getAttributes();
-			Node nodeAttrNumVm=atributes.getNamedItem("vmInstance");
+			Node nodeAttrNumVm=atributes.getNamedItem("instances");
 			nodeAttrNumVm.setTextContent(this.classNumVM.get(id).toString());
 			Node nodeAttrType=atributes.getNamedItem("genericSize");
 			nodeAttrType.setTextContent(this.classTypeVM.get(id));
-			NamedNodeMap providerEl= root.getElementsByTagName("provider").item(0).getAttributes();
-			Node provAtt=providerEl.getNamedItem("type");
-			provAtt.setTextContent(provider);
+			if(!this.isAttribtuePresent(atributes, "provider")){
+				Element el=(Element) n;
+				el.setAttribute("provider", this.classTypeVM.get(id));
+			}else{
+				Node nodeAttrType1=atributes.getNamedItem("provider");
+				nodeAttrType1.setTextContent(this.classTypeVM.get(id));
+			}
 			// write the content into xml file
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
 			DOMSource source = new DOMSource(doc);
 			StreamResult result = new StreamResult(new File(filePath));
 			transformer.transform(source, result);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -137,40 +133,30 @@ public class JSonReader {
 		}
 	}
 
-
 	public String getProvider() {
 		return provider;
 	}
-
-
 
 	public void setProvider(String provider) {
 		this.provider = provider;
 	}
 
-
-
 	public Map<String,Long> getClassNumVM() {
 		return classNumVM;
 	}
-
-
 
 	public void setClassNumVM(Map<String,Long> classNumVM) {
 		this.classNumVM = classNumVM;
 	}
 
-
-
 	public Map<String,String> getClassTypeVM() {
 		return classTypeVM;
 	}
 
-
-
 	public void setClassTypeVM(Map<String,String> classTypeVM) {
 		this.classTypeVM = classTypeVM;
 	}
+
 	public void createMap(String jsonFilePath){
 		FileReader reader;
 
@@ -183,7 +169,6 @@ public class JSonReader {
 			for(Object s:keys){
 				this.idClassUmlFile.put((String) s, (String) jsonObject.get(s));
 			}
-
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -195,5 +180,17 @@ public class JSonReader {
 			e.printStackTrace();
 		}
 
+	}
+
+	private boolean isAttribtuePresent(NamedNodeMap element, String attribute) {
+		Boolean result = false;
+		try {
+			Node value = element.getNamedItem(attribute);
+			if (value != null){
+				result = true;
+			}
+		} catch (Exception e) {}
+
+		return result;
 	}
 }

@@ -43,6 +43,7 @@ public class Configuration {
 	private int numR;
 	private int population;
 	private double stormU;
+	private  boolean canSend;
 	private int r = -1;
 	private float spsr = -1;
 
@@ -50,6 +51,7 @@ public class Configuration {
 	public Configuration(){
 		classes = new ArrayList<ClassDesc>();
 		ID = generateName();
+		canSend=true;
 	}
 	
 	public static Configuration getCurrent(){
@@ -207,6 +209,13 @@ public class Configuration {
 
 	public void setStormU(double stormU) {
 		this.stormU = stormU;
+	}
+	
+	public boolean canSend(){
+		return canSend;
+	}
+	public void setCanSend(boolean canS){
+		this.canSend=canS;
 	}
 	
 }

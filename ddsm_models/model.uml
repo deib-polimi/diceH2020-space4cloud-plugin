@@ -1,24 +1,15 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><xmi:XMI xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:DICERProfile="http:///schemas/DICERProfile/_vnnkAPggEea76vYzSt-GIA/84" xmlns:DICERProfile.Library="http:///DICERProfile/Library.ecore" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmi:version="20131001" xsi:schemaLocation="http:///schemas/DICERProfile/_vnnkAPggEea76vYzSt-GIA/84 model.profile.uml#_vnoLEPggEea76vYzSt-GIA http:///DICERProfile/Library.ecore model.profile.uml#_vnoLYvggEea76vYzSt-GIA">
-  <uml:Model name="depl" xmi:id="_I-hIkOvxEeaKv6SJY-IkfA">
-    <packagedElement name="Cluster1" xmi:id="_Jp_ugOvxEeaKv6SJY-IkfA" xmi:type="uml:Device">
-      <nestedNode name="storm1" xmi:id="_orH3cPGHEea76vYzSt-GIA" xmi:type="uml:ExecutionEnvironment"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xmi:XMI xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:DDSM="http://es.unizar.disco.dice/profiles/DDSM/1.0" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmi:version="20131001" xsi:schemaLocation="http://es.unizar.disco.dice/profiles/DDSM/1.0 http://es.unizar.disco.dice/profiles/DICE/1.0#//DDSM">
+  <uml:Model name="RootElement" xmi:id="_ZYDiEAipEeekUI17qveq2Q">
+    <packagedElement name="cluster1" xmi:id="_buvFkAipEeekUI17qveq2Q" xmi:type="uml:Device">
+      <nestedNode name="storm_1" xmi:id="_dbErkAipEeekUI17qveq2Q" xmi:type="uml:ExecutionEnvironment"/>
     </packagedElement>
-    <profileApplication xmi:id="_df_V8O99Eeahp-5ka2ckiw" xmi:type="uml:ProfileApplication">
-      <eAnnotations source="PapyrusVersion" xmi:id="_w0XrAPggEea76vYzSt-GIA" xmi:type="ecore:EAnnotation">
-        <details key="Version" value="0.0.85" xmi:id="_w0XrAfggEea76vYzSt-GIA" xmi:type="ecore:EStringToStringMapEntry"/>
-        <details key="Comment" value="" xmi:id="_w0XrAvggEea76vYzSt-GIA" xmi:type="ecore:EStringToStringMapEntry"/>
-        <details key="Copyright" value="" xmi:id="_w0XrA_ggEea76vYzSt-GIA" xmi:type="ecore:EStringToStringMapEntry"/>
-        <details key="Date" value="2017-02-21" xmi:id="_w0XrBPggEea76vYzSt-GIA" xmi:type="ecore:EStringToStringMapEntry"/>
-        <details key="Author" value="" xmi:id="_w0XrBfggEea76vYzSt-GIA" xmi:type="ecore:EStringToStringMapEntry"/>
+    <profileApplication xmi:id="_bM2ggAipEeekUI17qveq2Q" xmi:type="uml:ProfileApplication">
+      <eAnnotations source="http://www.eclipse.org/uml2/2.0.0/UML" xmi:id="_bM48wAipEeekUI17qveq2Q" xmi:type="ecore:EAnnotation">
+        <references href="http://es.unizar.disco.dice/profiles/DICE/1.0#//DDSM" xmi:type="ecore:EPackage"/>
       </eAnnotations>
-      <eAnnotations source="http://www.eclipse.org/uml2/2.0.0/UML" xmi:id="_df_9AO99Eeahp-5ka2ckiw" xmi:type="ecore:EAnnotation">
-        <references href="model.profile.uml#_vnoLEPggEea76vYzSt-GIA" xmi:type="ecore:EPackage"/>
-      </eAnnotations>
-      <appliedProfile href="model.profile.uml#_FD47gOvwEeaXf_D_Uk9xRg" xmi:type="uml:Profile"/>
+      <appliedProfile href="pathmap://DICE_PROFILES/DICE.profile.uml#_aYmS0Dx2EeaOH59TuV453g" xmi:type="uml:Profile"/>
     </profileApplication>
   </uml:Model>
-  <DICERProfile:VMsCluster base_Device="_Jp_ugOvxEeaKv6SJY-IkfA" base_Node="_Jp_ugOvxEeaKv6SJY-IkfA" genericSize="medium" vmInstance="2" xmi:id="_7g-dUO99Eeahp-5ka2ckiw">
-    <provider type="Amazon" xmi:id="_KowVsPeKEea76vYzSt-GIA" xmi:type="DICERProfile.Library:Provider"/>
-  </DICERProfile:VMsCluster>
-  <DICERProfile:StormCluster base_ExecutionEnvironment="_orH3cPGHEea76vYzSt-GIA" base_Node="_orH3cPGHEea76vYzSt-GIA" protected="true" queueSize="0" xmi:id="_E0IeoPGKEea76vYzSt-GIA"/>
+  <DDSM:DdsmVMsCluster base_Device="_buvFkAipEeekUI17qveq2Q" genericSize="ad" instances="1" provider="ad" xmi:id="_fK9U0AipEeekUI17qveq2Q"/>
+  <DDSM:DdsmStormCluster base_ExecutionEnvironment="_dbErkAipEeekUI17qveq2Q" base_Node="_dbErkAipEeekUI17qveq2Q" xmi:id="_iL6kYAipEeekUI17qveq2Q"/>
 </xmi:XMI>

@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 
+import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -216,7 +217,10 @@ public class FileManager {
 			setPrivateParameters(data);
 		}	
 		setMachineLearningProfile(data, conf);
-		
+
+		if(!Configuration.getCurrent().canSend())
+			return;
+
 		//Generate Json
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new Jdk8Module());
@@ -358,7 +362,9 @@ public class FileManager {
 
 	private void setMachineLearningProfile(InstanceDataMultiProvider data, Configuration conf) {
 		if(conf.getTechnology().contains("Hadoop")){
-			this.setMachineLearningHadoop(data);
+			
+				Configuration.getCurrent().setCanSend(this.setMachineLearningHadoop(data));
+			
 		}else{
 		//Set mapJobMLProfile - MACHINE LEARNING
 		Map<String, JobMLProfile> jmlMap = new HashMap<String, JobMLProfile>();
@@ -465,23 +471,48 @@ public class FileManager {
 		return res;
 	}
 
-	private void setMachineLearningHadoop(InstanceDataMultiProvider data){
+	private boolean setMachineLearningHadoop(InstanceDataMultiProvider data){
 		//Set mapJobMLProfile - MACHINE LEARNING
 				Map<String, JobMLProfile> jmlMap = new HashMap<String, JobMLProfile>();
 				  JSONParser parser = new JSONParser();
 				try {
 					for(ClassDesc cd : Configuration.getCurrent().getClasses()){
 						Map<String,SVRFeature> map=new HashMap<String,SVRFeature>();
-			            Object obj = parser.parse(new FileReader( cd.getMlPath()));
-			           
-			            JSONObject jsonObject = (JSONObject) obj;
-				            double b = (double) jsonObject.get("b");
+						
+						Object obj = parser.parse(new FileReader( cd.getMlPath()));
+						JSONObject jsonObject = (JSONObject) obj;
+					    JSONObject parameter = (JSONObject) jsonObject.get("mlFeatures");
+				           
+						Map<String,String> toCheck=cd.getAltDtsmHadoop().get(cd.getAltDtsmHadoop().keySet().iterator().next());
+						for(String st:toCheck.keySet()){
+							if(!st.equals("file")){
+								if(!parameter.containsKey(st)){
+									JOptionPane.showMessageDialog(null, "Missing field in machine learning file: " +st +"\n"+"for class: "+cd.getId(), "Error: " , JOptionPane.ERROR_MESSAGE);
+									  
+									return false;
+								}
+							}
+						}
+						
+			            
+			                double b = (double) jsonObject.get("b");
 				            double mu_t = (double) jsonObject.get("mu_t");
 				            double sigma_t=(double) jsonObject.get("sigma_t");
-				            JSONObject parameter = (JSONObject) jsonObject.get("mlFeatures");
+				            if(!parameter.containsKey("x")){
+				            		JOptionPane.showMessageDialog(null, "Missing field in machine learning file: " +"x " +"\n"+"for class: "+cd.getId(), "Error: " , JOptionPane.ERROR_MESSAGE);
+								
+				            	return false;
+				            }
+				            if(!parameter.containsKey("h")){
+				            	JOptionPane.showMessageDialog(null, "Missing field in machine learning file: " +"h" +"\n"+"for class: "+cd.getId(), "Error: " , JOptionPane.ERROR_MESSAGE);
+								
+				            	return false;
+				            }
 				            Iterator iterator = parameter.keySet().iterator();
 				            while (iterator.hasNext()) {
 				            	String key=(String)iterator.next();
+				            	if(!toCheck.containsKey(key)&&!key.equals("x")&&!key.equals("h"))
+				            		continue;
 				            	JSONObject locObj=(JSONObject) parameter.get(key);
 				            	SVRFeature feat=new SVRFeature();
 				            	feat.setMu((double)locObj.get("mu"));
@@ -498,6 +529,7 @@ public class FileManager {
 		        }
 				JobMLProfilesMap jML = JobMLProfilesMapGenerator.build();
 				jML.setMapJobMLProfile(jmlMap);
-				data.setMapJobMLProfiles(jML);	
+				data.setMapJobMLProfiles(jML);
+				return true;
 	}
 }

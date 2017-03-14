@@ -119,6 +119,9 @@ public class DICEWrap {
 
 		FileManager.getInstance().generateInputJson();
 		FileManager.getInstance().generateOutputJson();
+		if(!Configuration.getCurrent().canSend()){
+			return;
+		}
 		try {
 			setScenario();
 			NetworkManager.getInstance().sendModel(FileManager.getInstance().selectFiles(), scenario);
