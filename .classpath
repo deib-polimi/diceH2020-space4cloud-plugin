@@ -20,5 +20,6 @@
 	<classpathentry exported="true" kind="lib" path="imported_packages/jackson-core-2.8.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="imported_packages/jackson-databind-2.8.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="imported_packages/jackson-annotations-2.8.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="imported_packages/jackson-datatype-jdk8-2.8.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

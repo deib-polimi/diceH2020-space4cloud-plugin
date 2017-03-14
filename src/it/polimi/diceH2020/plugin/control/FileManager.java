@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -45,6 +46,7 @@ import org.xml.sax.SAXException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 import it.polimi.diceH2020.SPACE4Cloud.shared.generators.ClassParametersGenerator;
 import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.InstanceDataMultiProviderGenerator;
@@ -52,8 +54,11 @@ import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.JobMLP
 import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.JobMLProfilesMapGenerator;
 import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.JobProfileGenerator;
 import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.JobProfilesMapGenerator;
+import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.PrivateCloudParametersGenerator;
 import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.PublicCloudParametersGenerator;
 import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.PublicCloudParametersMapGenerator;
+import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.VMConfigurationsGenerator;
+import it.polimi.diceH2020.SPACE4Cloud.shared.generatorsDataMultiProvider.VMConfigurationsMapGenerator;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.ClassParameters;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.ClassParametersMap;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.InstanceDataMultiProvider;
@@ -61,9 +66,12 @@ import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.JobMLProfil
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.JobMLProfilesMap;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.JobProfile;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.JobProfilesMap;
+import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.PrivateCloudParameters;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.PublicCloudParameters;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.PublicCloudParametersMap;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.SVRFeature;
+import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.VMConfiguration;
+import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.VMConfigurationsMap;
 
 /**
  * Contains all the methods related with file generation/transformation that we 
@@ -102,14 +110,25 @@ public class FileManager {
 				System.out.println("Renaming " + f.getName());
 				if(conf.getTechnology().equals("Hadoop"))
 					putPlaceHolder("(starta ", f.getName(), "def");
+				if(Configuration.getCurrent().getIsPrivate()){
+
+					f.renameTo(new File(path+conf.getID()+"J"+cdid+"inHouse"+alt+".def"));
+					f.delete();
+				}else{
 				f.renameTo(new File(path + conf.getID() + "J" + cdid + alt.replaceAll("-", "") + ".def"));
 				f.delete();
+				}
 			}
 			if(f.getName().endsWith(".net")){
 				System.out.println("Renaming " + f.getName());
 				putPlaceHolder(s, f.getName(), "net");
+				if(Configuration.getCurrent().getIsPrivate()){
+					f.renameTo(new File(path+conf.getID()+"J"+cdid+"inHouse"+alt+".net"));
+					f.delete();
+				}else{
 				f.renameTo(new File(path + conf.getID() + "J" + cdid + alt.replaceAll("-", "") + ".net"));
 				f.delete();
+				}
 			}
 		}
 	}
@@ -193,13 +212,15 @@ public class FileManager {
 			}
 		}
 		else{
-			//TODO: private case
+			data.setMapPublicCloudParameters(null);
+			setPrivateParameters(data);
 		}	
 		setMachineLearningProfile(data, conf);
-
+		
 		//Generate Json
 		ObjectMapper mapper = new ObjectMapper();
-
+		mapper.registerModule(new Jdk8Module());
+		
 		try {
 			mapper.writerWithDefaultPrettyPrinter().writeValue(new File(path + conf.getID()+".json"), data);
 		} catch (JsonProcessingException e) {
@@ -209,6 +230,27 @@ public class FileManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private void setPrivateParameters(InstanceDataMultiProvider data) {
+		PrivateCloudParameters pr= PrivateCloudParametersGenerator.build();
+		pr.setE(PrivateConfiguration.getCurrent().getPriE());
+		pr.setM(PrivateConfiguration.getCurrent().getPriM());
+		pr.setN(PrivateConfiguration.getCurrent().getPriN());
+		pr.setV(PrivateConfiguration.getCurrent().getPriV());
+		data.setPrivateCloudParameters(pr);
+		VMConfigurationsMap priMap= VMConfigurationsMapGenerator.build();
+		Map<String, VMConfiguration> mapVMConfigurations=new HashMap<String,VMConfiguration>();
+		for(VmClass v:PrivateConfiguration.getCurrent().getVmList()){
+			VMConfiguration vmConf= VMConfigurationsGenerator.build(2);
+			vmConf.setCore(v.getCore());
+			vmConf.setMemory(v.getMemory());
+			Optional<Double> opt=Optional.of(v.getCost());
+			vmConf.setCost(Optional.of(v.getCost()));
+			mapVMConfigurations.put(v.getName(), vmConf);
+		}
+		priMap.setMapVMConfigurations(mapVMConfigurations);
+		data.setMapVMConfigurations(priMap);
 	}
 
 	private void setMapJobProfile(InstanceDataMultiProvider data, Configuration conf){
