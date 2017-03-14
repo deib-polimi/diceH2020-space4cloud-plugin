@@ -24,6 +24,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -46,6 +48,7 @@ public class ConfigurationDialog extends Dialog {
 	private Shell shell;
 	private Text serverId;
 	private Text timeToCheck;
+	private Text backId;
 	private String savingDir;
 	private String server;
 	private Button save;
@@ -55,13 +58,18 @@ public class ConfigurationDialog extends Dialog {
 	private Button selSave;
 	private int loadwaitTime;
 	private String loadServer;
+	private String bcEndId;
+	private boolean savingDirChanged;
+	private boolean bcEndChanged;
 	
 	public ConfigurationDialog(Shell parent) {
 		super(parent);
+		load();
 		// TODO Auto-generated constructor stub
 		this.shell=parent;
 		changed=false;
-		server="";
+		savingDirChanged=false;
+		this.bcEndChanged=false;
 	}
 	public void setView(){
 		GridLayout layout=new GridLayout();
@@ -78,6 +86,13 @@ public class ConfigurationDialog extends Dialog {
 				server=serverId.getText();
 			}
         });
+		Label l4=new Label(shell,SWT.FILL);
+		l4.setText("Set back end address:");
+		
+		backId=new Text(shell,SWT.BORDER);
+		backId.setText(bcEndId);
+		
+		
 		Label l2=new Label(shell,SWT.FILL);
 		l2.setText("Set time to wait before searching for solutions:");
 		timeToCheck=new Text(shell,SWT.BORDER);
@@ -97,6 +112,18 @@ public class ConfigurationDialog extends Dialog {
 				}
 			}
         });
+		
+		backId.addModifyListener(new ModifyListener(){
+
+			@Override
+			public void modifyText(ModifyEvent arg0) {
+				bcEndId=backId.getText();
+				bcEndChanged=true;
+			}
+        });
+		
+		
+		
 		this.selSave = new Button(shell, SWT.PUSH);
 		selSave.setLayoutData(new GridData(SWT.BEGINNING, SWT.END, false, false));
 		selSave.setText("Select Folder where to save the data...");
@@ -112,11 +139,11 @@ public class ConfigurationDialog extends Dialog {
             	if (choice!= JFileChooser.APPROVE_OPTION) return;
             	savingDir=j.getSelectedFile().getAbsolutePath();
             	l3.setText(savingDir);
+            	l3.setVisible(true);
+            	savingDirChanged=true;
             	shell.update();
              }
         });
-		new Label(shell,SWT.FILL);
-		new Label(shell,SWT.FILL);
 		new Label(shell,SWT.FILL);
 		new Label(shell,SWT.FILL);
 		new Label(shell,SWT.FILL);
@@ -140,8 +167,9 @@ public class ConfigurationDialog extends Dialog {
 	}
 	
 	public void load() {
-		String defaultId="http://specclient1.dei.polimi.it:8018/";
+		String defaultId="http://localhost:8000/";
 		int defaultTime=5;
+		this.bcEndId="http://localhost:8080/";
 		File f = new File(filePath);
 		System.out.println(f.getAbsolutePath());
 		if(!f.exists()) { 
@@ -149,14 +177,20 @@ public class ConfigurationDialog extends Dialog {
 			    PrintWriter writer = new PrintWriter(filePath, "UTF-8");
 			    writer.println(defaultId);
 			    writer.println(Integer.toString(defaultTime));
+			    writer.println();
+			    writer.println(bcEndId);
 			    writer.close();
 			} catch (IOException e) {
 			   // do something
 			}
+			
 			this.server=defaultId;
 			this.loadServer=defaultId;
 			this.loadwaitTime=defaultTime;
 			this.timeToWait=defaultTime;
+			Path currentRelativePath = Paths.get("");
+			String s = currentRelativePath.toAbsolutePath().toString();
+			this.savingDir=s;
 		}else{
 			BufferedReader br=null;
 			try {
@@ -179,6 +213,8 @@ public class ConfigurationDialog extends Dialog {
 			    this.loadServer=server;
 			    this.timeToWait=Integer.parseInt(sp[1]);
 			    this.loadwaitTime=timeToWait;
+			    this.savingDir=sp[2];
+			    this.bcEndId=sp[3];
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -205,17 +241,24 @@ public class ConfigurationDialog extends Dialog {
 		    writer.println(this.server);
 		   writer.println(this.timeToWait);
 		   writer.println(this.savingDir);
+		   writer.println(this.bcEndId);
 		    writer.close();
 		} catch (IOException e) {
 		   // do something
 		}
 	}
 	private void setChanged(){
-		if(this.loadwaitTime!=this.timeToWait||!this.loadServer.equals(this.server)){
+		if(this.loadwaitTime!=this.timeToWait||!this.loadServer.equals(this.server)||savingDirChanged||this.bcEndChanged){
 			this.changed=true;
 		}else{
 		this.changed=false;
 		}
+	}
+	public String getBcEndId() {
+		return bcEndId;
+	}
+	public void setBcEndId(String bcEndId) {
+		this.bcEndId = bcEndId;
 	}
 	
 	

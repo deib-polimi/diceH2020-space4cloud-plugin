@@ -10,6 +10,6 @@
       <appliedProfile href="pathmap://DICE_PROFILES/DICE.profile.uml#_aYmS0Dx2EeaOH59TuV453g" xmi:type="uml:Profile"/>
     </profileApplication>
   </uml:Model>
-  <DDSM:DdsmVMsCluster base_Device="_buvFkAipEeekUI17qveq2Q" genericSize="ad" instances="1" provider="ad" xmi:id="_fK9U0AipEeekUI17qveq2Q"/>
+  <DDSM:DdsmVMsCluster base_Device="_buvFkAipEeekUI17qveq2Q" genericSize="medium" instances="1" provider="medium" xmi:id="_fK9U0AipEeekUI17qveq2Q"/>
   <DDSM:DdsmStormCluster base_ExecutionEnvironment="_dbErkAipEeekUI17qveq2Q" base_Node="_dbErkAipEeekUI17qveq2Q" xmi:id="_iL6kYAipEeekUI17qveq2Q"/>
 </xmi:XMI>

@@ -14,7 +14,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package it.polimi.diceH2020.plugin.net;
 
@@ -45,6 +45,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import it.polimi.diceH2020.plugin.control.Configuration;
+import it.polimi.diceH2020.plugin.control.GeneralConfig;
 
 /**
  * Manages interaction with the backend
@@ -53,8 +54,9 @@ import it.polimi.diceH2020.plugin.control.Configuration;
 public class NetworkManager {
 
 	private static NetworkManager instance;
-	private static String rootEndpoint = "http://localhost:8000";
-	private static String vmConfigsEndpoint = "http://localhost:8080/vm-types";
+	private static String rootEndpoint = GeneralConfig.getCurrent().getServerID();
+	private static String vmConfigsEndpoint = GeneralConfig.getCurrent().getBackEndID()+"/vm-types";
+	private static String modelUploadEndpoint = rootEndpoint+"/files/view/upload";
 	private static String uploadRest=rootEndpoint+"/files/upload";
 
 	public static NetworkManager getInstance(){
@@ -130,7 +132,7 @@ public class NetworkManager {
 			}
 			else{
 			}
-	    	System.out.println(Configuration.getCurrent().getID());
+			System.out.println(Configuration.getCurrent().getID());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
