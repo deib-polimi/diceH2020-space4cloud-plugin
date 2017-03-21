@@ -60,18 +60,14 @@ public class DSpaceWizard extends Wizard{
 			classes = choice.getClasses();
 			Configuration.getCurrent().setNumClasses(classes);
 
-			if (Configuration.getCurrent().getIsPrivate()) {
-				return folPage;
-			} else {
-				if (Configuration.getCurrent().getHasLtc()){
-					Configuration.getCurrent().setR(choice.getR());
-					Configuration.getCurrent().setSpsr(choice.getSpsr());
-				}
-
-				classp.udpate();
-				classp.setNumClasses(classes);
-				return classp;
+			if (Configuration.getCurrent().getHasLtc()){
+				Configuration.getCurrent().setR(choice.getR());
+				Configuration.getCurrent().setSpsr(choice.getSpsr());
 			}
+
+			classp.udpate();
+			classp.setNumClasses(classes);
+			return classp;
 		}
 
 		if(currentPage==hPage){
