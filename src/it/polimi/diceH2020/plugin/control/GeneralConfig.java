@@ -14,7 +14,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package it.polimi.diceH2020.plugin.control;
 
@@ -30,10 +30,12 @@ import java.nio.file.Paths;
 
 public class GeneralConfig {
 	private static GeneralConfig currentConf;
+
 	private String savingDir;
 	private String serverID;
 	private int timeToWait;
 	private String backEndID;
+
 	public GeneralConfig(){
 		loadConfiguration();
 	}
@@ -44,9 +46,11 @@ public class GeneralConfig {
 		}
 		return currentConf;
 	}
+
 	public void setServerID(String serverId){
 		this.serverID=serverId;
 	}
+
 	public String getServerID(){
 		return this.serverID;
 	}
@@ -54,19 +58,20 @@ public class GeneralConfig {
 	public String getSavingDir(){
 		return this.savingDir;
 	}
+
 	public void setSavingDir(String savingDir){
 		this.savingDir=savingDir;
 	}
+
 	public int getTime(){
 		return this.timeToWait;
 	}
-
-
 
 	private void loadConfiguration(){
 		String filePath="ConfigFile.txt";
 		int defaultTime=10;
 		File f = new File(filePath);
+
 		if(!(f.exists())) { 
 			this.timeToWait=defaultTime;
 			this.serverID="http://localhost:8000/";
@@ -75,13 +80,14 @@ public class GeneralConfig {
 			String s = currentRelativePath.toAbsolutePath().toString();
 			this.savingDir=s;
 			PrintWriter writer;
+
 			try {
 				writer = new PrintWriter(filePath, "UTF-8");
 				writer.println(serverID);
-			    writer.println(Integer.toString(defaultTime));
-			    writer.println(s);
-			    writer.println(this.backEndID);
-			    writer.close();
+				writer.println(Integer.toString(defaultTime));
+				writer.println(s);
+				writer.println(this.backEndID);
+				writer.close();
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -89,30 +95,31 @@ public class GeneralConfig {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
 		}else{
 			BufferedReader br=null;
+
 			try {
 				br = new BufferedReader(new FileReader(filePath));
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			try {
-			    StringBuilder sb = new StringBuilder();
-			    String line = br.readLine();
 
-			    while (line != null) {
-			        sb.append(line+"\n");
-			        line = br.readLine();
-			    }
-			    
-			    String everything = sb.toString();
-			    String[] sp=everything.split("\n");
-			    this.serverID=sp[0];
-			    this.timeToWait=Integer.parseInt(sp[1]);
-			    this.savingDir=sp[2];
-			    this.backEndID=sp[3];
+			try {
+				StringBuilder sb = new StringBuilder();
+				String line = br.readLine();
+
+				while (line != null) {
+					sb.append(line+"\n");
+					line = br.readLine();
+				}
+
+				String everything = sb.toString();
+				String[] sp=everything.split("\n");
+				this.serverID=sp[0];
+				this.timeToWait=Integer.parseInt(sp[1]);
+				this.savingDir=sp[2];
+				this.backEndID=sp[3];
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -126,11 +133,11 @@ public class GeneralConfig {
 			}
 		}
 	}
-	
+
 	public String getBackEndID(){
 		return this.backEndID;
 	}
-	
+
 	public void setBackEndID(String bc){
 		this.backEndID=bc;
 	}

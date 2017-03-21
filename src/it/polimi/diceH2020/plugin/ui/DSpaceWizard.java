@@ -14,7 +14,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package it.polimi.diceH2020.plugin.ui;
 
@@ -66,8 +66,7 @@ public class DSpaceWizard extends Wizard{
 		hPage=new HadoopDataPage("Set Hadoop parameters");
 		stPage=new StormDataPage("Set Storm parameter");
 		prConfigPage=new PrivateConfigPage("Set cluster parameters");
-		
-		
+
 		addPage(choice);
 		addPage(prConfigPage);
 		addPage(folPage);
@@ -87,16 +86,19 @@ public class DSpaceWizard extends Wizard{
 				Configuration.getCurrent().setR(choice.getR());
 				Configuration.getCurrent().setSpsr(choice.getSpsr());
 			}
+
 			if(Configuration.getCurrent().getIsPrivate()){
 				return prConfigPage;
 			}
-				classp.udpate();
-				classp.setNumClasses(classes);
-				return classp;
+
+			classp.udpate();
+			classp.setNumClasses(classes);
+			return classp;
 		}
 
 		if(currentPage==hPage){
 			c.setHadoopParUD(hPage.getHadoopParUD());
+
 			if(n == classes){
 				finish = true;
 				Configuration.getCurrent().dump();
@@ -105,20 +107,25 @@ public class DSpaceWizard extends Wizard{
 
 			classp.reset();
 			hPage.reset();
+
 			if(Configuration.getCurrent().getIsPrivate())
 				classp.privateCase();
+
 			return classp;
 		}
 
 		if(currentPage==stPage){
 			c.setStormU(stPage.getStormU());
+
 			if(n == classes){
 				finish = true;
 				Configuration.getCurrent().dump();
 				return fpage;
 			}
+
 			classp.reset();
 			stPage.reset();
+
 			if(Configuration.getCurrent().getIsPrivate())
 				classp.privateCase();
 
@@ -130,7 +137,7 @@ public class DSpaceWizard extends Wizard{
 			System.out.println("N: "+n+" classes: "+classes);
 			c.setDdsmPath(classp.getDDSMPath());
 			c.setAltDtsm(classp.getAltDtsm());
-			
+
 			Configuration.getCurrent().getClasses().add(c);
 
 			if(Configuration.getCurrent().getTechnology().contains("Hadoop")){
@@ -148,7 +155,7 @@ public class DSpaceWizard extends Wizard{
 			finish = true;
 			return fpage;
 		}
-		
+
 		if(currentPage==this.prConfigPage){
 			PrivateConfiguration.getCurrent().setPriE(prConfigPage.getCostNode());
 			PrivateConfiguration.getCurrent().setPriM(prConfigPage.getMemForNode());

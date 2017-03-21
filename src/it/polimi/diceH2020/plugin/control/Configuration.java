@@ -14,7 +14,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package it.polimi.diceH2020.plugin.control;
 
@@ -28,7 +28,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class Configuration {
 	private static Configuration currentConf;
-	
+
 	private ArrayList<ClassDesc> classes;
 	private int numClasses;
 	private boolean isPrivate = false;
@@ -47,24 +47,23 @@ public class Configuration {
 	private int r = -1;
 	private float spsr = -1;
 
-	
 	public Configuration(){
 		classes = new ArrayList<ClassDesc>();
 		ID = generateName();
 		canSend=true;
 	}
-	
+
 	public static Configuration getCurrent(){
 		if (currentConf == null){
 			currentConf = new Configuration();
 		}
 		return currentConf;
 	}
-	
+
 	private String generateName() {
 		return String.valueOf(ThreadLocalRandom.current().nextInt(1000, 9998 + 1));
 	}
-	
+
 	public String getID(){
 		return ID;
 	}
@@ -80,11 +79,11 @@ public class Configuration {
 	public ArrayList<ClassDesc> getClasses() {
 		return classes;
 	}
-	
+
 	public ClassDesc getCurrentClass(){
 		return classes.get(classes.size() - 1);
 	}
-	
+
 	public void dump(){
 		System.out.println("Technology:\t"+technology);
 		System.out.println(isPrivate ? "Private" : !hasLTC ? "No LTC" : "r: " + r + "\t" + "spsr: " + spsr);
@@ -96,32 +95,32 @@ public class Configuration {
 			}
 		}
 	} //TODO replace with dump on JSON
-	
+
 	public void setTechnology(String tech){
 		technology = tech;
 	}
-	
+
 	public void setPrivate(boolean isPrivate){
 		this.isPrivate = isPrivate;
 	}
-	
+
 	public void setLTC(boolean hasLTC){
 		this.hasLTC = hasLTC;
 	}
-	
+
 	public String getTechnology(){
 		return technology;
 	}
-	
+
 	public boolean getIsPrivate(){
 		return isPrivate;
 	}
-	
+
 	//TODO: is this method any useful?
 	public boolean isComplete(){
 		return(numClasses == classes.size() && numClasses > 0 && technology != null);
 	}
-	
+
 	public boolean getHasLtc(){
 		return hasLTC;
 	}
@@ -210,12 +209,12 @@ public class Configuration {
 	public void setStormU(double stormU) {
 		this.stormU = stormU;
 	}
-	
+
 	public boolean canSend(){
 		return canSend;
 	}
+
 	public void setCanSend(boolean canS){
 		this.canSend=canS;
 	}
-	
 }

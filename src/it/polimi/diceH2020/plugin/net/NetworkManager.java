@@ -56,7 +56,6 @@ public class NetworkManager {
 	private static NetworkManager instance;
 	private static String rootEndpoint = GeneralConfig.getCurrent().getServerID();
 	private static String vmConfigsEndpoint = GeneralConfig.getCurrent().getBackEndID()+"/vm-types";
-	private static String modelUploadEndpoint = rootEndpoint+"/files/view/upload";
 	private static String uploadRest=rootEndpoint+"/files/upload";
 
 	public static NetworkManager getInstance(){
@@ -65,13 +64,14 @@ public class NetworkManager {
 		}
 		instance = new NetworkManager();
 		return instance;
-
 	}
-	public NetworkManager() {
+
+	private NetworkManager() {
 		System.setProperty("org.apache.commons.logging.Log","org.apache.commons.logging.impl.SimpleLog");
 		System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
 		System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http.wire", "DEBUG");
 	}
+
 	/**
 	 * Fetches vm configurations from the web
 	 * @return A json object representing the fetched vm configurations
@@ -82,6 +82,7 @@ public class NetworkManager {
 		CloseableHttpResponse response;
 		String body;
 		JSONParser parser;
+
 		try {
 			response = httpclient.execute(httpget);
 			if(response.getStatusLine().getStatusCode() != 200){
@@ -98,8 +99,8 @@ public class NetworkManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
 
+		return null;
 	}
 
 	/**
@@ -108,16 +109,17 @@ public class NetworkManager {
 	 * @param scenario The scenario parameter
 	 * @throws UnsupportedEncodingException 
 	 */
-
 	public void sendModel(List<File> files, String scenario) throws UnsupportedEncodingException{
 		HttpClient httpclient =HttpClients.createDefault();
 		HttpResponse response;
 		HttpPost post = new HttpPost(uploadRest);	
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();  
 		builder.addPart("scenario",new StringBody(scenario,ContentType.DEFAULT_TEXT));
+
 		for(File file:files){
 			builder.addPart("file[]", new FileBody(file));
 		}
+
 		post.setEntity(builder.build());
 		try {
 			response = httpclient.execute(post);
@@ -127,6 +129,7 @@ public class NetworkManager {
 			String js = EntityUtils.toString(response.getEntity());
 			parseJson(js);
 			System.out.println("Code : "+response.getStatusLine().getStatusCode());
+
 			if(response.getStatusLine().getStatusCode() != 200){
 				System.err.println("Error: POST not succesfull");
 			}
@@ -137,11 +140,7 @@ public class NetworkManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-
 	}
-
-
 
 	public String[] getTechnologies(){
 		String s[] = {"Storm", "MapReduce", "Hadoop"};
@@ -150,12 +149,14 @@ public class NetworkManager {
 
 	private void parseJson(String string){
 		JSONParser parser = new JSONParser();
+
 		try {
 			JSONObject json = (JSONObject) parser.parse(string);
 			JSONObject lin=(JSONObject) json.get("_links");
 			JSONObject sub=(JSONObject) lin.get("solution");
 			String link=(String) sub.get("href");
 			File f = new File("results");
+
 			if(!f.exists()) { 
 				try{
 					PrintWriter writer = new PrintWriter("results", "UTF-8");
@@ -165,9 +166,7 @@ public class NetworkManager {
 				} catch (IOException e) {
 					// do something
 				}
-
 			}else{
-
 				try(FileWriter fw = new FileWriter("results", true);
 						BufferedWriter bw = new BufferedWriter(fw);
 						PrintWriter out = new PrintWriter(bw))
@@ -180,15 +179,16 @@ public class NetworkManager {
 					//exception handling left as an exercise for the reader
 				}
 			}
-
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+
 	private String getLink(String string){
 		JSONParser parser = new JSONParser();
 		String link="";
+
 		try {
 			JSONObject json = (JSONObject) parser.parse(string);
 			JSONObject lin=(JSONObject) json.get("_links");
@@ -198,7 +198,7 @@ public class NetworkManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 		return link;
 	}
-
 }

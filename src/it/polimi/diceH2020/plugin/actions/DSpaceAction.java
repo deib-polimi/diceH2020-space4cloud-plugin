@@ -14,10 +14,9 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package it.polimi.diceH2020.plugin.actions;
-
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -56,17 +55,7 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 			WizardDialog dialog = new WizardDialog(null, new DSpaceWizard());
 			dialog.open();
 			System.out.println("Starting");
-			//			FileManager.getInstance().parseXmlFile();
-			//			try {
-			//				DICEWrap.getWrapper().genGSPN();
-			//			} catch (IOException e) {
-			//				// TODO Auto-generated catch block
-			//				e.printStackTrace();
-			//			}
 			DICEWrap.getWrapper().start();
-			//			DICEWrap.getWrapper().sendModel();
-			//			FileManager.getInstance().generateInputJson();
-			//			FileManager.getInstance().parseDOMXmlFile("/home/kom/it.polimi.deib.dspace/DICE_plugin/input_models/hadoop/model_1_class.uml");
 		}else{
 			ConfigurationDialog con=new ConfigurationDialog(new Shell());
 			con.load();
@@ -99,6 +88,4 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 	 */
 	public void init(IWorkbenchWindow window) {
 	}
-
-
 }

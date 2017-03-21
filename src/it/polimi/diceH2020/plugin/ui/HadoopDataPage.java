@@ -14,7 +14,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package it.polimi.diceH2020.plugin.ui;
 
@@ -56,11 +56,10 @@ public class HadoopDataPage extends WizardPage{
 		layout = new GridLayout();
 		layout.numColumns=1;
 		container.setLayout(layout);
-		Label l1;
-		l1 = new Label(container, SWT.None);
+
+		Label l1 = new Label(container, SWT.None);
 		l1.setText("Set Think Time");
 		this.thinkTextField = new Text(container, SWT.BORDER);
-		//t1.setLayoutData(g3);
 		thinkTextField.setEditable(true);
 
 		thinkTextField.addModifyListener(new ModifyListener() {
@@ -74,11 +73,12 @@ public class HadoopDataPage extends WizardPage{
 				}
 				getWizard().getContainer().updateButtons();
 			}
-        });
-        Label l2=new Label(container,SWT.None);
+		});
+
+		Label l2 = new Label(container,SWT.None);
 		l2.setText("Set deadline");
-        this.hadoopDTextField=new Text(container,SWT.BORDER);
-        hadoopDTextField.setEditable(true);
+		this.hadoopDTextField=new Text(container,SWT.BORDER);
+		hadoopDTextField.setEditable(true);
 		hadoopDTextField.addModifyListener(new ModifyListener(){
 
 			@Override
@@ -90,14 +90,13 @@ public class HadoopDataPage extends WizardPage{
 
 				}
 				getWizard().getContainer().updateButtons();
-
 			}
-
 		});
-		Label l3=new Label(container,SWT.None);
+
+		Label l3 = new Label(container,SWT.None);
 		l3.setText("Set minimum level of concurrency");
-        hlowTextField=new Text(container,SWT.BORDER);
-        hlowTextField.setEditable(true);
+		hlowTextField=new Text(container,SWT.BORDER);
+		hlowTextField.setEditable(true);
 		hlowTextField.addModifyListener(new ModifyListener(){
 
 			@Override
@@ -109,15 +108,13 @@ public class HadoopDataPage extends WizardPage{
 
 				}
 				getWizard().getContainer().updateButtons();
-
 			}
-
 		});
 
-		Label l4=new Label(container,SWT.None);
+		Label l4 = new Label(container,SWT.None);
 		l4.setText("Set maximum level of concurrency");
-        hupTextField=new Text(container,SWT.BORDER);
-        hupTextField.setEditable(true);
+		hupTextField=new Text(container,SWT.BORDER);
+		hupTextField.setEditable(true);
 		hupTextField.addModifyListener(new ModifyListener(){
 
 			@Override
@@ -126,19 +123,13 @@ public class HadoopDataPage extends WizardPage{
 					hup=Integer.parseInt(hupTextField.getText());
 					hadoopParUD.put("hup", hupTextField.getText());
 				}catch(NumberFormatException e){
-
 				}
 				getWizard().getContainer().updateButtons();
-
 			}
-
 		});
-
-
 
 		setControl(container);
 		setPageComplete(false);	
-
 	}
 
 	@Override
@@ -184,8 +175,4 @@ public class HadoopDataPage extends WizardPage{
 		hupTextField.setText("");;
 		hadoopDTextField.setText("");
 	}
-
-
-
-
 }

@@ -14,9 +14,15 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package utils;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Iterator;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -25,19 +31,13 @@ import org.json.simple.parser.ParseException;
 
 import it.polimi.diceH2020.plugin.net.NetworkManager;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Iterator;
-
 /**
  * Contains methods for dealing with the different vm configurations local database
  * @author Giorgio Pea <giorgio.pea@mail.polimi.it>
  */
 public class JsonDatabase {
 	private static JsonDatabase instance;
-	
+
 	public static JsonDatabase getInstance(){
 		if(instance != null){
 			return instance;
@@ -45,6 +45,7 @@ public class JsonDatabase {
 		instance = new JsonDatabase();
 		return instance;
 	}
+
 	private JsonDatabase(){
 		startupCheckings();
 	}
@@ -66,6 +67,7 @@ public class JsonDatabase {
 	 */
 	public String[] refreshDbContents() {
 		JSONArray array = NetworkManager.getInstance().fetchVmConfigs();
+
 		if(array != null) {
 			String[] alternatives = digestAlternatives(array);
 			try {
@@ -80,8 +82,8 @@ public class JsonDatabase {
 				e.printStackTrace();
 			}
 		}
+
 		return null;
-		
 	}
 
 	/**
@@ -95,13 +97,15 @@ public class JsonDatabase {
 		JSONObject object;
 		String name,type;
 		int i = 0;
+
 		while(it.hasNext()){
 			object = (JSONObject) it.next();
 			name = ((JSONObject) object.get("provider")).get("name").toString();
 			type = object.get("type").toString();
 			returnObject[i] = name+"-"+type;
-			i++;
+			++i;
 		}
+
 		return returnObject;
 	}
 
@@ -111,6 +115,7 @@ public class JsonDatabase {
 	 */
 	public String[] getVmConfigs(){
 		JSONParser parser = new JSONParser();
+
 		try {
 			JSONArray parsed = (JSONArray) parser.parse(new FileReader("vmconfigs.json"));
 			return digestAlternatives(parsed);
@@ -118,6 +123,7 @@ public class JsonDatabase {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 		return null;
 	}
 }

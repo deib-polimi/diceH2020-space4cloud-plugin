@@ -14,7 +14,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package it.polimi.diceH2020.plugin.control;
 
@@ -77,6 +77,7 @@ public class DICEWrap {
 	public void start(){
 		conf = Configuration.getCurrent();
 		System.out.println(conf.getID());
+
 		if(!conf.isComplete()){
 			System.out.println("Incomplete, aborting"); //TODO check completion for real
 			return;
@@ -237,7 +238,7 @@ public class DICEWrap {
 		gspn.doGenerate(new BasicMonitor());
 		System.out.println("GSPN generated");
 	}
-	
+
 	public void setScenario(){
 		if(!Configuration.getCurrent().getIsPrivate()){
 			if(Configuration.getCurrent().getHasLtc()){

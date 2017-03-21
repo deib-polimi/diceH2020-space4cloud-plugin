@@ -14,7 +14,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package it.polimi.diceH2020.plugin.ui;
 
@@ -61,7 +61,6 @@ public class ChoicePage extends WizardPage{
 	private Composite ltcCompositeText;
 	private boolean canSwitch;
 	private Label errSR;
-	
 
 	protected ChoicePage(String title, String description) {
 		super("Choose service type");
@@ -75,196 +74,179 @@ public class ChoicePage extends WizardPage{
 		container = new Composite(parent, SWT.NONE);
 		layout = new GridLayout();
 		container.setLayout(layout);
-        layout.numColumns = 2;
-        layout.makeColumnsEqualWidth = true;
-        
-        
-        
-        
-        
-        //ltcUberComposite.setLayoutData(grid1);
+		layout.numColumns = 2;
+		layout.makeColumnsEqualWidth = true;
 
-        g1 = new GridData();
-        g1.horizontalAlignment = GridData.HORIZONTAL_ALIGN_BEGINNING;
-        g1.verticalAlignment = GridData.VERTICAL_ALIGN_BEGINNING;
-        l1 = new Label(container, SWT.NONE);
-        //l1.setLayoutData(g1);
-        l1.setText("Number of classes:");
-        
-        new GridData(SWT.CENTER, SWT.BEGINNING, true, true);
-        l2 = new Label(container, SWT.NONE);
-        //l2.setLayoutData(g2);
-        l2.setText("Select technology:");
-        
-        g3 = new GridData();
-        g3.horizontalAlignment = GridData.HORIZONTAL_ALIGN_BEGINNING;
-        g3.verticalAlignment = GridData.VERTICAL_ALIGN_BEGINNING;
-        t1 = new Text(container, SWT.BORDER);
-        //t1.setLayoutData(g3);
-        t1.setEditable(true);
-        
-        t1.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-            	getWizard().getContainer().updateButtons();
-            }
+		g1 = new GridData();
+		g1.horizontalAlignment = GridData.HORIZONTAL_ALIGN_BEGINNING;
+		g1.verticalAlignment = GridData.VERTICAL_ALIGN_BEGINNING;
 
-        });
-        
-        new GridData(SWT.CENTER, SWT.BEGINNING, true, true);
-        t2 = new List(container, SWT.BORDER);
-        //t2.setLayoutData(g4);
-        t2.setItems(NetworkManager.getInstance().getTechnologies());
-        t2.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-            	Configuration.getCurrent().setTechnology(t2.getSelection()[0]);
-            	getWizard().getContainer().updateButtons();
-            }
+		l1 = new Label(container, SWT.NONE);
+		l1.setText("Number of classes:");
 
-        });
-        
-        f1 = new GridData();
-        f1.horizontalAlignment = GridData.HORIZONTAL_ALIGN_BEGINNING;
-        f1.verticalAlignment = GridData.VERTICAL_ALIGN_BEGINNING;
-        h1 = new Text(container, SWT.PUSH);
-        h1.setVisible(false);
-        //h1.setLayoutData(f1);
-        
-        f2 = new GridData();
-        f2.horizontalAlignment = GridData.HORIZONTAL_ALIGN_BEGINNING;
-        f2.verticalAlignment = GridData.VERTICAL_ALIGN_BEGINNING;
-        h2 = new Text(container, SWT.BORDER);
-        h2.setVisible(false);
-        //h2.setLayoutData(f2);
-        
-        g5 = new GridData();
-        g5.horizontalAlignment = GridData.HORIZONTAL_ALIGN_END;
-        pri = new Button(container, SWT.RADIO);
-        //pri.setLayoutData(g5);
-        
-        
-        
-        
-        
-        
-        f3 = new GridData();
-        f3.horizontalAlignment = GridData.HORIZONTAL_ALIGN_BEGINNING;
-        f3.verticalAlignment = GridData.VERTICAL_ALIGN_BEGINNING;
-        h3 = new Text(container, SWT.BORDER);
-        h3.setVisible(false);
-        //h3.setLayoutData(f3);
-        
-        
-        g6 = new GridData();
-        g6.horizontalAlignment = GridData.HORIZONTAL_ALIGN_BEGINNING;
-        pub = new Button(container, SWT.RADIO);
-        //pub.setLayoutData(g6);
-        
+		new GridData(SWT.CENTER, SWT.BEGINNING, true, true);
+		l2 = new Label(container, SWT.NONE);
+		l2.setText("Select technology:");
 
-        pri.setVisible(true);
-        pub.setVisible(true);
-        pri.setText("Private");
-        pub.setText("Public");
-        
-        Composite ltcUberComposite = new Composite(container, SWT.NONE);
-        RowLayout layoutRow_uber = new RowLayout();
-        layoutRow_uber.fill = true;
-        ltcUberComposite.setLayout(layoutRow_uber);
-        //Composite for ltc radio btns
-        final Composite ltcComposite = new Composite(ltcUberComposite, SWT.NONE);
-        RowLayout layoutRow = new RowLayout();
-        layoutRow.type = SWT.VERTICAL;
-        ltcComposite.setLayout(layoutRow);
-        ltcComposite.setVisible(false);
-        
-        //Composite for ltc text inputs
-        ltcCompositeText = new Composite(ltcUberComposite, SWT.NONE);
-        RowLayout layoutRow_1 = new RowLayout();
-        layoutRow_1.type = SWT.VERTICAL;
-        ltcCompositeText.setLayout(layoutRow_1);
-        ltcCompositeText.setVisible(false);
-        
-        Composite rTextComposite = new Composite(ltcCompositeText, SWT.NONE);
-        RowLayout layoutRow_4 = new RowLayout();
-        layoutRow_4.type = SWT.HORIZONTAL;
-        layoutRow_4.pack = false;
-        rTextComposite.setLayout(layoutRow_4);
-        Label rTextLabel = new Label(rTextComposite, SWT.NONE);
-        rTextLabel.setText("# reserved");
-        this.rTextField = new Text(rTextComposite, SWT.BORDER);
-        this.rTextField.setEditable(true);
-  
-        
-        Composite tTextComposite = new Composite(ltcCompositeText, SWT.NONE);
-        RowLayout layoutRow_3 = new RowLayout();
-        layoutRow_3.type = SWT.HORIZONTAL;
-        layoutRow_3.pack = false;
-        tTextComposite.setLayout(layoutRow_3);
-        Label tTextLabel = new Label(tTextComposite, SWT.NONE);
-        tTextLabel.setText("Spot ratio");
-        this.SpsrTextField = new Text(tTextComposite,SWT.BORDER);
-        this.SpsrTextField.setEditable(true);
-        
-        Composite err = new Composite(ltcCompositeText, SWT.NONE);
-        RowLayout errRow_3 = new RowLayout();
-        errRow_3.type = SWT.HORIZONTAL;
-        errRow_3.pack = false;
-        err.setLayout(errRow_3);
-      
-        this.errSR=new Label(err,SWT.BORDER);
-        
-        errSR.setText("Not a valid spot ratio");
-        errSR.setVisible(false);
-        this.existingLTC = new Button(ltcComposite,SWT.RADIO);
-        this.existingLTC.setText("Existing LTC");
-        this.nExistingLTC = new Button(ltcComposite, SWT.RADIO);
-        this.nExistingLTC.setText("Non existing LTC");
-        
-        
-        
-		
-        
-        
-        
-        pri.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-            	getWizard().getContainer().updateButtons();
-            	System.out.println("Choice: PRIVATE");
-            	ltcCompositeText.setVisible(false);
-            	canSwitch=true;
-            	ltcComposite.setVisible(false);
-            	Configuration.getCurrent().setPrivate(true);
-            }
+		g3 = new GridData();
+		g3.horizontalAlignment = GridData.HORIZONTAL_ALIGN_BEGINNING;
+		g3.verticalAlignment = GridData.VERTICAL_ALIGN_BEGINNING;
 
-        });
-        
-        pub.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-            	getWizard().getContainer().updateButtons();
-            	ltcComposite.setVisible(true);
-            	if(existingLTC.getSelection()){
-            		ltcCompositeText.setVisible(true);
-            	}
-            	System.out.println("Choice: PUBLIC");
-            	Configuration.getCurrent().setPrivate(false);
-            }
+		t1 = new Text(container, SWT.BORDER);
+		t1.setEditable(true);
 
-        });
-        this.existingLTC.addSelectionListener(new SelectionAdapter(){
-        	 public void widgetSelected(SelectionEvent e) {
-             	ltcCompositeText.setVisible(true);
-             	canSwitch=false;
-             	getWizard().getContainer().updateButtons();
-             	Configuration.getCurrent().setLTC(true);
-             }
-        });
-        this.rTextField.addModifyListener(new ModifyListener(){
+		t1.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				getWizard().getContainer().updateButtons();
+			}
+		});
+
+		new GridData(SWT.CENTER, SWT.BEGINNING, true, true);
+		t2 = new List(container, SWT.BORDER);
+		t2.setItems(NetworkManager.getInstance().getTechnologies());
+
+		t2.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				Configuration.getCurrent().setTechnology(t2.getSelection()[0]);
+				getWizard().getContainer().updateButtons();
+			}
+		});
+
+		f1 = new GridData();
+		f1.horizontalAlignment = GridData.HORIZONTAL_ALIGN_BEGINNING;
+		f1.verticalAlignment = GridData.VERTICAL_ALIGN_BEGINNING;
+
+		h1 = new Text(container, SWT.PUSH);
+		h1.setVisible(false);
+
+		f2 = new GridData();
+		f2.horizontalAlignment = GridData.HORIZONTAL_ALIGN_BEGINNING;
+		f2.verticalAlignment = GridData.VERTICAL_ALIGN_BEGINNING;
+
+		h2 = new Text(container, SWT.BORDER);
+		h2.setVisible(false);
+
+		g5 = new GridData();
+		g5.horizontalAlignment = GridData.HORIZONTAL_ALIGN_END;
+		pri = new Button(container, SWT.RADIO);
+
+		f3 = new GridData();
+		f3.horizontalAlignment = GridData.HORIZONTAL_ALIGN_BEGINNING;
+		f3.verticalAlignment = GridData.VERTICAL_ALIGN_BEGINNING;
+
+		h3 = new Text(container, SWT.BORDER);
+		h3.setVisible(false);
+
+		g6 = new GridData();
+		g6.horizontalAlignment = GridData.HORIZONTAL_ALIGN_BEGINNING;
+		pub = new Button(container, SWT.RADIO);
+
+		pri.setVisible(true);
+		pub.setVisible(true);
+		pri.setText("Private");
+		pub.setText("Public");
+
+		Composite ltcUberComposite = new Composite(container, SWT.NONE);
+		RowLayout layoutRow_uber = new RowLayout();
+		layoutRow_uber.fill = true;
+		ltcUberComposite.setLayout(layoutRow_uber);
+
+		//Composite for ltc radio btns
+		final Composite ltcComposite = new Composite(ltcUberComposite, SWT.NONE);
+
+		RowLayout layoutRow = new RowLayout();
+		layoutRow.type = SWT.VERTICAL;
+		ltcComposite.setLayout(layoutRow);
+		ltcComposite.setVisible(false);
+
+		//Composite for ltc text inputs
+		ltcCompositeText = new Composite(ltcUberComposite, SWT.NONE);
+
+		RowLayout layoutRow_1 = new RowLayout();
+		layoutRow_1.type = SWT.VERTICAL;
+		ltcCompositeText.setLayout(layoutRow_1);
+		ltcCompositeText.setVisible(false);
+
+		Composite rTextComposite = new Composite(ltcCompositeText, SWT.NONE);
+		RowLayout layoutRow_4 = new RowLayout();
+		layoutRow_4.type = SWT.HORIZONTAL;
+		layoutRow_4.pack = false;
+		rTextComposite.setLayout(layoutRow_4);
+
+		Label rTextLabel = new Label(rTextComposite, SWT.NONE);
+		rTextLabel.setText("# reserved");
+		this.rTextField = new Text(rTextComposite, SWT.BORDER);
+		this.rTextField.setEditable(true);
+
+		Composite tTextComposite = new Composite(ltcCompositeText, SWT.NONE);
+		RowLayout layoutRow_3 = new RowLayout();
+		layoutRow_3.type = SWT.HORIZONTAL;
+		layoutRow_3.pack = false;
+		tTextComposite.setLayout(layoutRow_3);
+
+		Label tTextLabel = new Label(tTextComposite, SWT.NONE);
+		tTextLabel.setText("Spot ratio");
+		this.SpsrTextField = new Text(tTextComposite,SWT.BORDER);
+		this.SpsrTextField.setEditable(true);
+
+		Composite err = new Composite(ltcCompositeText, SWT.NONE);
+		RowLayout errRow_3 = new RowLayout();
+		errRow_3.type = SWT.HORIZONTAL;
+		errRow_3.pack = false;
+		err.setLayout(errRow_3);
+
+		this.errSR=new Label(err,SWT.BORDER);
+
+		errSR.setText("Not a valid spot ratio");
+		errSR.setVisible(false);
+
+		this.existingLTC = new Button(ltcComposite,SWT.RADIO);
+		this.existingLTC.setText("Existing LTC");
+
+		this.nExistingLTC = new Button(ltcComposite, SWT.RADIO);
+		this.nExistingLTC.setText("Non existing LTC");
+
+		pri.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				getWizard().getContainer().updateButtons();
+				System.out.println("Choice: PRIVATE");
+				ltcCompositeText.setVisible(false);
+				canSwitch=true;
+				ltcComposite.setVisible(false);
+				Configuration.getCurrent().setPrivate(true);
+			}
+		});
+
+		pub.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				getWizard().getContainer().updateButtons();
+				ltcComposite.setVisible(true);
+				if(existingLTC.getSelection()){
+					ltcCompositeText.setVisible(true);
+				}
+				System.out.println("Choice: PUBLIC");
+				Configuration.getCurrent().setPrivate(false);
+			}
+		});
+
+		this.existingLTC.addSelectionListener(new SelectionAdapter(){
+			public void widgetSelected(SelectionEvent e) {
+				ltcCompositeText.setVisible(true);
+				canSwitch=false;
+				getWizard().getContainer().updateButtons();
+				Configuration.getCurrent().setLTC(true);
+			}
+		});
+
+		this.rTextField.addModifyListener(new ModifyListener(){
 
 			@Override
 			public void modifyText(ModifyEvent arg0) {
 				getWizard().getContainer().updateButtons();
 			}
-        });
-        this.SpsrTextField.addModifyListener(new ModifyListener(){
+		});
+
+		this.SpsrTextField.addModifyListener(new ModifyListener(){
 
 			@Override
 			public void modifyText(ModifyEvent arg0) {
@@ -279,24 +261,24 @@ public class ChoicePage extends WizardPage{
 				}catch(NumberFormatException e){
 					canSwitch=false;
 				}
-				
-				
+
 				getWizard().getContainer().updateButtons();
 			}
-        });
-        this.nExistingLTC.addSelectionListener(new SelectionAdapter(){
-       	 public void widgetSelected(SelectionEvent e) {
-            	ltcCompositeText.setVisible(false);
-            	canSwitch=true;
-            	getWizard().getContainer().updateButtons();
-            	Configuration.getCurrent().setLTC(false);
-            }
-       });
-        
-        setControl(container);
-        setPageComplete(false);
+		});
+
+		this.nExistingLTC.addSelectionListener(new SelectionAdapter(){
+			public void widgetSelected(SelectionEvent e) {
+				ltcCompositeText.setVisible(false);
+				canSwitch=true;
+				getWizard().getContainer().updateButtons();
+				Configuration.getCurrent().setLTC(false);
+			}
+		});
+
+		setControl(container);
+		setPageComplete(false);
 	}
-	
+
 	public boolean getChoice(){
 		if(this.ltcCompositeText.getVisible()){
 			if(!this.rTextField.getText().equals("") &&
@@ -308,9 +290,8 @@ public class ChoicePage extends WizardPage{
 			}
 		}
 		return true;
-		
 	}
-	
+
 	public int getClasses(){
 		classes = Integer.parseInt(t1.getText());
 		return classes;
@@ -319,11 +300,11 @@ public class ChoicePage extends WizardPage{
 	public int getAlternatives(){
 		return alternatives;
 	}
-	
+
 	public String getTechnology(){
 		return t2.getSelection()[0];
 	}
-	
+
 	@Override
 	public boolean canFlipToNextPage(){
 		if(this.getChoice() && t2.getSelectionCount() > 0 && (pri.getSelection() || pub.getSelection()) && getClasses() != 0&&canSwitch){
@@ -331,11 +312,11 @@ public class ChoicePage extends WizardPage{
 		}
 		return false;
 	}
-	
+
 	public int getR(){
 		return Integer.parseInt(rTextField.getText());
 	}
-	
+
 	public float getSpsr(){
 		return Float.parseFloat(SpsrTextField.getText());
 	}

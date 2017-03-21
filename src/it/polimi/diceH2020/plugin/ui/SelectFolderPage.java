@@ -14,13 +14,11 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package it.polimi.diceH2020.plugin.ui;
 
 import java.io.File;
-
-import javax.swing.JFileChooser;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -30,11 +28,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
-
-
 
 public class SelectFolderPage extends WizardPage{
 	private Composite container;
@@ -47,7 +41,6 @@ public class SelectFolderPage extends WizardPage{
 	protected SelectFolderPage(String pageName) {
 		super(pageName);
 		canFlip=false;
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -60,28 +53,28 @@ public class SelectFolderPage extends WizardPage{
 		browse.setText("Select Folder which contains the data...");
 		folder = new Label(container, SWT.NONE);
 		folder.setLayoutData(new GridData(SWT.BEGINNING, SWT.END, false, false));
-		
+
 		browse.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(SelectionEvent e) {
+			}
+		});
 
-
-            //	Dialog dialog=new Dialog(new Shell());
-            	//getWizard().getContainer().updateButtons();
-            }
-        });
 		setPageComplete(false);
 		this.setControl(container);
 	}
-	
+
 	@Override
 	public boolean canFlipToNextPage(){
 		return this.canFlip;
 	}
+
 	public String getSelectedFolder(){
 		return this.selectedFolder;
 	}
+
 	public void checkFolder(){
 		File fold=new File(this.selectedFolder);
+
 		for(File f:fold.listFiles()){
 			if(f.getName().contains(".json")){
 				this.folder.setText(this.selectedFolder);
@@ -90,9 +83,8 @@ public class SelectFolderPage extends WizardPage{
 				return;
 			}
 		}
+
 		folder.setText("The chosen folder does not contain a json file");
 		this.browse.setText("Select another folder...");
-		
 	}
-
 }

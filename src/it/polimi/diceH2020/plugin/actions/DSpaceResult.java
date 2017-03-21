@@ -14,10 +14,9 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package it.polimi.diceH2020.plugin.actions;
-
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -27,27 +26,22 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 import it.polimi.diceH2020.plugin.ui.ResultPage;
 
-
 public class DSpaceResult implements IWorkbenchWindowActionDelegate{
 	private ResultPage p;
 	@Override
 	public void run(IAction arg0) {
-
-		p=new ResultPage(new Shell());
+		p = new ResultPage(new Shell());
 		p.displayUrl("http://localhost:8000/resPub");
-
 	}
 
 	@Override
 	public void selectionChanged(IAction arg0, ISelection arg1) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override

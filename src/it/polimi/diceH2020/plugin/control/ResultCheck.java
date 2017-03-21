@@ -37,6 +37,7 @@ import javax.swing.JOptionPane;
 
 public class ResultCheck extends TimerTask{
 	private static final int BUFFER_SIZE = 4096;
+
 	//file path that contains all the links to go check for solution
 	String filePath;
 	List<String> urls;
@@ -47,9 +48,11 @@ public class ResultCheck extends TimerTask{
 		urls=new ArrayList<String>();
 		fileNames=new ArrayList<String>();
 	}
+
 	@Override
 	public void run() {
 		File f = new File("results");
+
 		if(f.exists()){
 			urls.clear();
 			fileNames.clear();
@@ -57,14 +60,17 @@ public class ResultCheck extends TimerTask{
 			this.checkSolExcistence();
 		}
 	}
+
 	private void load(){
 		BufferedReader br=null;
+
 		try {
 			br = new BufferedReader(new FileReader(filePath));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 		try {
 			StringBuilder sb = new StringBuilder();
 			String line = br.readLine();
@@ -94,11 +100,13 @@ public class ResultCheck extends TimerTask{
 			}
 		}
 	}
+
 	//TODO add about default saving directory
 	private void checkSolExcistence(){
 		for(int i=0;i<this.urls.size();i++){
 			try {
 				String fPath=this.downloadFile(urls.get(i));
+
 				if(!fPath.equals("")){
 					JOptionPane.showMessageDialog(null, "Results availble", "InfoBox: " , JOptionPane.INFORMATION_MESSAGE);
 
@@ -107,14 +115,11 @@ public class ResultCheck extends TimerTask{
 					j.read();
 					j.write();
 					this.removeLine(urls.get(i));
-
 				}
 			} catch (IOException e) {
-
 			}
 		}
 	}
-
 
 	private String downloadFile(String urlString) throws IOException{
 		String toReturn;
@@ -160,6 +165,7 @@ public class ResultCheck extends TimerTask{
 		} else {
 			toReturn ="";
 		}
+
 		httpConn.disconnect();
 		return toReturn;
 	}
@@ -167,12 +173,14 @@ public class ResultCheck extends TimerTask{
 	private void removeLine(String url){
 		BufferedReader br=null;
 		int urlPos=-1;
+
 		try {
 			br = new BufferedReader(new FileReader(filePath));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 		try {
 			StringBuilder sb = new StringBuilder();
 			String line = br.readLine();
@@ -181,6 +189,7 @@ public class ResultCheck extends TimerTask{
 				sb.append(line+"\n");
 				line = br.readLine();
 			}
+
 			String everything = sb.toString();
 			String[] st=everything.split("\n");
 			for(int i=0;i<st.length;i++){
@@ -200,6 +209,7 @@ public class ResultCheck extends TimerTask{
 				e.printStackTrace();
 			}
 		}
+
 		PrintWriter writer;
 		try {
 			writer = new PrintWriter("results", "UTF-8");
@@ -214,7 +224,5 @@ public class ResultCheck extends TimerTask{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
-
 }

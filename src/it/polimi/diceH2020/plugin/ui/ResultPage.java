@@ -14,7 +14,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package it.polimi.diceH2020.plugin.ui;
 
@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Shell;
 import it.polimi.diceH2020.plugin.control.EmbeddedBrowser;
 
 public class ResultPage extends Dialog{
-	
+
 	private EmbeddedBrowser browser;
 	private Shell shell;
 
@@ -32,7 +32,7 @@ public class ResultPage extends Dialog{
 		super(name);
 		shell=name;
 	}
-	
+
 	public void displayUrl(String URL){
 		browser=new EmbeddedBrowser(URL);
 		browser.launch(shell);

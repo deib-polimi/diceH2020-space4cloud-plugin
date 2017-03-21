@@ -14,7 +14,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package it.polimi.diceH2020.plugin.actions;
 
@@ -32,25 +32,20 @@ public class DSpacePrivateResult implements IWorkbenchWindowActionDelegate{
 	public void run(IAction arg0) {
 		p=new ResultPage(new Shell());
 		p.displayUrl("localhost:8000/resPri");
-		
 	}
 
 	@Override
 	public void selectionChanged(IAction arg0, ISelection arg1) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void init(IWorkbenchWindow arg0) {
 		// TODO Auto-generated method stub
-		
 	}
-
 }

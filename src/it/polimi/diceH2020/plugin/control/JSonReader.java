@@ -53,6 +53,7 @@ public class JSonReader {
 	private List<String> classes;
 	private Map<String,String> idClassUmlFile;
 	private String filePath;
+
 	public JSonReader(String filePath){
 		setProvider("");
 		setClassNumVM(new HashMap<String,Long>());
@@ -64,16 +65,18 @@ public class JSonReader {
 
 	//Takes as input the file path of the JSon file 
 	public void read(){
-
 		// read the json file
 		FileReader reader;
+
 		try {
 			reader = new FileReader(filePath);
+
 			JSONParser jsonParser = new JSONParser();
 			JSONObject jsonObject = (JSONObject) jsonParser.parse(reader);
 			provider=(String)jsonObject.get("provider");
 			JSONArray lang = (JSONArray) jsonObject.get("lstSolutions");
-			Iterator<JSONObject> i = lang.iterator();
+			Iterator<?> i = lang.iterator();
+
 			// take each value from the json array separately
 			while (i.hasNext()) {
 				JSONObject innerObj = (JSONObject) i.next();
@@ -109,6 +112,7 @@ public class JSonReader {
 			nodeAttrNumVm.setTextContent(this.classNumVM.get(id).toString());
 			Node nodeAttrType=atributes.getNamedItem("genericSize");
 			nodeAttrType.setTextContent(this.classTypeVM.get(id));
+
 			if(!this.isAttribtuePresent(atributes, "provider")){
 				Element el=(Element) n;
 				el.setAttribute("provider", this.classTypeVM.get(id));
@@ -116,6 +120,7 @@ public class JSonReader {
 				Node nodeAttrType1=atributes.getNamedItem("provider");
 				nodeAttrType1.setTextContent(this.classTypeVM.get(id));
 			}
+
 			// write the content into xml file
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
@@ -179,11 +184,11 @@ public class JSonReader {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 
 	private boolean isAttribtuePresent(NamedNodeMap element, String attribute) {
 		Boolean result = false;
+
 		try {
 			Node value = element.getNamedItem(attribute);
 			if (value != null){

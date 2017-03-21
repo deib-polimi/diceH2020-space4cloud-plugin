@@ -14,7 +14,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package it.polimi.diceH2020.plugin.ui;
 
@@ -33,6 +33,7 @@ public class StormDataPage extends WizardPage{
 	private double stormU;
 	private Label errLabel;
 	private Text stormUTextField;
+
 	protected StormDataPage(String pageName) {
 		super("Select data for Storm Technology");
 		setTitle(pageName);
@@ -45,41 +46,43 @@ public class StormDataPage extends WizardPage{
 		layout = new GridLayout();
 		layout.numColumns=1;
 		container.setLayout(layout);
-		Label l1;
-		l1 = new Label(container, SWT.None);
+
+		Label l1 = new Label(container, SWT.None);
 		l1.setText("Set Utilization threshhold (in %)");
+
 		this.stormUTextField = new Text(container, SWT.BORDER);
+
 		errLabel=new Label(container,SWT.None);
 		errLabel.setText("Not acceptable value for utilization");
 		errLabel.setVisible(false);
-		stormUTextField.setEditable(true);
 
+		stormUTextField.setEditable(true);
 		stormUTextField.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent arg0) {
 				try{
 					stormU=(double)Integer.parseInt(stormUTextField.getText())/100;
 					System.out.println(stormU);
+
 					if(stormU>1||stormU<0){
 						stormU=-1;
 						errLabel.setVisible(true);
-						
+
 					}else{
 						errLabel.setVisible(false);
 					}
-					
 				}catch(NumberFormatException e){
 					errLabel.setVisible(true);
 					stormU=-1;
 					errLabel.setText("Not acceptable value for utilization");
 				}
+
 				getWizard().getContainer().updateButtons();
 			}
-
 		});
+
 		setControl(container);
 		setPageComplete(false);	
-
 	}
 
 	@Override
@@ -94,6 +97,7 @@ public class StormDataPage extends WizardPage{
 		this.stormU=-1;
 		this.stormUTextField.setText("");
 	}
+
 	public double getStormU(){
 		return this.stormU;
 	}
