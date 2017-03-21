@@ -18,43 +18,43 @@
         
           <action
                label="&amp;Preferencies..."
-               class="it.polimi.deib.dspace.actions.DSpaceAction"
+               class="it.polimi.diceH2020.plugin.actions.DSpaceAction"
                tooltip=""
                menubarPath="openWizard/wizardGroup"
-               id="it.polimi.deib.wizard.actions.Preferencies">
+               id="it.polimi.diceH2020.plugin.actions.Preferencies">
          </action>
          <action
                label="&amp;Show Public Results"
                icon="icons/resultsIcon.png"
-               class="it.polimi.deib.dspace.actions.DSpaceResult"
+               class="it.polimi.diceH2020.plugin.actions.DSpaceResult"
                tooltip=""
                menubarPath="openWizard/wizardGroup"
                toolbarPath="Normal/wizardGroup"
-               id="it.polimi.deib.wizard.actions.Result">
+               id="it.polimi.diceH2020.plugin.actions.Result">
          </action>
          <action
                label="&amp;Show Private Results"
                icon="icons/privateResults_icon.png"
-               class="it.polimi.deib.dspace.actions.DSpacePrivateResult"
+               class="it.polimi.diceH2020.plugin.actions.DSpacePrivateResult"
                tooltip=""
                menubarPath="openWizard/wizardGroup"
                toolbarPath="Normal/wizardGroup"
-               id="it.polimi.deib.wizard.actions.PrivateResult">
+               id="it.polimi.diceH2020.plugin.actions.PrivateResult">
          </action>
          <action
                label="&amp;Open Wizard"
                icon="icons/simulateIcon.png"
-               class="it.polimi.deib.dspace.actions.DSpaceAction"
+               class="it.polimi.diceH2020.plugin.actions.DSpaceAction"
                tooltip=""
                menubarPath="openWizard/wizardGroup"
                toolbarPath="Normal/wizardGroup"
-               id="it.polimi.deib.wizard.actions.Start">
+               id="it.polimi.diceH2020.plugin.actions.Start">
          </action>
          
       </actionSet>
    </extension>
     <extension point="org.eclipse.ui.startup">
-     <startup class="it.polimi.deib.dspace.startup.StartUpThread"/>
+     <startup class="it.polimi.diceH2020.plugin.startup.StartUpThread"/>
    </extension>
 
 </plugin>

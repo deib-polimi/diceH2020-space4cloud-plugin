@@ -1,10 +1,11 @@
 package utils;
 
-import it.polimi.deib.dspace.net.NetworkManager;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import it.polimi.diceH2020.plugin.net.NetworkManager;
 
 import java.io.File;
 import java.io.FileReader;

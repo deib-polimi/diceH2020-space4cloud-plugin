@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Wizard
-Bundle-SymbolicName: it.polimi.deib.dspace;singleton:=true
-Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: it.polimi.deib.dspace.Activator
+Bundle-Name: D-SPACE4Cloud Plugin
+Bundle-SymbolicName: it.polimi.diceH2020;singleton:=true
+Bundle-Version: 0.0.1.qualifier
+Bundle-Activator: it.polimi.diceH2020.plugin.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  es.unizar.disco.pnml.m2m;bundle-version="0.3.4",
