@@ -42,9 +42,9 @@ public class DSpaceWizard extends Wizard{
 		choice = new ChoicePage("Service type","Choose service type");
 		classp = new ClassPage("Class page", "Select page parameters and alternatives");
 		fpage = new FinalPage("Goodbye", ".");
-		folPage=new SelectFolderPage("Select folder");
-		hPage=new HadoopDataPage("Set Hadoop parameters");
-		stPage=new StormDataPage("Set Storm parameter");
+		folPage = new SelectFolderPage("Select folder");
+		hPage = new HadoopDataPage("Set Hadoop parameters");
+		stPage = new StormDataPage("Set Storm parameter");
 
 		addPage(choice);
 		addPage(folPage);
@@ -59,30 +59,34 @@ public class DSpaceWizard extends Wizard{
 		if (currentPage == choice){
 			classes = choice.getClasses();
 			Configuration.getCurrent().setNumClasses(classes);
-			if (Configuration.getCurrent().getHasLtc()){
-				Configuration.getCurrent().setR(choice.getR());
-				Configuration.getCurrent().setSpsr(choice.getSpsr());
-			}
 
-			classp.udpate();
-			classp.setNumClasses(classes);
-			return classp;
+			if (Configuration.getCurrent().getIsPrivate()) {
+				return folPage;
+			} else {
+				if (Configuration.getCurrent().getHasLtc()){
+					Configuration.getCurrent().setR(choice.getR());
+					Configuration.getCurrent().setSpsr(choice.getSpsr());
+				}
+
+				classp.udpate();
+				classp.setNumClasses(classes);
+				return classp;
+			}
 		}
 
 		if(currentPage==hPage){
-
 			c.setHadoopParUD(hPage.getHadoopParUD());
 			if(n == classes){
 				finish = true;
 				Configuration.getCurrent().dump();
 				return fpage;
 			}
+
 			classp.reset();
 			hPage.reset();
-
 			return classp;
-
 		}
+
 		if(currentPage==stPage){
 			c.setStormU(stPage.getStormU());
 			if(n == classes){
@@ -102,16 +106,15 @@ public class DSpaceWizard extends Wizard{
 			c.setDdsmPath(classp.getDDSMPath());
 			c.setAltDtsm(classp.getAltDtsm());
 			Configuration.getCurrent().getClasses().add(c);
+
 			if(Configuration.getCurrent().getTechnology().contains("Hadoop")){
 				return hPage;
 			}else{
 				return stPage;
 			}
-
 		}
 
 		if(currentPage==this.folPage){
-
 			fileHandler.setFolder(folPage.getSelectedFolder());
 			fileHandler.setScenario(false,false);
 			fileHandler.sendFile();
