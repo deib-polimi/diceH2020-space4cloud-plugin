@@ -13,7 +13,6 @@ Require-Bundle: org.eclipse.ui,
  es.unizar.disco.pnml.m2t;bundle-version="0.3.5",
  es.unizar.disco.pnextensions;bundle-version="0.3.5"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: imported_packages/json-simple-1.1.1.jar,
  .,
  imported_packages/commons-codec-1.9.jar,
@@ -33,3 +32,4 @@ Bundle-ClassPath: imported_packages/json-simple-1.1.1.jar,
  imported_packages/jackson-databind-2.8.5.jar,
  imported_packages/jackson-annotations-2.8.5.jar,
  imported_packages/jackson-datatype-jdk8-2.8.5.jar
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
