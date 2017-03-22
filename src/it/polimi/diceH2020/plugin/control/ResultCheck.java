@@ -57,12 +57,12 @@ public class ResultCheck extends TimerTask{
 			urls.clear();
 			fileNames.clear();
 			load();
-			this.checkSolExcistence();
+			this.checkSolExistence();
 		}
 	}
 
 	private void load(){
-		BufferedReader br=null;
+		BufferedReader br = null;
 
 		try {
 			br = new BufferedReader(new FileReader(filePath));
@@ -79,8 +79,10 @@ public class ResultCheck extends TimerTask{
 				sb.append(line+"\n");
 				line = br.readLine();
 			}
+
 			String everything = sb.toString();
 			String[] st=everything.split("\n");
+
 			for(int i=0;i<st.length;i++){
 				if(i%2==0){
 					this.fileNames.add(st[i]+"OUT.json");
@@ -102,15 +104,15 @@ public class ResultCheck extends TimerTask{
 	}
 
 	//TODO add about default saving directory
-	private void checkSolExcistence(){
+	private void checkSolExistence(){
 		for(int i=0;i<this.urls.size();i++){
 			try {
 				String fPath=this.downloadFile(urls.get(i));
 
 				if(!fPath.equals("")){
-					JOptionPane.showMessageDialog(null, "Results availble", "InfoBox: " , JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Results available", "InfoBox: " , JOptionPane.INFORMATION_MESSAGE);
 
-					JSonReader j=new JSonReader(fPath);
+					JSonReader j = new JSonReader(fPath);
 					j.createMap(this.fileNames.get(i));
 					j.read();
 					j.write();
@@ -147,9 +149,9 @@ public class ResultCheck extends TimerTask{
 
 			// opens input stream from the HTTP connection
 			InputStream inputStream = httpConn.getInputStream();
-			String saveFilePath =  fileName;
 
 			// opens an output stream to save into file
+			String saveFilePath = fileName;
 			FileOutputStream outputStream = new FileOutputStream(saveFilePath);
 
 			int bytesRead = -1;
@@ -161,9 +163,9 @@ public class ResultCheck extends TimerTask{
 			outputStream.close();
 			inputStream.close();
 
-			toReturn =saveFilePath;
+			toReturn = saveFilePath;
 		} else {
-			toReturn ="";
+			toReturn = "";
 		}
 
 		httpConn.disconnect();
@@ -192,6 +194,7 @@ public class ResultCheck extends TimerTask{
 
 			String everything = sb.toString();
 			String[] st=everything.split("\n");
+
 			for(int i=0;i<st.length;i++){
 				if(st[i].equals(url)){
 					urlPos=i/2;
@@ -213,9 +216,11 @@ public class ResultCheck extends TimerTask{
 		PrintWriter writer;
 		try {
 			writer = new PrintWriter("results", "UTF-8");
+
 			for(int i=0;i<this.urls.size();i++){
 				if(i==urlPos)
 					continue;
+
 				writer.println(this.fileNames.get(i));
 				writer.println(this.urls.get(i));
 				writer.close();

@@ -103,22 +103,25 @@ public class JSonReader {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(inputFile);
-			doc.getDocumentElement().normalize();
-			Element root=doc.getDocumentElement();
-			NodeList nodes=root.getElementsByTagName("DDSM:DdsmVMsCluster");
-			Node n=nodes.item(0);
-			NamedNodeMap atributes=n.getAttributes();
-			Node nodeAttrNumVm=atributes.getNamedItem("instances");
+
+			Element root = doc.getDocumentElement();
+			root.normalize();
+			NodeList nodes = root.getElementsByTagName("DDSM:DdsmVMsCluster");
+			Node n = nodes.item(0);
+			NamedNodeMap attributes = n.getAttributes();
+
+			Node nodeAttrNumVm = attributes.getNamedItem("instances");
 			nodeAttrNumVm.setTextContent(this.classNumVM.get(id).toString());
-			Node nodeAttrType=atributes.getNamedItem("genericSize");
+
+			Node nodeAttrType = attributes.getNamedItem("genericSize");
 			nodeAttrType.setTextContent(this.classTypeVM.get(id));
 
-			if(!this.isAttribtuePresent(atributes, "provider")){
-				Element el=(Element) n;
-				el.setAttribute("provider", this.classTypeVM.get(id));
-			}else{
-				Node nodeAttrType1=atributes.getNamedItem("provider");
-				nodeAttrType1.setTextContent(this.classTypeVM.get(id));
+			if (!this.findAttribute(attributes, "provider")) {
+				Element el = (Element) n;
+				el.setAttribute("provider", provider);
+			} else {
+				Node nodeAttrType1 = attributes.getNamedItem("provider");
+				nodeAttrType1.setTextContent(provider);
 			}
 
 			// write the content into xml file
@@ -186,7 +189,7 @@ public class JSonReader {
 		}
 	}
 
-	private boolean isAttribtuePresent(NamedNodeMap element, String attribute) {
+	private boolean findAttribute(NamedNodeMap element, String attribute) {
 		Boolean result = false;
 
 		try {
