@@ -5,11 +5,11 @@
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
-            label="Open Wizard"
+            label="D-S4C"
             visible="true"
-            id="it.polimi.deib.wizard.actionSet">
+            id="it.polimi.diceH2020.plugin.actionSet">
          <menu
-               label="Open &amp;Wizard"
+               label="D-SPACE4&amp;Cloud"
                id="openWizard">
             <separator
                   name="wizardGroup">
@@ -17,14 +17,14 @@
          </menu>
         
           <action
-               label="&amp;Preferencies..."
+               label="Pr&amp;eferences"
                class="it.polimi.diceH2020.plugin.actions.DSpaceAction"
                tooltip=""
                menubarPath="openWizard/wizardGroup"
-               id="it.polimi.diceH2020.plugin.actions.Preferencies">
+               id="it.polimi.diceH2020.plugin.actions.Preferences">
          </action>
          <action
-               label="&amp;Show Public Results"
+               label="Show &amp;Public Results"
                icon="icons/resultsIcon.png"
                class="it.polimi.diceH2020.plugin.actions.DSpaceResult"
                tooltip=""
@@ -33,8 +33,8 @@
                id="it.polimi.diceH2020.plugin.actions.Result">
          </action>
          <action
-               label="&amp;Show Private Results"
-               icon="icons/privateResults_icon.png"
+               label="Show P&amp;rivate Results"
+               icon="icons/privateResultsIcon.png"
                class="it.polimi.diceH2020.plugin.actions.DSpacePrivateResult"
                tooltip=""
                menubarPath="openWizard/wizardGroup"
@@ -42,7 +42,7 @@
                id="it.polimi.diceH2020.plugin.actions.PrivateResult">
          </action>
          <action
-               label="&amp;Open Wizard"
+               label="Optimization &amp;Wizard"
                icon="icons/simulateIcon.png"
                class="it.polimi.diceH2020.plugin.actions.DSpaceAction"
                tooltip=""

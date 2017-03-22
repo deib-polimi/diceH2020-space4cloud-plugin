@@ -48,15 +48,15 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
 	public void run(IAction action) {
-		System.out.println("Hola "+action.getId());
-		if(action.getId().endsWith("Start")){
+		final String actionID = action.getId();
+
+		if (actionID.endsWith("Start")) {
 			Configuration.getCurrent().reset();
 			PrivateConfiguration.getCurrent().clear();
 			WizardDialog dialog = new WizardDialog(null, new DSpaceWizard());
 			dialog.open();
-			System.out.println("Starting");
 			DICEWrap.getWrapper().start();
-		}else{
+		} else if (actionID.endsWith("Preferences")) {
 			ConfigurationDialog con=new ConfigurationDialog(new Shell());
 			con.load();
 			con.setView();
