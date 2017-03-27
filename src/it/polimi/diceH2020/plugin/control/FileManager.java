@@ -263,53 +263,54 @@ public class FileManager {
 		data.setMapVMConfigurations(priMap);
 	}
 
-	private void setMapJobProfile(InstanceDataMultiProvider data, Configuration conf){
+	private void setMapJobProfile (InstanceDataMultiProvider data, Configuration conf) {
 		//Set MapJobProfile
-		JobProfilesMap classdesc = JobProfilesMapGenerator.build();
+		JobProfilesMap classdesc = JobProfilesMapGenerator.build ();
 
-		Map<String,Map<String, Map<String, JobProfile>>> classMap = 
-				new HashMap<String,Map<String, Map<String, JobProfile>>>();
+		Map<String, Map<String, Map<String, JobProfile>>> classMap = new HashMap<> ();
 
-		for(ClassDesc c : conf.getClasses()){
-			Map<String,Map<String, JobProfile>> alternative = 
-					new HashMap<String, Map<String, JobProfile>>();
+		for (ClassDesc c : conf.getClasses()) {
+			Map<String, Map<String, JobProfile>> alternative = new HashMap<>();
 
-			for (String alt: c.getAltDtsm().keySet()){
-				TreeMap<String, Double> profile = new TreeMap<String, Double>();
+			for (String alt: c.getAltDtsm().keySet()) {
+				TreeMap<String, Double> profile = new TreeMap<>();
 				String split[] = alt.split("-");
 
 				JobProfile jp;
-				if(conf.getTechnology().equals("Hadoop")){
-					jp = JobProfileGenerator.build(c.getAltDtsmHadoop().get(alt).keySet().size()-1);
+				if (conf.getTechnology ().equals ("Hadoop")) {
+					jp = JobProfileGenerator.build (c.getAltDtsmHadoop().get(alt).keySet().size()-1);
 
-					for(String par : c.getAltDtsmHadoop().get(alt).keySet()){
-						if(!par.equals("file")){
-							profile.put(par, Double.parseDouble(c.getAltDtsmHadoop().get(alt).get(par)));
+					for (String par : c.getAltDtsmHadoop ().get (alt).keySet ()) {
+						if (! par.equals ("file")) {
+							profile.put (par, Double.parseDouble (c.getAltDtsmHadoop ().get (alt).get (par)));
 						}
 					}
-				}else{
-					jp = JobProfileGenerator.build(3); //TODO: how many parameters do we need?
-					profile.put("datasize", 66.6);
-					profile.put("mavg", 666.6);
-					profile.put("mmax", 666.6);
+				} else {
+					jp = JobProfileGenerator.build (3); //TODO: how many parameters do we need?
+					profile.put ("datasize", 66.6);
+					profile.put ("mavg", 666.6);
+					profile.put ("mmax", 666.6);
 				}
 
 				jp.setProfileMap(profile);
 
-				Map<String,JobProfile> profilemap = new HashMap<String,JobProfile>();
+				final String provider = Configuration.getCurrent().getIsPrivate() ? "inHouse" : split[0];
+				final String vmType = Configuration.getCurrent().getIsPrivate() ? split[0] : split[1];
 
-				if(!Configuration.getCurrent().getIsPrivate()){
-					profilemap.put(split[1], jp);
-					alternative.put(split[0], profilemap);
-				}else{
-					profilemap.put(split[0], jp);
-					alternative.put("inHouse", profilemap);
-				}
+				Map<String, JobProfile> profilemap = new HashMap<>();
+				profilemap.put (vmType, jp);
+
+				alternative.merge(provider, profilemap, (oldValue, newValue) -> {
+					oldValue.putAll (newValue);
+					return oldValue;
+				});
 			}
-			classMap.put(String.valueOf(c.getId()), alternative);
+
+			classMap.put (String.valueOf (c.getId ()), alternative);
 		}
-		classdesc.setMapJobProfile(classMap);
-		data.setMapJobProfiles(classdesc);
+
+		classdesc.setMapJobProfile (classMap);
+		data.setMapJobProfiles (classdesc);
 	}
 
 	private void setMapClassParameters(InstanceDataMultiProvider data, Configuration conf) {
