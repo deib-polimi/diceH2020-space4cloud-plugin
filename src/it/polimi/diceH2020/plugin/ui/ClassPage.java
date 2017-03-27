@@ -46,13 +46,13 @@ import utils.JsonDatabase;
 public class ClassPage extends WizardPage{
 	private Composite container;
 	private GridLayout layout;
-	private List l1;
-	private List l2;
+	private List availableAlternatives;
+	private List chosenAlternatives;
 	private String ddsmPath = "";
-	private Label fileName, label_error;
+	private Label fileName, errorLabel;
 	private HashMap<String, String> altDtsm;
-	private Button mlProfile ;
-	private String mlPath="";
+	private Button mlProfile;
+	private String mlPath = "";
 	private Button button;
 	private Label mlNameFile;
 
@@ -78,8 +78,8 @@ public class ClassPage extends WizardPage{
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 
-		l1 = new List(container, SWT.BORDER);
-		l1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		availableAlternatives = new List(container, SWT.BORDER);
+		availableAlternatives.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		Button add = new Button(container, SWT.PUSH);
 		add.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
@@ -89,45 +89,44 @@ public class ClassPage extends WizardPage{
 		remove.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
 		remove.setText("<<");
 
-		l2 = new List(container, SWT.BORDER);
+		chosenAlternatives = new List(container, SWT.BORDER);
 		GridData gdata = new GridData(SWT.BEGINNING, SWT.FILL, true,true);
 		gdata.widthHint = 300;
-		l2.setLayoutData(gdata);
+		chosenAlternatives.setLayoutData(gdata);
 
 		add.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				//Move alternative on the other side
-				if(l1.getSelectionCount() < 1){
-					return;
+				// Move alternative on the other side
+				if (availableAlternatives.getSelectionCount() == 1) {
+					final String selectedAlternative = availableAlternatives.getSelection()[0];
+					final int selectedIdx = availableAlternatives.getSelectionIndices()[0];
+
+					// Open file browser
+					JFileChooser chooser = new JFileChooser ();
+					chooser.setMultiSelectionEnabled (false); //JUST ONE UML FILE
+
+					final int choice = chooser.showOpenDialog (null);
+					if (choice == JFileChooser.APPROVE_OPTION) {
+						altDtsm.put (selectedAlternative, chooser.getSelectedFile ().getPath ());
+						chosenAlternatives.add(selectedAlternative);
+						availableAlternatives.remove(selectedIdx);
+					}
+
+					// Refresh page
+					container.layout();
+					getWizard().getContainer().updateButtons();
 				}
-				l2.add(l1.getSelection()[0]);
-
-				container.layout();
-
-				//Open file browser
-				JFileChooser chooser= new JFileChooser();
-				chooser.setMultiSelectionEnabled(false); //JUST ONE UML FILE
-
-				int choice = chooser.showOpenDialog(null);
-				if (choice != JFileChooser.APPROVE_OPTION) return;
-				altDtsm.put(l1.getSelection()[0], chooser.getSelectedFile().getPath());
-
-				l1.remove(l1.getSelectionIndices()[0]);
-
-				//Refresh page
-				container.layout();
-				getWizard().getContainer().updateButtons();
 			}
 		});
 
 		remove.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				if(l2.getSelectionCount() < 1){
+				if(chosenAlternatives.getSelectionCount() < 1){
 					return;
 				}
-				l1.add(l2.getSelection()[0]);
-				altDtsm.remove(l2.getSelection()[0]);
-				l2.remove(l2.getSelectionIndices()[0]);
+				availableAlternatives.add(chosenAlternatives.getSelection()[0]);
+				altDtsm.remove(chosenAlternatives.getSelection()[0]);
+				chosenAlternatives.remove(chosenAlternatives.getSelectionIndices()[0]);
 				container.layout();
 			}
 		});
@@ -164,9 +163,9 @@ public class ClassPage extends WizardPage{
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 
-		label_error = new Label(container, SWT.NONE);
-		label_error.setText("Error: Unable to get vm configurations from the webservice");
-		label_error.setVisible(false);
+		errorLabel = new Label(container, SWT.NONE);
+		errorLabel.setText("Error: Unable to get vm configurations from the webservice");
+		errorLabel.setVisible(false);
 		fileName.setLayoutData(new GridData(SWT.BEGINNING, SWT.END, false, false));	
 
 		new Label(container, SWT.NONE);
@@ -227,13 +226,13 @@ public class ClassPage extends WizardPage{
 	@Override
 	public boolean canFlipToNextPage(){
 		if(Configuration.getCurrent().getTechnology().contains("Hadoop")){
-			if(!ddsmPath.equals("") && l2.getItemCount() > 0&&!mlPath.equals("")){
+			if(!ddsmPath.equals("") && chosenAlternatives.getItemCount() > 0&&!mlPath.equals("")){
 				return true;
 			}else{
 				return false;
 			}
 		}
-		if(!ddsmPath.equals("") && l2.getItemCount() > 0){
+		if(!ddsmPath.equals("") && chosenAlternatives.getItemCount() > 0){
 			return true;
 		}
 		return false;
@@ -242,20 +241,22 @@ public class ClassPage extends WizardPage{
 	private void populateAlternatives(){
 		String[] vmConfigs = JsonDatabase.getInstance().getVmConfigs();
 		if(vmConfigs == null){
-			label_error.setVisible(true);
+			errorLabel.setVisible(true);
 		}
 		else{
-			l1.setItems(JsonDatabase.getInstance().getVmConfigs());
+			errorLabel.setVisible(false);
+			availableAlternatives.setItems(JsonDatabase.getInstance().getVmConfigs());
 		}
 	}
 
 	private void refreshAlternatives(){
 		String[] vmConfigs = JsonDatabase.getInstance().refreshDbContents();
 		if(vmConfigs == null){
-			label_error.setVisible(true);
+			errorLabel.setVisible(true);
 		}
 		else{
-			l1.setItems(JsonDatabase.getInstance().getVmConfigs());
+			errorLabel.setVisible(false);
+			availableAlternatives.setItems(JsonDatabase.getInstance().getVmConfigs());
 		}
 	}
 
@@ -268,7 +269,7 @@ public class ClassPage extends WizardPage{
 	}
 
 	public void reset(){
-		l2.removeAll();
+		chosenAlternatives.removeAll();
 		populateAlternatives();
 		fileName.setText("");
 		ddsmPath = "";
@@ -279,7 +280,7 @@ public class ClassPage extends WizardPage{
 	}
 
 	public String[] getSelectedAlternatives() {
-		return l2.getItems();
+		return chosenAlternatives.getItems();
 	}
 
 	public void setNumClasses(int numClasses){
@@ -299,9 +300,9 @@ public class ClassPage extends WizardPage{
 
 	public void privateCase(){
 		button.setVisible(false);
-		l1.removeAll();
+		availableAlternatives.removeAll();
 		for(VmClass vm:PrivateConfiguration.getCurrent().getVmList()){
-			l1.add(vm.getName());
+			availableAlternatives.add(vm.getName());
 		}
 	}
 }

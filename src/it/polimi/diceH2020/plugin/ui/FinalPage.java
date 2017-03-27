@@ -53,6 +53,6 @@ public class FinalPage extends WizardPage{
 
 	@Override
 	public boolean canFlipToNextPage(){
-		return true;
+		return false;
 	}
 }
