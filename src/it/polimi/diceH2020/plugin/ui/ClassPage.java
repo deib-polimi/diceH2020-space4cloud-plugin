@@ -225,7 +225,7 @@ public class ClassPage extends WizardPage{
 
 	@Override
 	public boolean canFlipToNextPage(){
-		if(Configuration.getCurrent().getTechnology().contains("Hadoop")){
+		if(Configuration.getCurrent().getTechnology().contains("Hadoop Map-reduce")){
 			if(!ddsmPath.equals("") && chosenAlternatives.getItemCount() > 0&&!mlPath.equals("")){
 				return true;
 			}else{
@@ -287,7 +287,7 @@ public class ClassPage extends WizardPage{
 	}
 
 	public void udpate(){
-		if(Configuration.getCurrent().getTechnology().contains("Hadoop")){
+		if(Configuration.getCurrent().getTechnology().contains("Hadoop Map-reduce")){
 			mlProfile.setVisible(true);
 		}else{
 			mlProfile.setVisible(false);

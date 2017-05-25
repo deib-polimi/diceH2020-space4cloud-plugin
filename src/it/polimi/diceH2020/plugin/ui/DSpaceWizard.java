@@ -140,7 +140,7 @@ public class DSpaceWizard extends Wizard{
 
 			Configuration.getCurrent().getClasses().add(c);
 
-			if(Configuration.getCurrent().getTechnology().contains("Hadoop")){
+			if(Configuration.getCurrent().getTechnology().contains("Hadoop Map-reduce")){
 				c.setMlPath(classp.getMlPath());
 				return hPage;
 			}else{

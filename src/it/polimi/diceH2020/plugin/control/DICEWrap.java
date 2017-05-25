@@ -98,7 +98,7 @@ public class DICEWrap {
 				}
 			}
 			break;
-		case "Hadoop":
+		case "Hadoop Map-reduce":
 			for (ClassDesc c : conf.getClasses()){
 				for(String alt : c.getAltDtsm().keySet())
 					try {

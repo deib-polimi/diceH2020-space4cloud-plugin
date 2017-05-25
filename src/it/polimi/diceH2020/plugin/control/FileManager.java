@@ -110,7 +110,7 @@ public class FileManager {
 			if(f.getName().endsWith(".def")){
 				System.out.println("Renaming " + f.getName());
 
-				if(conf.getTechnology().equals("Hadoop"))
+				if(conf.getTechnology().equals("Hadoop Map-reduce"))
 					putPlaceHolder("(starta ", f.getName(), "def");
 
 				if(Configuration.getCurrent().getIsPrivate()){
@@ -277,7 +277,7 @@ public class FileManager {
 				String split[] = alt.split("-");
 
 				JobProfile jp;
-				if (conf.getTechnology ().equals ("Hadoop")) {
+				if (conf.getTechnology ().equals ("Hadoop Map-reduce")) {
 					jp = JobProfileGenerator.build (c.getAltDtsmHadoop().get(alt).keySet().size()-1);
 
 					for (String par : c.getAltDtsmHadoop ().get (alt).keySet ()) {
@@ -317,7 +317,7 @@ public class FileManager {
 		//Set MapClassParameter
 		Map<String, ClassParameters> classdesc1 = new HashMap<String, ClassParameters>();
 
-		if(conf.getTechnology().contains("Hadoop")){
+		if(conf.getTechnology().contains("Hadoop Map-reduce")){
 			for(ClassDesc c : conf.getClasses()){
 				ClassParameters clpm = ClassParametersGenerator.build(c.getHadoopParUD().size());
 				clpm.setD(Double.parseDouble(c.getHadoopParUD().get("d")));
@@ -372,7 +372,7 @@ public class FileManager {
 	}
 
 	private void setMachineLearningProfile(InstanceDataMultiProvider data, Configuration conf) {
-		if(conf.getTechnology().contains("Hadoop")){
+		if(conf.getTechnology().contains("Hadoop Map-reduce")){
 			Configuration.getCurrent().setCanSend(this.setMachineLearningHadoop(data));
 		}else{
 			//Set mapJobMLProfile - MACHINE LEARNING
