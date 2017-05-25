@@ -113,6 +113,21 @@ public class DICEWrap {
 					}
 			}
 			break;
+		case "Spark": //TODO implement this. now it's a copy of Hadoop Map-reduce.
+			for (ClassDesc c : conf.getClasses()){
+				for(String alt : c.getAltDtsm().keySet())
+					try {
+						buildHadoopAnalyzableModel(c.getAltDtsm().get(alt));
+						generatePNML(String.valueOf(c.getId()), alt);
+						genGSPN();
+						FileManager.getInstance().editFiles(c.getId(), alt, extractHadoopId());
+						extractParametersFromHadoopModel(c, alt);
+					} catch (Exception e) {
+						System.err.println("SPARK EXCEPTION");
+						System.out.println(e.getMessage());
+					}
+			}
+			break;
 		default:
 			System.err.println("Unknown technology: "+conf.getTechnology());
 			return;

@@ -37,6 +37,7 @@ public class DSpaceWizard extends Wizard{
 	private ClassPage classp;
 	private FinalPage fpage;
 	private HadoopDataPage hPage;
+	private SparkDataPage spPage;
 	private SelectFolderPage folPage;
 	private StormDataPage stPage;
 	private PrivateConfigPage prConfigPage;
@@ -65,6 +66,7 @@ public class DSpaceWizard extends Wizard{
 		folPage=new SelectFolderPage("Select folder");
 		hPage=new HadoopDataPage("Set Hadoop parameters");
 		stPage=new StormDataPage("Set Storm parameter");
+		spPage=new SparkDataPage("Set Spark parameter");
 		prConfigPage=new PrivateConfigPage("Set cluster parameters");
 
 		addPage(choice);
@@ -72,6 +74,7 @@ public class DSpaceWizard extends Wizard{
 		addPage(folPage);
 		addPage(stPage);
 		addPage(hPage);
+		addPage(spPage);
 		addPage(classp);
 		addPage(fpage);
 	}
@@ -113,6 +116,20 @@ public class DSpaceWizard extends Wizard{
 
 			return classp;
 		}
+		
+		if(currentPage==spPage){		
+			c.setHadoopParUD(spPage.getHadoopParUD());		
+			if(n == classes){		
+				finish = true;		
+				Configuration.getCurrent().dump();		
+				return fpage;		
+			}		
+			classp.reset();		
+			spPage.reset();		
+			if(Configuration.getCurrent().getIsPrivate())		
+				classp.privateCase();		
+			return classp;		
+		}
 
 		if(currentPage==stPage){
 			c.setStormU(stPage.getStormU());
@@ -143,6 +160,9 @@ public class DSpaceWizard extends Wizard{
 			if(Configuration.getCurrent().getTechnology().contains("Hadoop Map-reduce")){
 				c.setMlPath(classp.getMlPath());
 				return hPage;
+			} else if (Configuration.getCurrent().getTechnology().contains("Spark")){
+				c.setMlPath(classp.getMlPath());
+				return spPage;
 			}else{
 				return stPage;
 			}

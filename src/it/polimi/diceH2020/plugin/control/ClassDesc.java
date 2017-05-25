@@ -64,7 +64,8 @@ public class ClassDesc {
 	}
 
 	public Map<String, Map<String,String>> getAltDtsmHadoop() {
-		if(!Configuration.getCurrent().getTechnology().equals("Hadoop Map-reduce")){
+		if(!Configuration.getCurrent().getTechnology().equals("Hadoop Map-reduce") && 
+				!Configuration.getCurrent().getTechnology().equals("Spark")){
 			return null;
 		}
 		return altDtsmHadoop;
@@ -84,7 +85,8 @@ public class ClassDesc {
 	}
 
 	public Map<String, String> getHadoopParUD() {
-		if(!Configuration.getCurrent().getTechnology().equals("Hadoop Map-reduce")){
+		if(!Configuration.getCurrent().getTechnology().equals("Hadoop Map-reduce") &&
+				!Configuration.getCurrent().getTechnology().equals("Spark")){
 			return null;
 		}
 		return hadoopParUD;
