@@ -1,5 +1,7 @@
 package it.polimi.diceH2020.plugin.preferences;
 
+import java.nio.file.Paths;
+
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
@@ -17,6 +19,7 @@ public class PreferencesInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(Preferences.FRONT_END_PORT, 8000);
 		store.setDefault(Preferences.BACK_END_ADDRESS, "localhost");
 		store.setDefault(Preferences.BACK_END_PORT, 8080);
+		store.setDefault(Preferences.SAVING_DIR, Paths.get("").toAbsolutePath().toString());
 	}
 
 }

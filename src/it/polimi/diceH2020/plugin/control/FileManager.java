@@ -73,6 +73,7 @@ import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.PublicCloud
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.SVRFeature;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.VMConfiguration;
 import it.polimi.diceH2020.SPACE4Cloud.shared.inputDataMultiProvider.VMConfigurationsMap;
+import it.polimi.diceH2020.plugin.preferences.Preferences;
 
 /**
  * Contains all the methods related with file generation/transformation that we 
@@ -85,7 +86,7 @@ public class FileManager {
 	private String path;
 
 	private FileManager(){
-		path = GeneralConfig.getCurrent().getSavingDir()+"/";; // to be replaced by fetching this info in tools
+		path = Preferences.getSavingDir()+"/"; // to be replaced by fetching this info in tools
 	}
 
 	public static FileManager getInstance(){

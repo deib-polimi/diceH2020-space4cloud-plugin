@@ -3,10 +3,11 @@ package it.polimi.diceH2020.plugin.preferences;
 import it.polimi.diceH2020.plugin.Activator;
 
 public class Preferences {
-	protected static String FRONT_END_ADDRESS = "FrontEndAddress";
-	protected static String FRONT_END_PORT = "FrontEndPort";
-	protected static String BACK_END_ADDRESS = "BackEndAddress";
-	protected static String BACK_END_PORT = "BackEndPort";
+	protected static final String SAVING_DIR = "SavingDir";
+	protected static final String FRONT_END_ADDRESS = "FrontEndAddress";
+	protected static final String FRONT_END_PORT = "FrontEndPort";
+	protected static final String BACK_END_ADDRESS = "BackEndAddress";
+	protected static final String BACK_END_PORT = "BackEndPort";
 
 	public static String getFrontEndAddress() {
 		return Activator.getDefault().getPreferenceStore().getString(FRONT_END_ADDRESS);
@@ -30,5 +31,9 @@ public class Preferences {
 
 	public static String getBackEndUrl() {
 		return "http://" + getBackEndAddress() + ":" + getBackEndPort() + "/";
+	}
+	
+	public static String getSavingDir() {
+		return Activator.getDefault().getPreferenceStore().getString(SAVING_DIR);
 	}
 }
