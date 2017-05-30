@@ -45,7 +45,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import it.polimi.diceH2020.plugin.control.Configuration;
-import it.polimi.diceH2020.plugin.control.GeneralConfig;
+import it.polimi.diceH2020.plugin.preferences.Preferences;
 
 /**
  * Manages interaction with the backend
@@ -54,8 +54,8 @@ import it.polimi.diceH2020.plugin.control.GeneralConfig;
 public class NetworkManager {
 
 	private static NetworkManager instance;
-	private static String rootEndpoint = GeneralConfig.getCurrent().getServerID();
-	private static String vmConfigsEndpoint = GeneralConfig.getCurrent().getBackEndID()+"/vm-types";
+	private static String rootEndpoint = Preferences.getFrontEndUrl();
+	private static String vmConfigsEndpoint = Preferences.getBackEndUrl()+"vm-types";
 	private static String uploadRest=rootEndpoint+"/files/upload";
 
 	public static NetworkManager getInstance(){

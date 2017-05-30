@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
+import it.polimi.diceH2020.plugin.preferences.Preferences;
 import it.polimi.diceH2020.plugin.ui.ResultPage;
 
 public class DSpaceResult implements IWorkbenchWindowActionDelegate{
@@ -31,7 +32,7 @@ public class DSpaceResult implements IWorkbenchWindowActionDelegate{
 	@Override
 	public void run(IAction arg0) {
 		p = new ResultPage(new Shell());
-		p.displayUrl("http://localhost:8000/resPub");
+		p.displayUrl(Preferences.getFrontEndUrl() + "resPub");
 	}
 
 	@Override

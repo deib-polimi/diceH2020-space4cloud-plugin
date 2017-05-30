@@ -43,6 +43,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import it.polimi.diceH2020.plugin.preferences.Preferences;
+
 public class ConfigurationDialog extends Dialog {
 	private Shell shell;
 	private Text serverId;
@@ -171,9 +173,9 @@ public class ConfigurationDialog extends Dialog {
 	}
 
 	public void load() {
-		String defaultId="http://localhost:8000/";
+		String defaultId=Preferences.getFrontEndUrl();
 		int defaultTime=5;
-		this.bcEndId="http://localhost:8080/";
+		this.bcEndId=Preferences.getBackEndUrl();
 		File f = new File(filePath);
 		System.out.println(f.getAbsolutePath());
 

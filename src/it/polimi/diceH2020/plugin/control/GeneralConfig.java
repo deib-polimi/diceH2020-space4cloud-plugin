@@ -28,11 +28,14 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import it.polimi.diceH2020.plugin.preferences.Preferences;
+
+//TODO remove this class
 public class GeneralConfig {
 	private static GeneralConfig currentConf;
 
 	private String savingDir;
-	private String serverID;
+	private String serverID; 
 	private int timeToWait;
 	private String backEndID;
 
@@ -49,10 +52,6 @@ public class GeneralConfig {
 
 	public void setServerID(String serverId){
 		this.serverID=serverId;
-	}
-
-	public String getServerID(){
-		return this.serverID;
 	}
 
 	public String getSavingDir(){
@@ -74,8 +73,8 @@ public class GeneralConfig {
 
 		if(!(f.exists())) { 
 			this.timeToWait=defaultTime;
-			this.serverID="http://localhost:8000/";
-			this.backEndID="http://localhost:8080";
+			this.serverID=Preferences.getFrontEndUrl();
+			this.backEndID=Preferences.getBackEndUrl();
 			Path currentRelativePath = Paths.get("");
 			String s = currentRelativePath.toAbsolutePath().toString();
 			this.savingDir=s;
@@ -132,10 +131,6 @@ public class GeneralConfig {
 				}
 			}
 		}
-	}
-
-	public String getBackEndID(){
-		return this.backEndID;
 	}
 
 	public void setBackEndID(String bc){

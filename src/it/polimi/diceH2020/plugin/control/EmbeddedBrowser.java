@@ -39,6 +39,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ProgressBar;
 
+import it.polimi.diceH2020.plugin.preferences.Preferences;
+
 
 public final class EmbeddedBrowser {  
 	private static final int BUFFER_SIZE = 4096;
@@ -85,7 +87,7 @@ public final class EmbeddedBrowser {
 		browser.addLocationListener(new LocationListener(){
 			@Override
 			public void changing(LocationEvent event) {
-				if(event.location.equals("http://localhost:8000/")){
+				if(event.location.equals(Preferences.getFrontEndUrl())){
 					browser.setUrl(URL);
 				}
 				if(event.location.contains("download/")){
