@@ -18,6 +18,7 @@ limitations under the License.
 
 package it.polimi.diceH2020.plugin.control;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +27,11 @@ import java.util.Map;
  * @author kom
  *
  */
-public class ClassDesc {
+public class ClassDesc implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final int id;
 	private Map<String, String> altDtsm;
 	private String ddsmPath;

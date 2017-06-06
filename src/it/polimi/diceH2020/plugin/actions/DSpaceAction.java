@@ -21,14 +21,13 @@ package it.polimi.diceH2020.plugin.actions;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 import it.polimi.diceH2020.plugin.control.Configuration;
 import it.polimi.diceH2020.plugin.control.DICEWrap;
 import it.polimi.diceH2020.plugin.control.PrivateConfiguration;
-import it.polimi.diceH2020.plugin.ui.ConfigurationDialog;
+import it.polimi.diceH2020.plugin.preferences.Preferences;
 import it.polimi.diceH2020.plugin.ui.DSpaceWizard;
 
 /**
@@ -42,48 +41,54 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 	}
 
 	/**
-	 * The action has been activated. The argument of the
-	 * method represents the 'real' action sitting
-	 * in the workbench UI.
+	 * The action has been activated. The argument of the method represents the
+	 * 'real' action sitting in the workbench UI.
+	 * 
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
 	public void run(IAction action) {
+		System.out.println(Preferences.getSavingDir());
+		char mode = '1'; //TODO this is just for testing faster. change to 2 or 3 for taking for your filesystem a serialized version of the configuration
 		final String actionID = action.getId();
-
+		
 		if (actionID.endsWith("Start")) {
-			Configuration.getCurrent().reset();
-			PrivateConfiguration.getCurrent().clear();
-			WizardDialog dialog = new WizardDialog(null, new DSpaceWizard());
-			dialog.open();
-			DICEWrap.getWrapper().start();
-		} else if (actionID.endsWith("Preferences")) {
-			ConfigurationDialog con=new ConfigurationDialog(new Shell());
-			con.load();
-			con.setView();
-		}
+			if (mode == '1') {
+				Configuration.getCurrent().reset();
+				PrivateConfiguration.getCurrent().clear();
+				WizardDialog dialog = new WizardDialog(null, new DSpaceWizard());
+				dialog.open();
+				DICEWrap.getWrapper().start();
+			} else if (mode == '2') {
+				DICEWrap.trySparkFork1();
+			} else if (mode == '3') {
+				DICEWrap.trySparkFork2(); //this file should be simpler
+			}
+		} 
 	}
 
 	/**
-	 * Selection in the workbench has been changed. We 
-	 * can change the state of the 'real' action here
-	 * if we want, but this can only happen after 
-	 * the delegate has been created.
+	 * Selection in the workbench has been changed. We can change the state of
+	 * the 'real' action here if we want, but this can only happen after the
+	 * delegate has been created.
+	 * 
 	 * @see IWorkbenchWindowActionDelegate#selectionChanged
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 	}
 
 	/**
-	 * We can use this method to dispose of any system
-	 * resources we previously allocated.
+	 * We can use this method to dispose of any system resources we previously
+	 * allocated.
+	 * 
 	 * @see IWorkbenchWindowActionDelegate#dispose
 	 */
 	public void dispose() {
 	}
 
 	/**
-	 * We will cache window object in order to
-	 * be able to provide parent shell for the message dialog.
+	 * We will cache window object in order to be able to provide parent shell
+	 * for the message dialog.
+	 * 
 	 * @see IWorkbenchWindowActionDelegate#init
 	 */
 	public void init(IWorkbenchWindow window) {

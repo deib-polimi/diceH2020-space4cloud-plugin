@@ -18,6 +18,7 @@ limitations under the License.
 
 package it.polimi.diceH2020.plugin.control;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -26,7 +27,12 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author kom
  *
  */
-public class Configuration {
+public class Configuration implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private static Configuration currentConf;
 
 	private ArrayList<ClassDesc> classes;
@@ -216,5 +222,10 @@ public class Configuration {
 
 	public void setCanSend(boolean canS){
 		this.canSend=canS;
+	}
+
+	public static void setConfiguration(Configuration conf) {
+		currentConf=conf;
+		
 	}
 }

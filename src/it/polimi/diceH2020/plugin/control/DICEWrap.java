@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.BasicMonitor;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -38,6 +39,7 @@ import org.eclipse.uml2.uml.FinalNode;
 import org.eclipse.uml2.uml.Model;
 
 import es.unizar.disco.pnml.m2m.builder.HadoopActivityDiagram2PnmlResourceBuilder;
+import es.unizar.disco.pnml.m2m.builder.SparkActivityDiagram2PnmlResourceBuilder;
 import es.unizar.disco.pnml.m2m.builder.StormActivityDiagram2PnmlResourceBuilder;
 import es.unizar.disco.pnml.m2t.templates.gspn.GenerateGspn;
 import es.unizar.disco.simulation.models.builders.IAnalyzableModelBuilder.ModelResult;
@@ -47,6 +49,7 @@ import fr.lip6.move.pnml.ptnet.PetriNetDoc;
 import fr.lip6.move.pnml.ptnet.Place;
 import fr.lip6.move.pnml.ptnet.Transition;
 import it.polimi.diceH2020.plugin.net.NetworkManager;
+import utils.WriterReader;
 
 /**
  * Manages models transformations and analysis using DICE-plugin APIs and internal methods.
@@ -117,14 +120,14 @@ public class DICEWrap {
 			for (ClassDesc c : conf.getClasses()){
 				for(String alt : c.getAltDtsm().keySet())
 					try {
-						buildHadoopAnalyzableModel(c.getAltDtsm().get(alt));
+						buildSparkAnalyzableModel(c.getAltDtsm().get(alt));
 						generatePNML(String.valueOf(c.getId()), alt);
 						genGSPN();
 						FileManager.getInstance().editFiles(c.getId(), alt, extractHadoopId());
 						extractParametersFromHadoopModel(c, alt);
 					} catch (Exception e) {
 						System.err.println("SPARK EXCEPTION");
-						System.out.println(e.getMessage());
+						e.printStackTrace();
 					}
 			}
 			break;
@@ -208,6 +211,16 @@ public class DICEWrap {
 		Resource res = set.getResource(URI.createFileURI(umlModelPath), true);
 		result = builder.createAnalyzableModel((Model)res.getContents().get(0), new BasicEList<PrimitiveVariableAssignment>());
 	}
+	
+	public void buildSparkAnalyzableModel(String umlModelPath){
+		SparkActivityDiagram2PnmlResourceBuilder builder = new SparkActivityDiagram2PnmlResourceBuilder();
+
+		ResourceSet set = new ResourceSetImpl();
+		Resource res = set.getResource(URI.createFileURI(umlModelPath), true);
+		EList<EObject> e= res.getContents();
+		System.out.println(e.size());
+		result = builder.createAnalyzableModel((Model)e.get(0), new BasicEList<PrimitiveVariableAssignment>());
+	}
 
 	/**
 	 * Builds PNML model file from ModelResult.  
@@ -264,5 +277,20 @@ public class DICEWrap {
 		}else{
 			this.scenario="PrivateAdmissionControl";
 		}
+	}
+	
+	public static void trySparkFork1(){
+		tryMe("ConfFork1.txt");
+	}
+	
+	public static void trySparkFork2(){
+		tryMe("ConfFork2.txt");
+	}
+	
+	public static void tryMe(String configFile){
+		DICEWrap dw = new DICEWrap();
+		dw.conf= (Configuration) WriterReader.readObject(configFile);
+		Configuration.setConfiguration(dw.conf);
+		dw.start();
 	}
 }
