@@ -32,7 +32,7 @@ public class DSpacePrivateResult implements IWorkbenchWindowActionDelegate{
 	@Override
 	public void run(IAction arg0) {
 		p=new ResultPage(new Shell());
-		p.displayUrl(Preferences.getFrontEndAddress() + ":" + Preferences.getFrontEndPort() + "/resPri");
+		p.displayUrl(Preferences.getFrontEndUrl() + "resPri");
 	}
 
 	@Override
