@@ -122,9 +122,11 @@ public class DICEWrap {
 			for (ClassDesc c : conf.getClasses()){
 				for(String alt : c.getAltDtsm().keySet())
 					try {
-						buildSparkAnalyzableModel(c.getAltDtsm().get(alt));
-						generatePNML(String.valueOf(c.getId()), alt);
-						genGSPN();
+						//WriterReader.writeClassDesc(conf);
+						//buildSparkAnalyzableModel(c.getAltDtsm().get(alt));
+						//generatePNML(String.valueOf(c.getId()), alt);
+						myGeneratePNML();
+						myGenGSPN();
 						FileManager.getInstance().editFiles(c.getId(), alt, extractHadoopId());
 						extractParametersFromHadoopModel(c, alt);
 					} catch (Exception e) {
@@ -269,13 +271,31 @@ public class DICEWrap {
 		System.out.println("GSPN generated");
 	}
 	
-	public void MyGenGSPN (){
+	public void myGeneratePNML (){
 		
-		String inputPath = System.getProperty("user.dir")+"res/pnml_gspn_files/OutputSimulation/GSPN";	
-		String targetPath = Preferences.getSavingDir()+"tmp/";  				
+		String inputPath = Preferences.getSavingDir() + "res" + File.separator + "pnml_gspn_files" + File.separator +"OutputSimulation" + File.separator + "PNML";	
+		String targetPath = Preferences.getSavingDir();  				
 		
-		System.out.println("Input Directory: "+ inputPath);
-		System.out.println("Output Directory: "+ targetPath);
+		System.out.println("PNML Input Directory: "+ inputPath);
+		System.out.println("PNML Output Directory: "+ targetPath);
+		
+		File source = new File(inputPath);
+		File dest = new File(targetPath);
+		
+		try {
+		    FileUtils.copyDirectory(source, dest);
+		} catch (IOException e) {
+		    e.printStackTrace();
+		}
+	}
+	
+public void myGenGSPN (){
+		
+		String inputPath = Preferences.getSavingDir() + "res" + File.separator + "pnml_gspn_files" + File.separator +"OutputSimulation" + File.separator + "GSPN";	
+		String targetPath = Preferences.getSavingDir()+"tmp" + File.separator;  				
+		
+		System.out.println("GSPN Input Directory: "+ inputPath);
+		System.out.println("GSPN Output Directory: "+ targetPath);
 		
 		File source = new File(inputPath);
 		File dest = new File(targetPath);
