@@ -56,6 +56,7 @@ import org.w3c.dom.NodeList;
 import it.polimi.diceH2020.plugin.control.FileManager;
 import it.polimi.diceH2020.plugin.control.PrivateConfiguration;
 import it.polimi.diceH2020.plugin.control.VmClass;
+import it.polimi.diceH2020.plugin.preferences.Preferences;
 
 public class PrivateConfigPage extends WizardPage{
 	private Composite container;
@@ -378,7 +379,7 @@ public class PrivateConfigPage extends WizardPage{
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
 			DOMSource source = new DOMSource(doc);
-			StreamResult result = new StreamResult(new File(FileManager.getInstance().getPath()+"VMConfig.xml"));
+			StreamResult result = new StreamResult(new File(Preferences.getSavingDir() + "VMConfig.xml"));
 
 			transformer.transform(source, result);
 
@@ -391,11 +392,11 @@ public class PrivateConfigPage extends WizardPage{
 	}
 
 	private void loadFile(){
-		if(!new File(FileManager.getInstance().getPath()+"VMConfig.xml").isFile()){
+		if(!new File(Preferences.getSavingDir()+"VMConfig.xml").isFile()){
 			JOptionPane.showMessageDialog(null, "No configurations have been saved","Info",JOptionPane.INFORMATION_MESSAGE);
 		}else{
 			try {	
-				File inputFile = new File(FileManager.getInstance().getPath()+"VMConfig.xml");
+				File inputFile = new File(Preferences.getSavingDir()+"VMConfig.xml");
 				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 

@@ -49,6 +49,7 @@ import fr.lip6.move.pnml.ptnet.PetriNetDoc;
 import fr.lip6.move.pnml.ptnet.Place;
 import fr.lip6.move.pnml.ptnet.Transition;
 import it.polimi.diceH2020.plugin.net.NetworkManager;
+import it.polimi.diceH2020.plugin.preferences.Preferences;
 import utils.WriterReader;
 
 /**
@@ -261,7 +262,7 @@ public class DICEWrap {
 	 * @throws IOException
 	 */
 	public void genGSPN() throws IOException{
-		File targetFolder = new File(FileManager.getInstance().getPath()+"tmp/");
+		File targetFolder = new File(Preferences.getSavingDir()+"tmp/");
 		GenerateGspn gspn = new GenerateGspn(((PetriNetDoc)result.getModel().get(0)).getNets().get(0),targetFolder, new ArrayList<EObject>());
 		gspn.doGenerate(new BasicMonitor());
 		System.out.println("GSPN generated");

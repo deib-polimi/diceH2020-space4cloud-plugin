@@ -86,7 +86,7 @@ public class FileManager {
 	private String path;
 
 	private FileManager(){
-		path = Preferences.getSavingDir()+"/"; // to be replaced by fetching this info in tools
+		path = Preferences.getSavingDir(); // to be replaced by fetching this info in tools
 	}
 
 	public static FileManager getInstance(){
@@ -391,10 +391,6 @@ public class FileManager {
 			jML.setMapJobMLProfile(jmlMap);
 			data.setMapJobMLProfiles(jML);
 		}
-	}
-
-	public String getPath(){
-		return path;
 	}
 
 	/**

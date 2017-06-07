@@ -47,7 +47,6 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
 	public void run(IAction action) {
-		System.out.println(Preferences.getSavingDir());
 		char mode = '1'; //TODO this is just for testing faster. change to 2 or 3 for taking for your filesystem a serialized version of the configuration
 		final String actionID = action.getId();
 		
