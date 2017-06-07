@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ASCII"?>
+<traces:TraceSet xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:traces="http://es.unizar.disco/simulation/traces/1.0">
+  <traces rule="NumberOfConcurrentUsers">
+    <fromDomainElement href="platform:/resource/es.unizar.disco/tests/dtsm_spark_test/model_fork_join_optimization_simple.uml#_WuYo8DlXEeaE4deiM0Jlvg"/>
+    <toAnalyzableElement href="acd6050b-0664-41e0-a5d5-314b85ddac27.anm.xmi#_FZoWwUnOEee9S_GEFk15zw"/>
+  </traces>
+  <traces rule="activityDiagram2subNet">
+    <fromDomainElement href="platform:/resource/es.unizar.disco/tests/dtsm_spark_test/model_fork_join_optimization_simple.uml#_WuYo8DlXEeaE4deiM0Jlvg"/>
+    <toAnalyzableElement href="acd6050b-0664-41e0-a5d5-314b85ddac27.anm.xmi#_FZo90EnOEee9S_GEFk15zw"/>
+  </traces>
+  <traces rule="NumberOfConcurrentUsers">
+    <fromDomainElement href="platform:/resource/es.unizar.disco/tests/dtsm_spark_test/model_fork_join_optimization_simple.uml#_WuYo8DlXEeaE4deiM0Jlvg"/>
+    <toAnalyzableElement href="acd6050b-0664-41e0-a5d5-314b85ddac27.anm.xmi#_FZo90UnOEee9S_GEFk15zw"/>
+  </traces>
+  <traces rule="initialNode2subNet">
+    <fromDomainElement href="platform:/resource/es.unizar.disco/tests/dtsm_spark_test/model_fork_join_optimization_simple.uml#_p15FUDlXEeaE4deiM0Jlvg"/>
+    <toAnalyzableElement href="acd6050b-0664-41e0-a5d5-314b85ddac27.anm.xmi#_Fa9zgEnOEee9S_GEFk15zw"/>
+  </traces>
+  <traces rule="initialNode2subNet">
+    <fromDomainElement href="platform:/resource/es.unizar.disco/tests/dtsm_spark_test/model_fork_join_optimization_simple.uml#_p15FUDlXEeaE4deiM0Jlvg"/>
+    <toAnalyzableElement href="acd6050b-0664-41e0-a5d5-314b85ddac27.anm.xmi#_Fa9zgUnOEee9S_GEFk15zw"/>
+  </traces>
+  <traces rule="initialNode2subNet">
+    <fromDomainElement href="platform:/resource/es.unizar.disco/tests/dtsm_spark_test/model_fork_join_optimization_simple.uml#_p15FUDlXEeaE4deiM0Jlvg"/>
+    <toAnalyzableElement href="acd6050b-0664-41e0-a5d5-314b85ddac27.anm.xmi#_Fa-akEnOEee9S_GEFk15zw"/>
+  </traces>
+  <traces rule="mapNode2subNet">
+    <fromDomainElement href="platform:/resource/es.unizar.disco/tests/dtsm_spark_test/model_fork_join_optimization_simple.uml#_uZmhEDlXEeaE4deiM0Jlvg"/>
+    <toAnalyzableElement href="acd6050b-0664-41e0-a5d5-314b85ddac27.anm.xmi#_FbAPwEnOEee9S_GEFk15zw"/>
+  </traces>
+  <traces rule="mapNode2subNet">
+    <fromDomainElement href="platform:/resource/es.unizar.disco/tests/dtsm_spark_test/model_fork_join_optimization_simple.uml#_uZmhEDlXEeaE4deiM0Jlvg"/>
+    <toAnalyzableElement href="acd6050b-0664-41e0-a5d5-314b85ddac27.anm.xmi#_FbA20EnOEee9S_GEFk15zw"/>
+  </traces>
+  <traces rule="mapNode2subNet">
+    <fromDomainElement href="platform:/resource/es.unizar.disco/tests/dtsm_spark_test/model_fork_join_optimization_simple.uml#_uZmhEDlXEeaE4deiM0Jlvg"/>
+    <toAnalyzableElement href="acd6050b-0664-41e0-a5d5-314b85ddac27.anm.xmi#_FbA20UnOEee9S_GEFk15zw"/>
+  </traces>
+  <traces rule="mapNode2subNet">
+    <fromDomainElement href="platform:/resource/es.unizar.disco/tests/dtsm_spark_test/model_fork_join_optimization_simple.uml#_uZmhEDlXEeaE4deiM0Jlvg"/>
+    <toAnalyzableElement href="acd6050b-0664-41e0-a5d5-314b85ddac27.anm.xmi#_FbA20knOEee9S_GEFk15zw"/>
+  </traces>
+  <traces rule="mapNode2subNet">
+    <fromDomainElement href="platform:/resource/es.unizar.disco/tests/dtsm_spark_test/model_fork_join_optimization_simple.uml#_uZmhEDlXEeaE4deiM0Jlvg"/>
+    <toAnalyzableElement href="acd6050b-0664-41e0-a5d5-314b85ddac27.anm.xmi#_FbA200nOEee9S_GEFk15zw"/>
+  </traces>
+  <traces rule="mapNode2subNet">
+    <fromDomainElement href="platform:/resource/es.unizar.disco/tests/dtsm_spark_test/model_fork_join_optimization_simple.uml#_uZmhEDlXEeaE4deiM0Jlvg"/>
+    <toAnalyzableElement href="acd6050b-0664-41e0-a5d5-314b85ddac27.anm.xmi#_FbBd4EnOEee9S_GEFk15zw"/>
+  </traces>
+  <traces rule="mapNode2subNet">
+    <fromDomainElement href="platform:/resource/es.unizar.disco/tests/dtsm_spark_test/model_fork_join_optimization_simple.uml#_uZmhEDlXEeaE4deiM0Jlvg"/>
+    <toAnalyzableElement href="acd6050b-0664-41e0-a5d5-314b85ddac27.anm.xmi#_FbBd4UnOEee9S_GEFk15zw"/>
+  </traces>
+  <traces rule="mapNode2subNet">
+    <fromDomainElement href="platform:/resource/es.unizar.disco/tests/dtsm_spark_test/model_fork_join_optimization_simple.uml#_uZmhEDlXEeaE4deiM0Jlvg"/>
+    <toAnalyzableElement href="acd6050b-0664-41e0-a5d5-314b85ddac27.anm.xmi#_FbFIQEnOEee9S_GEFk15zw"/>
+  </traces>
+  <traces rule="redNode2subNet">
+    <fromDomainElement href="platform:/resource/es.unizar.disco/tests/dtsm_spark_test/model_fork_join_optimization_simple.uml#_vVW-sDlXEeaE4deiM0Jlvg"/>
+    <toAnalyzableElement href="acd6050b-0664-41e0-a5d5-314b85ddac27.anm.xmi#_FbILkEnOEee9S_GEFk15zw"/>
+  </traces>
+  <traces rule="redNode2subNet">
+    <fromDomainElement href="platform:/resource/es.unizar.disco/tests/dtsm_spark_test/model_fork_join_optimization_simple.uml#_vVW-sDlXEeaE4deiM0Jlvg"/>
+    <toAnalyzableElement href="acd6050b-0664-41e0-a5d5-314b85ddac27.anm.xmi#_FbILkUnOEee9S_GEFk15zw"/>
+  </traces>
+  <traces rule="redNode2subNet">
+    <fromDomainElement href="platform:/resource/es.unizar.disco/tests/dtsm_spark_test/model_fork_join_optimization_simple.uml#_vVW-sDlXEeaE4deiM0Jlvg"/>
+    <toAnalyzableElement href="acd6050b-0664-41e0-a5d5-314b85ddac27.anm.xmi#_FbILkknOEee9S_GEFk15zw"/>
+  </traces>
+  <traces rule="redNode2subNet">
+    <fromDomainElement href="platform:/resource/es.unizar.disco/tests/dtsm_spark_test/model_fork_join_optimization_simple.uml#_vVW-sDlXEeaE4deiM0Jlvg"/>
+    <toAnalyzableElement href="acd6050b-0664-41e0-a5d5-314b85ddac27.anm.xmi#_FbILk0nOEee9S_GEFk15zw"/>
+  </traces>
+  <traces rule="redNode2subNet">
+    <fromDomainElement href="platform:/resource/es.unizar.disco/tests/dtsm_spark_test/model_fork_join_optimization_simple.uml#_vVW-sDlXEeaE4deiM0Jlvg"/>
+    <toAnalyzableElement href="acd6050b-0664-41e0-a5d5-314b85ddac27.anm.xmi#_FbIyoEnOEee9S_GEFk15zw"/>
+  </traces>
+  <traces rule="redNode2subNet">
+    <fromDomainElement href="platform:/resource/es.unizar.disco/tests/dtsm_spark_test/model_fork_join_optimization_simple.uml#_vVW-sDlXEeaE4deiM0Jlvg"/>
+    <toAnalyzableElement href="acd6050b-0664-41e0-a5d5-314b85ddac27.anm.xmi#_FbIyoUnOEee9S_GEFk15zw"/>
+  </traces>
+  <traces rule="redNode2subNet">
+    <fromDomainElement href="platform:/resource/es.unizar.disco/tests/dtsm_spark_test/model_fork_join_optimization_simple.uml#_vVW-sDlXEeaE4deiM0Jlvg"/>
+    <toAnalyzableElement href="acd6050b-0664-41e0-a5d5-314b85ddac27.anm.xmi#_FbIyoknOEee9S_GEFk15zw"/>
+  </traces>
+  <traces rule="redNode2subNet">
+    <fromDomainElement href="platform:/resource/es.unizar.disco/tests/dtsm_spark_test/model_fork_join_optimization_simple.uml#_vVW-sDlXEeaE4deiM0Jlvg"/>
+    <toAnalyzableElement href="acd6050b-0664-41e0-a5d5-314b85ddac27.anm.xmi#_FbNEEEnOEee9S_GEFk15zw"/>
+  </traces>
+  <traces rule="Users">
+    <fromDomainElement href="platform:/resource/es.unizar.disco/tests/dtsm_spark_test/model_fork_join_optimization_simple.uml#_WuYo8DlXEeaE4deiM0Jlvg"/>
+    <toAnalyzableElement href="acd6050b-0664-41e0-a5d5-314b85ddac27.anm.xmi#_FbQucEnOEee9S_GEFk15zw"/>
+  </traces>
+  <traces rule="devices2resources">
+    <fromDomainElement href="platform:/resource/es.unizar.disco/tests/dtsm_spark_test/model_fork_join_optimization_simple.uml#_LGzO4DlkEeaE4deiM0Jlvg"/>
+    <toAnalyzableElement href="acd6050b-0664-41e0-a5d5-314b85ddac27.anm.xmi#_FbTxwEnOEee9S_GEFk15zw"/>
+  </traces>
+</traces:TraceSet>
