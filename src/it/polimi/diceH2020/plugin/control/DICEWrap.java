@@ -26,6 +26,7 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.BasicMonitor;
 import org.eclipse.emf.common.util.EList;
@@ -266,6 +267,24 @@ public class DICEWrap {
 		GenerateGspn gspn = new GenerateGspn(((PetriNetDoc)result.getModel().get(0)).getNets().get(0),targetFolder, new ArrayList<EObject>());
 		gspn.doGenerate(new BasicMonitor());
 		System.out.println("GSPN generated");
+	}
+	
+	public void MyGenGSPN (){
+		
+		String inputPath = System.getProperty("user.dir")+"res/pnml_gspn_files/OutputSimulation/GSPN";	
+		String targetPath = Preferences.getSavingDir()+"tmp/";  				
+		
+		System.out.println("Input Directory: "+ inputPath);
+		System.out.println("Output Directory: "+ targetPath);
+		
+		File source = new File(inputPath);
+		File dest = new File(targetPath);
+		
+		try {
+		    FileUtils.copyDirectory(source, dest);
+		} catch (IOException e) {
+		    e.printStackTrace();
+		}
 	}
 
 	public void setScenario(){
