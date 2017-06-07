@@ -119,14 +119,15 @@ public class FileManager {
 					f.renameTo(new File(path+conf.getID()+"J"+cdid+"inHouse"+alt+".def"));
 					f.delete();
 				}else{
-					f.renameTo(new File(path + conf.getID() + "J" + cdid + alt.replaceAll("-", "") + ".def"));
+					String newFileName=path + conf.getID() + "J" + cdid + alt.replaceAll("-", "") + ".def";
+					f.renameTo(new File(newFileName));
 					f.delete();
 				}
 			}
 
 			if(f.getName().endsWith(".net")){
 				System.out.println("Renaming " + f.getName());
-				putPlaceHolder(s, f.getName(), "net");
+				putPlaceHolder(s, f.getName(), "net"); // find the id in the .net file and changes the following number in "@@CORES@@"
 				if(Configuration.getCurrent().getIsPrivate()){
 					f.renameTo(new File(path+conf.getID()+"J"+cdid+"inHouse"+alt+".net"));
 					f.delete();
@@ -154,6 +155,7 @@ public class FileManager {
 			String words[] = null;
 			BufferedReader in = new BufferedReader(new FileReader(f));
 
+			// I search the point in which put the placeholder
 			newLine = in.readLine();
 			while(newLine != null){
 				s = s + "\n" + newLine;

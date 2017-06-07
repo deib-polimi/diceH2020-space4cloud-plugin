@@ -127,7 +127,7 @@ public class DICEWrap {
 						//generatePNML(String.valueOf(c.getId()), alt);
 						myGeneratePNML();
 						myGenGSPN();
-						FileManager.getInstance().editFiles(c.getId(), alt, extractHadoopId());
+						FileManager.getInstance().editFiles(c.getId(), alt, extractSparkId());
 						extractParametersFromHadoopModel(c, alt);
 					} catch (Exception e) {
 						System.err.println("SPARK EXCEPTION");
@@ -254,11 +254,20 @@ public class DICEWrap {
 	public String extractHadoopId(){
 		for(Trace i: result.getTraceSet().getTraces()){
 			if (i.getFromDomainElement() instanceof FinalNode && i.getToAnalyzableElement() instanceof Transition){
-				return ((Transition)i.getToAnalyzableElement()).getId();
+				String id = ((Transition)i.getToAnalyzableElement()).getId();
+				return id;
 			}
 		}
 		return null;
 	} 
+	
+	/**
+	 * for the moment it returns the id of the last transition of an example pnml file
+	 * @return
+	 */
+	public String extractSparkId(){
+		return "_FZo90UnOEee9S_GEFk15zw";
+	}
 
 	/**
 	 * Creates GSPN model (.net and .def files) in the given directory.
