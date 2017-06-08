@@ -16,13 +16,7 @@
             </separator>
          </menu>
         
-          <action
-               label="Pr&amp;eferences"
-               class="it.polimi.diceH2020.plugin.actions.DSpaceAction"
-               tooltip=""
-               menubarPath="openWizard/wizardGroup"
-               id="it.polimi.diceH2020.plugin.actions.Preferences">
-         </action>
+          
          <action
                label="Show &amp;Public Results"
                icon="icons/resultsIcon.png"
