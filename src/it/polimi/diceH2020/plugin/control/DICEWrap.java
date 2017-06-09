@@ -96,7 +96,7 @@ public class DICEWrap {
 						buildStormAnalyzableModel(c.getAltDtsm().get(alt));
 						generatePNML(String.valueOf(c.getId()), alt);
 						genGSPN(); 
-						FileManager.getInstance().editFiles(c.getId(), alt, extractStormId());
+						FileManager.editFiles(c.getId(), alt, extractStormId());
 					} catch (IOException e) {
 						System.out.println(e.getMessage());
 					}
@@ -110,7 +110,7 @@ public class DICEWrap {
 						buildHadoopAnalyzableModel(c.getAltDtsm().get(alt));
 						generatePNML(String.valueOf(c.getId()), alt);
 						genGSPN();
-						FileManager.getInstance().editFiles(c.getId(), alt, extractHadoopId());
+						FileManager.editFiles(c.getId(), alt, extractHadoopId());
 						extractParametersFromHadoopModel(c, alt);
 					} catch (Exception e) {
 						System.err.println("HADOOP EXCEPTION");
@@ -127,7 +127,7 @@ public class DICEWrap {
 						//generatePNML(String.valueOf(c.getId()), alt);
 						myGeneratePNML();
 						myGenGSPN();
-						FileManager.getInstance().editFiles(c.getId(), alt, extractSparkId());
+						FileManager.editSparkFiles(c.getId(), alt, extractSparkId());
 						extractParametersFromHadoopModel(c, alt);
 					} catch (Exception e) {
 						System.err.println("SPARK EXCEPTION");
@@ -140,14 +140,14 @@ public class DICEWrap {
 			return;
 		}
 
-		FileManager.getInstance().generateInputJson();
-		FileManager.getInstance().generateOutputJson();
+		FileManager.generateInputJson();
+		FileManager.generateOutputJson();
 		if(!Configuration.getCurrent().canSend()){
 			return;
 		}
 		try {
 			setScenario();
-			NetworkManager.getInstance().sendModel(FileManager.getInstance().selectFiles(), scenario);
+			NetworkManager.getInstance().sendModel(FileManager.selectFiles(), scenario);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -161,7 +161,7 @@ public class DICEWrap {
 	 */
 	private void extractParametersFromHadoopModel(ClassDesc c, String alt) {
 		String srcFile = c.getAltDtsm().get(alt);
-		Map<String, String> par = FileManager.getInstance().parseDOMXmlFile(srcFile);
+		Map<String, String> par = FileManager.parseDOMXmlFile(srcFile);
 		c.expandAltDtsmHadoop(alt, par);
 	}
 

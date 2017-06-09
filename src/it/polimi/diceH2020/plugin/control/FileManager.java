@@ -82,19 +82,6 @@ import it.polimi.diceH2020.plugin.preferences.Preferences;
  *
  */
 public class FileManager {
-	private static FileManager fm;
-	private String path;
-
-	private FileManager(){
-		path = Preferences.getSavingDir(); // to be replaced by fetching this info in tools
-	}
-
-	public static FileManager getInstance(){
-		if(fm == null){
-			fm = new FileManager();
-		}
-		return fm;
-	}
 
 	/**
 	 * Renames files to be standard compliant and puts placeholder
@@ -102,9 +89,10 @@ public class FileManager {
 	 * @param alt Alternative name
 	 * @param s String be replaced
 	 */
-	public void editFiles(int cdid, String alt, String s){
+	public static void editFiles(int cdid, String alt, String s){
+		String savingDir = Preferences.getSavingDir();
 		Configuration conf = Configuration.getCurrent();
-		File folder = new File(path+"tmp/");
+		File folder = new File(savingDir+"tmp/");
 		File files[] = folder.listFiles();
 
 		for(File f : files){
@@ -116,10 +104,10 @@ public class FileManager {
 
 				if(Configuration.getCurrent().getIsPrivate()){
 
-					f.renameTo(new File(path+conf.getID()+"J"+cdid+"inHouse"+alt+".def"));
+					f.renameTo(new File(savingDir+conf.getID()+"J"+cdid+"inHouse"+alt+".def"));
 					f.delete();
 				}else{
-					String newFileName=path + conf.getID() + "J" + cdid + alt.replaceAll("-", "") + ".def";
+					String newFileName=savingDir + conf.getID() + "J" + cdid + alt.replaceAll("-", "") + ".def";
 					f.renameTo(new File(newFileName));
 					f.delete();
 				}
@@ -129,10 +117,10 @@ public class FileManager {
 				System.out.println("Renaming " + f.getName());
 				putPlaceHolder(s, f.getName(), "net"); // find the id in the .net file and changes the following number in "@@CORES@@"
 				if(Configuration.getCurrent().getIsPrivate()){
-					f.renameTo(new File(path+conf.getID()+"J"+cdid+"inHouse"+alt+".net"));
+					f.renameTo(new File(savingDir+conf.getID()+"J"+cdid+"inHouse"+alt+".net"));
 					f.delete();
 				}else{
-					f.renameTo(new File(path + conf.getID() + "J" + cdid + alt.replaceAll("-", "") + ".net"));
+					f.renameTo(new File(savingDir + conf.getID() + "J" + cdid + alt.replaceAll("-", "") + ".net"));
 					f.delete();
 				}
 			}
@@ -144,8 +132,8 @@ public class FileManager {
 	 * @param id String to be replaced
 	 * @param file Input file path
 	 */
-	public void putPlaceHolder(String id, String file, String ext){
-		File f = new File(path + "tmp/" + file);
+	public static void putPlaceHolder(String id, String file, String ext){
+		File f = new File(Preferences.getSavingDir() + "tmp/" + file);
 		System.out.println("Putting placeholder over "+ id +" in file " + file);
 		try {
 			int i;
@@ -197,7 +185,7 @@ public class FileManager {
 	/**
 	 * Builds the JSON representation of the current Configuration and eventually dumps it on a file.
 	 */
-	public void generateInputJson(){
+	public static void generateInputJson(){
 		Configuration conf = Configuration.getCurrent(); //TODO: REMOVE
 		InstanceDataMultiProvider data = InstanceDataMultiProviderGenerator.build();
 
@@ -233,7 +221,7 @@ public class FileManager {
 		mapper.registerModule(new Jdk8Module());
 
 		try {
-			mapper.writerWithDefaultPrettyPrinter().writeValue(new File(path + conf.getID()+".json"), data);
+			mapper.writerWithDefaultPrettyPrinter().writeValue(new File(Preferences.getSavingDir() + conf.getID()+".json"), data);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -243,7 +231,7 @@ public class FileManager {
 		}
 	}
 
-	private void setPrivateParameters(InstanceDataMultiProvider data) {
+	private static void setPrivateParameters(InstanceDataMultiProvider data) {
 		PrivateCloudParameters pr= PrivateCloudParametersGenerator.build();
 		pr.setE(PrivateConfiguration.getCurrent().getPriE());
 		pr.setM(PrivateConfiguration.getCurrent().getPriM());
@@ -266,7 +254,7 @@ public class FileManager {
 		data.setMapVMConfigurations(priMap);
 	}
 
-	private void setMapJobProfile (InstanceDataMultiProvider data, Configuration conf) {
+	private static void setMapJobProfile (InstanceDataMultiProvider data, Configuration conf) {
 		//Set MapJobProfile
 		JobProfilesMap classdesc = JobProfilesMapGenerator.build ();
 
@@ -316,7 +304,7 @@ public class FileManager {
 		data.setMapJobProfiles (classdesc);
 	}
 
-	private void setMapClassParameters(InstanceDataMultiProvider data, Configuration conf) {
+	private static void setMapClassParameters(InstanceDataMultiProvider data, Configuration conf) {
 		//Set MapClassParameter
 		Map<String, ClassParameters> classdesc1 = new HashMap<String, ClassParameters>();
 
@@ -345,7 +333,7 @@ public class FileManager {
 		data.setMapClassParameters(new ClassParametersMap(classdesc1));
 	}
 
-	private void setEtaR(InstanceDataMultiProvider data, Configuration conf) {
+	private static void setEtaR(InstanceDataMultiProvider data, Configuration conf) {
 		//Set PublicCloudParameters
 		Map<String,Map<String,Map<String, PublicCloudParameters>>> classdesc2 =
 				new HashMap<String,Map<String,Map<String, PublicCloudParameters>>>();
@@ -374,9 +362,9 @@ public class FileManager {
 		data.setMapPublicCloudParameters(pub);
 	}
 
-	private void setMachineLearningProfile(InstanceDataMultiProvider data, Configuration conf) {
+	private static void setMachineLearningProfile(InstanceDataMultiProvider data, Configuration conf) {
 		if(conf.getTechnology().contains("Hadoop Map-reduce") || conf.getTechnology().contains("Spark")){
-			Configuration.getCurrent().setCanSend(this.setMachineLearningHadoop(data));
+			Configuration.getCurrent().setCanSend(setMachineLearningHadoop(data));
 		}else{
 			//Set mapJobMLProfile - MACHINE LEARNING
 			Map<String, JobMLProfile> jmlMap = new HashMap<String, JobMLProfile>();
@@ -399,8 +387,8 @@ public class FileManager {
 	 * Builds the list of files to be sent to the web service
 	 * @return
 	 */
-	public List<File> selectFiles() {
-		File folder = new File(path);
+	public static List<File> selectFiles() {
+		File folder = new File(Preferences.getSavingDir());
 		File files[] = folder.listFiles();
 		List<File> toSend = new ArrayList<File>();
 
@@ -416,7 +404,7 @@ public class FileManager {
 	/**
 	 * Generates the JSON file used to compose the result
 	 */
-	public void generateOutputJson() {
+	public static void generateOutputJson() {
 		Map<Integer, String> map = new HashMap<Integer, String>();
 
 		for(ClassDesc cd : Configuration.getCurrent().getClasses()){
@@ -443,7 +431,7 @@ public class FileManager {
 	 * @param fileName XML file path
 	 * @return A map containing the parameters extracted from the model 
 	 */
-	public Map<String, String> parseDOMXmlFile(String fileName){
+	public static Map<String, String> parseDOMXmlFile(String fileName){
 		File src = new File(fileName);
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder;
@@ -482,7 +470,7 @@ public class FileManager {
 		return res;
 	}
 
-	private boolean setMachineLearningHadoop(InstanceDataMultiProvider data){
+	private static boolean setMachineLearningHadoop(InstanceDataMultiProvider data){
 		//Set mapJobMLProfile - MACHINE LEARNING
 		Map<String, JobMLProfile> jmlMap = new HashMap<String, JobMLProfile>();
 		JSONParser parser = new JSONParser();
@@ -545,5 +533,10 @@ public class FileManager {
 		data.setMapJobMLProfiles(jML);
 
 		return true;
+	}
+
+	public static void editSparkFiles(int id, String alt, String extractSparkId) {
+		// TODO Auto-generated method stub
+		
 	}
 }
