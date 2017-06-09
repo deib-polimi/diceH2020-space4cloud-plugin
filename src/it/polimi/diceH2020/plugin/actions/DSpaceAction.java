@@ -47,7 +47,7 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
 	public void run(IAction action) {
-		char mode = '1'; //TODO this is just for testing faster. change to 2 or 3 for taking for your filesystem a serialized version of the configuration
+		char mode = '2'; //TODO this is just for testing faster. change to 2 or 3 for taking for your filesystem a serialized version of the configuration
 		final String actionID = action.getId();
 		
 		if (actionID.endsWith("Start")) {
@@ -60,7 +60,7 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 			} else if (mode == '2') {
 				DICEWrap.trySparkFork1();
 			} else if (mode == '3') {
-				DICEWrap.trySparkFork2(); //this file should be simpler
+				DICEWrap.trySparkFork2();
 			}
 		} 
 	}

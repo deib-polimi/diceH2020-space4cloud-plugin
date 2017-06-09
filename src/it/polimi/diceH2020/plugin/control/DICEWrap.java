@@ -54,7 +54,9 @@ import it.polimi.diceH2020.plugin.preferences.Preferences;
 import utils.WriterReader;
 
 /**
- * Manages models transformations and analysis using DICE-plugin APIs and internal methods.
+ * Manages models transformations and analysis using DICE-plugin APIs and
+ * internal methods.
+ * 
  * @author kom
  *
  */
@@ -65,12 +67,12 @@ public class DICEWrap {
 	private String scenario;
 	private String initialMarking;
 
-	public DICEWrap(){
+	public DICEWrap() {
 		initialMarking = "";
 	}
 
-	public static DICEWrap getWrapper(){
-		if (diceWrap == null){
+	public static DICEWrap getWrapper() {
+		if (diceWrap == null) {
 			diceWrap = new DICEWrap();
 		}
 		return diceWrap;
@@ -79,23 +81,24 @@ public class DICEWrap {
 	/**
 	 * Creates models from input files and upload them to the web service
 	 */
-	public void start(){
+	public void start() {
 		conf = Configuration.getCurrent();
 		System.out.println(conf.getID());
 
-		if(!conf.isComplete()){
-			System.out.println("Incomplete, aborting"); //TODO check completion for real
+		if (!conf.isComplete()) {
+			System.out.println("Incomplete, aborting"); // TODO check completion
+														// for real
 			return;
 		}
 
-		switch(conf.getTechnology()){
+		switch (conf.getTechnology()) {
 		case "Storm":
-			for (ClassDesc c : conf.getClasses()){
-				for(String alt : c.getAltDtsm().keySet()){
+			for (ClassDesc c : conf.getClasses()) {
+				for (String alt : c.getAltDtsm().keySet()) {
 					try {
 						buildStormAnalyzableModel(c.getAltDtsm().get(alt));
 						generatePNML(String.valueOf(c.getId()), alt);
-						genGSPN(); 
+						genGSPN();
 						FileManager.editFiles(c.getId(), alt, extractStormId());
 					} catch (IOException e) {
 						System.out.println(e.getMessage());
@@ -104,8 +107,8 @@ public class DICEWrap {
 			}
 			break;
 		case "Hadoop Map-reduce":
-			for (ClassDesc c : conf.getClasses()){
-				for(String alt : c.getAltDtsm().keySet())
+			for (ClassDesc c : conf.getClasses()) {
+				for (String alt : c.getAltDtsm().keySet())
 					try {
 						buildHadoopAnalyzableModel(c.getAltDtsm().get(alt));
 						generatePNML(String.valueOf(c.getId()), alt);
@@ -118,16 +121,17 @@ public class DICEWrap {
 					}
 			}
 			break;
-		case "Spark": //TODO implement this. now it's a copy of Hadoop Map-reduce.
-			for (ClassDesc c : conf.getClasses()){
-				for(String alt : c.getAltDtsm().keySet())
+		case "Spark": // TODO implement this. now it's a copy of Hadoop
+						// Map-reduce.
+			for (ClassDesc c : conf.getClasses()) {
+				for (String alt : c.getAltDtsm().keySet())
 					try {
-						//WriterReader.writeClassDesc(conf);
-						//buildSparkAnalyzableModel(c.getAltDtsm().get(alt));
-						//generatePNML(String.valueOf(c.getId()), alt);
-						myGeneratePNML();
+						// WriterReader.writeClassDesc(conf);
+						// buildSparkAnalyzableModel(c.getAltDtsm().get(alt));
+						// generatePNML(String.valueOf(c.getId()), alt);
+						myGeneratePNML(c.getId(), alt);
 						myGenGSPN();
-						FileManager.editSparkFiles(c.getId(), alt, extractSparkId());
+						SparkFileManager.editFiles(c.getId(), alt);
 						extractParametersFromHadoopModel(c, alt);
 					} catch (Exception e) {
 						System.err.println("SPARK EXCEPTION");
@@ -136,13 +140,13 @@ public class DICEWrap {
 			}
 			break;
 		default:
-			System.err.println("Unknown technology: "+conf.getTechnology());
+			System.err.println("Unknown technology: " + conf.getTechnology());
 			return;
 		}
 
 		FileManager.generateInputJson();
 		FileManager.generateOutputJson();
-		if(!Configuration.getCurrent().canSend()){
+		if (!Configuration.getCurrent().canSend()) {
 			return;
 		}
 		try {
@@ -155,9 +159,13 @@ public class DICEWrap {
 	}
 
 	/**
-	 * Extracts parameters from Hadoop model and appends them to the internal class structure
-	 * @param c Current class
-	 * @param alt Current alternative to expand
+	 * Extracts parameters from Hadoop model and appends them to the internal
+	 * class structure
+	 * 
+	 * @param c
+	 *            Current class
+	 * @param alt
+	 *            Current alternative to expand
 	 */
 	private void extractParametersFromHadoopModel(ClassDesc c, String alt) {
 		String srcFile = c.getAltDtsm().get(alt);
@@ -165,26 +173,28 @@ public class DICEWrap {
 		c.expandAltDtsmHadoop(alt, par);
 	}
 
-	//TODO: may be useless
-	public void extractStormInitialMarking(){
-		for(Trace i: result.getTraceSet().getTraces()){
-			if (i.getFromDomainElement() instanceof Device  && i.getToAnalyzableElement() instanceof Place){
-				initialMarking = ((Place)i.getToAnalyzableElement()).getInitialMarking().getText().toString();
+	// TODO: may be useless
+	public void extractStormInitialMarking() {
+		for (Trace i : result.getTraceSet().getTraces()) {
+			if (i.getFromDomainElement() instanceof Device && i.getToAnalyzableElement() instanceof Place) {
+				initialMarking = ((Place) i.getToAnalyzableElement()).getInitialMarking().getText().toString();
 				System.out.println(initialMarking);
 			}
 		}
 	}
 
 	/**
-	 * Analyzes current model looking for the Trace to be replaced w/ placeholder
+	 * Analyzes current model looking for the Trace to be replaced w/
+	 * placeholder
+	 * 
 	 * @return String ID of the Trace
 	 */
-	private String extractStormId(){
+	private String extractStormId() {
 		System.out.println("Extracting");
-		for(Trace i: result.getTraceSet().getTraces()){
-			if (i.getFromDomainElement() instanceof Device  && i.getToAnalyzableElement() instanceof Place){
-				System.out.println("Found "+ ((Place)i.getToAnalyzableElement()).getId());
-				return ((Place)i.getToAnalyzableElement()).getId();
+		for (Trace i : result.getTraceSet().getTraces()) {
+			if (i.getFromDomainElement() instanceof Device && i.getToAnalyzableElement() instanceof Place) {
+				System.out.println("Found " + ((Place) i.getToAnalyzableElement()).getId());
+				return ((Place) i.getToAnalyzableElement()).getId();
 			}
 		}
 		return null;
@@ -192,49 +202,56 @@ public class DICEWrap {
 
 	/**
 	 * Builds an analyzable Storm ModelResult from the given model
-	 * @param umlModelPath Input file path
+	 * 
+	 * @param umlModelPath
+	 *            Input file path
 	 */
-	public void buildStormAnalyzableModel(String umlModelPath){
+	public void buildStormAnalyzableModel(String umlModelPath) {
 		StormActivityDiagram2PnmlResourceBuilder builder = new StormActivityDiagram2PnmlResourceBuilder();
 
 		ResourceSet set = new ResourceSetImpl();
 		Resource res = set.getResource(URI.createFileURI(umlModelPath), true);
-		result = builder.createAnalyzableModel((Model)res.getContents().get(0), new BasicEList<PrimitiveVariableAssignment>());
+		result = builder.createAnalyzableModel((Model) res.getContents().get(0),
+				new BasicEList<PrimitiveVariableAssignment>());
 
 		System.out.println("Model built for file: " + umlModelPath);
 	}
 
 	/**
 	 * Builds an analyzable Hadoop ModelResult from the given model
-	 * @param umlModelPath Input file path
-	 */	
-	public void buildHadoopAnalyzableModel(String umlModelPath){
+	 * 
+	 * @param umlModelPath
+	 *            Input file path
+	 */
+	public void buildHadoopAnalyzableModel(String umlModelPath) {
 		HadoopActivityDiagram2PnmlResourceBuilder builder = new HadoopActivityDiagram2PnmlResourceBuilder();
 
 		ResourceSet set = new ResourceSetImpl();
 		Resource res = set.getResource(URI.createFileURI(umlModelPath), true);
-		result = builder.createAnalyzableModel((Model)res.getContents().get(0), new BasicEList<PrimitiveVariableAssignment>());
+		result = builder.createAnalyzableModel((Model) res.getContents().get(0),
+				new BasicEList<PrimitiveVariableAssignment>());
 	}
-	
-	public void buildSparkAnalyzableModel(String umlModelPath){
+
+	public void buildSparkAnalyzableModel(String umlModelPath) {
 		SparkActivityDiagram2PnmlResourceBuilder builder = new SparkActivityDiagram2PnmlResourceBuilder();
 
 		ResourceSet set = new ResourceSetImpl();
 		Resource res = set.getResource(URI.createFileURI(umlModelPath), true);
-		EList<EObject> e= res.getContents();
+		EList<EObject> e = res.getContents();
 		System.out.println(e.size());
-		result = builder.createAnalyzableModel((Model)e.get(0), new BasicEList<PrimitiveVariableAssignment>());
+		result = builder.createAnalyzableModel((Model) e.get(0), new BasicEList<PrimitiveVariableAssignment>());
 	}
 
 	/**
-	 * Builds PNML model file from ModelResult.  
+	 * Builds PNML model file from ModelResult.
+	 * 
 	 * @param classID
 	 * @param alt
 	 */
-	public void generatePNML(String classID, String alt){
-		PetriNetDoc pnd = (PetriNetDoc)result.getModel().get(0);
-		File aFile = new File(conf.getID() + "J" + classID + alt.replaceAll("-", "") + ".pnml"); 
-		FileOutputStream outputFile = null; 
+	public void generatePNML(String classID, String alt) {
+		PetriNetDoc pnd = (PetriNetDoc) result.getModel().get(0);
+		File aFile = new File(conf.getID() + "J" + classID + alt.replaceAll("-", "") + ".pnml");
+		FileOutputStream outputFile = null;
 		try {
 			outputFile = new FileOutputStream(aFile, true);
 			System.out.println("File stream created successfully.");
@@ -245,100 +262,130 @@ public class DICEWrap {
 		pnd.toPNML(outChannel);
 	}
 
-	//TODO: set all these methods to private
+	// TODO: set all these methods to private
 
 	/**
-	 * Analyzes current model looking for the Trace to be replaced w/ placeholder
+	 * Analyzes current model looking for the Trace to be replaced w/
+	 * placeholder
+	 * 
 	 * @return String ID of the Trace
 	 */
-	public String extractHadoopId(){
-		for(Trace i: result.getTraceSet().getTraces()){
-			if (i.getFromDomainElement() instanceof FinalNode && i.getToAnalyzableElement() instanceof Transition){
-				String id = ((Transition)i.getToAnalyzableElement()).getId();
+	public String extractHadoopId() {
+		for (Trace i : result.getTraceSet().getTraces()) {
+			if (i.getFromDomainElement() instanceof FinalNode && i.getToAnalyzableElement() instanceof Transition) {
+				String id = ((Transition) i.getToAnalyzableElement()).getId();
 				return id;
 			}
 		}
 		return null;
-	} 
-	
+	}
+
 	/**
-	 * for the moment it returns the id of the last transition of an example pnml file
+	 * for the moment it returns the id of the last transition of an example
+	 * pnml file
+	 * 
 	 * @return
 	 */
-	public String extractSparkId(){
+	public String extractSparkId() {
 		return "_FZo90UnOEee9S_GEFk15zw";
 	}
 
 	/**
 	 * Creates GSPN model (.net and .def files) in the given directory.
+	 * 
 	 * @throws IOException
 	 */
-	public void genGSPN() throws IOException{
-		File targetFolder = new File(Preferences.getSavingDir()+"tmp/");
-		GenerateGspn gspn = new GenerateGspn(((PetriNetDoc)result.getModel().get(0)).getNets().get(0),targetFolder, new ArrayList<EObject>());
+	public void genGSPN() throws IOException {
+		File targetFolder = new File(Preferences.getSavingDir() + "tmp/");
+		GenerateGspn gspn = new GenerateGspn(((PetriNetDoc) result.getModel().get(0)).getNets().get(0), targetFolder,
+				new ArrayList<EObject>());
 		gspn.doGenerate(new BasicMonitor());
 		System.out.println("GSPN generated");
 	}
-	
-	public void myGeneratePNML (){
-		
-		String inputPath = Preferences.getSavingDir() + "res" + File.separator + "pnml_gspn_files" + File.separator +"OutputSimulation" + File.separator + "PNML";	
-		String targetPath = Preferences.getSavingDir();  				
-		
-		System.out.println("PNML Input Directory: "+ inputPath);
-		System.out.println("PNML Output Directory: "+ targetPath);
-		
+
+	public void myGeneratePNML(int cdid, String alt) {
+
+		String inputPath = Preferences.getSavingDir() + "res" + File.separator + "pnml_gspn_files" + File.separator
+				+ "OutputSimulation" + File.separator + "PNML";
+		String targetPath = Preferences.getSavingDir();
+
+		System.out.println("PNML Input Directory: " + inputPath);
+		System.out.println("PNML Output Directory: " + targetPath);
+
 		File source = new File(inputPath);
 		File dest = new File(targetPath);
-		
+
 		try {
-		    FileUtils.copyDirectory(source, dest);
+			FileUtils.copyDirectory(source, dest);
 		} catch (IOException e) {
-		    e.printStackTrace();
+			e.printStackTrace();
 		}
+
+		// the pnml file has to have a specific name
+		File files[] = dest.listFiles();
+		String outputFilePath;
+		if (Configuration.getCurrent().getIsPrivate()) {
+			outputFilePath = Preferences.getSavingDir() + conf.getID() + "J" + cdid + "inHouse" + alt;
+		} else {
+			outputFilePath = Preferences.getSavingDir() + conf.getID() + "J" + cdid + alt.replaceAll("-", "");
+		}
+
+		File pnmlFilePath = new File(outputFilePath + ".pnml");
+		File trcFilePath = new File(outputFilePath + ".trc.xmi");
+		for (File f : files) {
+			if (f.getName().endsWith(".pnml")) {
+				f.renameTo(pnmlFilePath);
+			} else if (f.getName().endsWith(".trc.xmi")) {
+				f.renameTo(trcFilePath);
+			}
+		}
+		// TODO find another way to rename these files because there are
+		// different files that ends with pnml in this folder, so in order to
+		// work you have to delete these files every time
 	}
-	
-public void myGenGSPN (){
-		
-		String inputPath = Preferences.getSavingDir() + "res" + File.separator + "pnml_gspn_files" + File.separator +"OutputSimulation" + File.separator + "GSPN";	
-		String targetPath = Preferences.getSavingDir()+"tmp" + File.separator;  				
-		
-		System.out.println("GSPN Input Directory: "+ inputPath);
-		System.out.println("GSPN Output Directory: "+ targetPath);
-		
+
+	public void myGenGSPN() {
+
+		String inputPath = Preferences.getSavingDir() + "res" + File.separator + "pnml_gspn_files" + File.separator
+				+ "OutputSimulation" + File.separator + "GSPN";
+		String targetPath = Preferences.getSavingDir() + "tmp" + File.separator;
+
+		System.out.println("GSPN Input Directory: " + inputPath);
+		System.out.println("GSPN Output Directory: " + targetPath);
+
 		File source = new File(inputPath);
 		File dest = new File(targetPath);
-		
+
 		try {
-		    FileUtils.copyDirectory(source, dest);
+			FileUtils.copyDirectory(source, dest);
 		} catch (IOException e) {
-		    e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 
-	public void setScenario(){
-		if(!Configuration.getCurrent().getIsPrivate()){
-			if(Configuration.getCurrent().getHasLtc()){
-				this.scenario="PublicPeakWorkload";
-			}else{
-				this.scenario="PublicAvgWorkLoad";
+	public void setScenario() {
+		if (!Configuration.getCurrent().getIsPrivate()) {
+			if (Configuration.getCurrent().getHasLtc()) {
+				this.scenario = "PublicPeakWorkload";
+			} else {
+				this.scenario = "PublicAvgWorkLoad";
 			}
-		}else{
-			this.scenario="PrivateAdmissionControl";
+		} else {
+			this.scenario = "PrivateAdmissionControl";
 		}
 	}
-	
-	public static void trySparkFork1(){
+
+	public static void trySparkFork1() {
 		tryMe("ConfFork1.txt");
 	}
-	
-	public static void trySparkFork2(){
+
+	public static void trySparkFork2() {
 		tryMe("ConfFork2.txt");
 	}
-	
-	public static void tryMe(String configFile){
+
+	public static void tryMe(String configFile) {
 		DICEWrap dw = new DICEWrap();
-		dw.conf= (Configuration) WriterReader.readObject(configFile);
+		dw.conf = (Configuration) WriterReader.readObject(configFile);
 		Configuration.setConfiguration(dw.conf);
 		dw.start();
 	}
