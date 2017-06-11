@@ -30,6 +30,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import it.polimi.diceH2020.plugin.net.NetworkManager;
+import it.polimi.diceH2020.plugin.preferences.Preferences;
 
 /**
  * Contains methods for dealing with the different vm configurations local database
@@ -55,7 +56,7 @@ public class JsonDatabase {
 	 * it creates and populates it
 	 */
 	private void startupCheckings(){
-		File jsonDbFile = new File("vmconfigs.json");
+		File jsonDbFile = new File(Preferences.getSavingDir() + "vmconfigs.json");
 		if(!jsonDbFile.exists()){
 			refreshDbContents();
 		}
@@ -72,7 +73,7 @@ public class JsonDatabase {
 			String[] alternatives = digestAlternatives(array);
 			try {
 				//Writes the db
-				FileWriter writer = new FileWriter("vmconfigs.json");
+				FileWriter writer = new FileWriter(Preferences.getSavingDir() + "vmconfigs.json");
 				writer.write(array.toJSONString());
 				writer.close();
 				return alternatives;
@@ -117,7 +118,7 @@ public class JsonDatabase {
 		JSONParser parser = new JSONParser();
 
 		try {
-			JSONArray parsed = (JSONArray) parser.parse(new FileReader("vmconfigs.json"));
+			JSONArray parsed = (JSONArray) parser.parse(new FileReader(Preferences.getSavingDir() + "vmconfigs.json"));
 			return digestAlternatives(parsed);
 		} catch (IOException | ParseException e) {
 			// TODO Auto-generated catch block
