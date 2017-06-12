@@ -50,7 +50,7 @@ public class SparkFileManager {
 	}
 
 	/**
-	 * Returns the Ids that corresponds to the value of the attribute rule in a
+	 * Returns a list of Ids that cothe value of the attribute rule in a
 	 * given trc file
 	 * 
 	 * @param rule
@@ -160,14 +160,22 @@ public class SparkFileManager {
 		String pnmlFilename = "res/pnml_gspn_files/OutputSimulation/PNML/acd6050b-0664-41e0-a5d5-314b85ddac27.anm.pnml";
 		String trcFilename = "res/pnml_gspn_files/OutputSimulation/PNML/acd6050b-0664-41e0-a5d5-314b85ddac27.trc.xmi";
 		String netFilename = "res/pnml_gspn_files/OutputSimulation/GSPN/acd6050b-0664-41e0-a5d5-314b85ddac27.net";
+		
+		// These Id must be replaced with @@CORES@@
 		String devices2resourcesId = getIdsFromTrc("devices2resources", trcFilename).get(0);
 		String usersId = getIdsFromTrc("Users", trcFilename).get(0);
+		
+		// Find Id of Last Transaction 
 		List<String> NumberOfConcurrentUsersIds = getIdsFromTrc("NumberOfConcurrentUsers", trcFilename);
 		System.out.println(NumberOfConcurrentUsersIds);
 		String transitionId = getTransitionId(NumberOfConcurrentUsersIds, pnmlFilename);
 		System.out.println(transitionId);
-		String[] idsForPlaceHolder = { transitionId, usersId };
+		// transitionId va mandato al frontend 
+		
+		String[] idsForPlaceHolder = { devices2resourcesId, usersId };
 		putPlaceHolders(idsForPlaceHolder, "@@CORES@@", netFilename, "filename.txt");
+		
+		
 	}
 
 	public static void editFiles(int cdid, String alt) {

@@ -47,7 +47,7 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
 	public void run(IAction action) {
-		char mode = '2'; //TODO this is just for testing faster. change to 2 or 3 for taking for your filesystem a serialized version of the configuration
+		char mode = '1'; //TODO this is just for testing faster. change to 2 or 3 for taking for your filesystem a serialized version of the configuration
 		final String actionID = action.getId();
 		
 		if (actionID.endsWith("Start")) {
