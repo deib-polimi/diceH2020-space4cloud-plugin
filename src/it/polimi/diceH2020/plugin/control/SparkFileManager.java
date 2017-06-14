@@ -204,22 +204,29 @@ public class SparkFileManager {
 		// TODO I assume that the trc file will be located in the working
 		// directory, with the same name of the .pnml file. we have to verify
 		// naming conventions.
+		
 		String trcFilePath = outputFilePath + ".trc.xmi";
 		String pnmlFilePath = outputFilePath + ".pnml";
+		
+		// These Id must be replaced with @@CORES@@
+		String devices2resourcesId = getIdsFromTrc("devices2resources", trcFilePath).get(0);
 		String usersId = getIdsFromTrc("Users", trcFilePath).get(0);
+		
+		System.out.println("UsersId: " + usersId);
+		System.out.println("devices2resourcesId: " + devices2resourcesId);
+		
+		// Find Id of the Last Transaction		
 		List<String> NumberOfConcurrentUsersIds = getIdsFromTrc("NumberOfConcurrentUsers", trcFilePath);
 		String transitionId = getTransitionId(NumberOfConcurrentUsersIds, pnmlFilePath);
-		System.out.println(transitionId);
-		String[] idsForPlaceHolder = { transitionId, usersId };
+		System.out.println("Last Transition Id: " + transitionId);
+		
+		String[] idsToReplace = { devices2resourcesId, usersId };
 		String netFilePath = outputFilePath + ".net";
+		System.out.println("Putting placeholders over net file");
+		putPlaceHolders(idsToReplace, "@@CORES@@", netFile.getAbsolutePath(), netFilePath);
 
-		System.out.println("Putting placeholder over net file");
-		putPlaceHolders(idsForPlaceHolder, "@@CORES@@", netFile.getAbsolutePath(), netFilePath);
-
-		// I delete the file because I have a copy with placeholders in the
-		// savingDir
+		// I delete the file because I have a copy with placeholders in the savindDir
 		netFile.delete();
-
 	}
 
 	private static void moveDefFile(File defFile, String outputFilePath) {

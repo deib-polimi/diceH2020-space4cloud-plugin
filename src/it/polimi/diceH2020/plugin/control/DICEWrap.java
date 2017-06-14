@@ -116,7 +116,6 @@ public class DICEWrap {
 						FileManager.editFiles(c.getId(), alt, extractHadoopId());
 						extractParametersFromHadoopModel(c, alt);
 					} catch (Exception e) {
-						System.err.println("HADOOP EXCEPTION");
 						System.out.println(e.getMessage());
 					}
 			}
@@ -278,16 +277,6 @@ public class DICEWrap {
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * for the moment it returns the id of the last transition of an example
-	 * pnml file
-	 * 
-	 * @return
-	 */
-	public String extractSparkId() {
-		return "_FZo90UnOEee9S_GEFk15zw";
 	}
 
 	/**
