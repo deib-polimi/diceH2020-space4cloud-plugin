@@ -46,6 +46,7 @@ import es.unizar.disco.pnml.m2t.templates.gspn.GenerateGspn;
 import es.unizar.disco.simulation.models.builders.IAnalyzableModelBuilder.ModelResult;
 import es.unizar.disco.simulation.models.datatypes.PrimitiveVariableAssignment;
 import es.unizar.disco.simulation.models.traces.Trace;
+import es.unizar.disco.simulation.models.traces.TraceSet;
 import fr.lip6.move.pnml.ptnet.PetriNetDoc;
 import fr.lip6.move.pnml.ptnet.Place;
 import fr.lip6.move.pnml.ptnet.Transition;
@@ -125,11 +126,10 @@ public class DICEWrap {
 			for (ClassDesc c : conf.getClasses()) {
 				for (String alt : c.getAltDtsm().keySet())
 					try {
-						// WriterReader.writeClassDesc(conf);
-						// buildSparkAnalyzableModel(c.getAltDtsm().get(alt));
-						// generatePNML(String.valueOf(c.getId()), alt);
-						myGeneratePNML(c.getId(), alt);
-						myGenGSPN();
+						buildSparkAnalyzableModel(c.getAltDtsm().get(alt));
+						generatePNML(String.valueOf(c.getId()), alt);
+						genGSPN();
+						genTrc();
 						SparkFileManager.editFiles(c.getId(), alt);
 						extractParametersFromHadoopModel(c, alt);
 					} catch (Exception e) {
@@ -239,6 +239,11 @@ public class DICEWrap {
 		EList<EObject> e = res.getContents();
 		System.out.println(e.size());
 		result = builder.createAnalyzableModel((Model) e.get(0), new BasicEList<PrimitiveVariableAssignment>());
+	}
+	
+	private void genTrc(){
+		TraceSet trc = result.getTraceSet();
+		// TODO generate xml file from trc
 	}
 
 	/**

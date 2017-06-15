@@ -18,6 +18,8 @@ limitations under the License.
 
 package it.polimi.diceH2020.plugin.actions;
 
+import java.nio.file.Paths;
+
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -49,7 +51,8 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 	public void run(IAction action) {
 		char mode = '1'; //TODO this is just for testing faster. change to 2 or 3 for taking for your filesystem a serialized version of the configuration
 		final String actionID = action.getId();
-		
+		System.out.println("default dir: " + Paths.get("").toAbsolutePath().toString());
+		System.out.println("saving dir: " + Preferences.getSavingDir());
 		if (actionID.endsWith("Start")) {
 			if (mode == '1') {
 				Configuration.getCurrent().reset();

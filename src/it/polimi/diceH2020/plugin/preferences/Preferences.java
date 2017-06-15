@@ -32,8 +32,12 @@ public class Preferences {
 	public static String getBackEndUrl() {
 		return "http://" + getBackEndAddress() + ":" + getBackEndPort() + "/";
 	}
-	
+
 	public static String getSavingDir() {
-		return Activator.getDefault().getPreferenceStore().getString(SAVING_DIR);
+		String savDir = Activator.getDefault().getPreferenceStore().getString(SAVING_DIR);
+		if (!savDir.endsWith("/")) {
+			savDir += "/";
+		}
+		return savDir;
 	}
 }
