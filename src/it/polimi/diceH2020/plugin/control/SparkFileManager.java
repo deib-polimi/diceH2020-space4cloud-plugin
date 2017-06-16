@@ -7,22 +7,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import it.polimi.diceH2020.plugin.preferences.Preferences;
@@ -41,71 +32,7 @@ public class SparkFileManager {
 			e.printStackTrace();
 		}
 		return doc;
-	}
-
-	/**
-	 * Returns a list of Ids that cothe value of the attribute rule in a
-	 * given trc file
-	 * 
-	 * @param rule
-	 *            the value of the attribute rule of the field that you want to
-	 *            find the id
-	 * @param filename
-	 *            the name of the trc file
-	 * @return
-	 */
-	public static List<String> getIdsFromTrc(String rule, String filename) {
-		Document doc = getDocument(filename);
-		XPathFactory xPathfactory = XPathFactory.newInstance();
-		XPath xpath = xPathfactory.newXPath();
-		XPathExpression expr;
-		NodeList nl = null;
-		try {
-			expr = xpath.compile("//traces[@rule=\"" + rule + "\"]");
-			nl = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
-		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		List<String> ids = new ArrayList<>();
-		for (int i = 0; i < nl.getLength(); i++) {
-			Element e = (Element) nl.item(i);
-			Element e1 = (Element) e.getElementsByTagName("toAnalyzableElement").item(0);
-			String href = e1.getAttribute("href");
-			String[] href_list = href.split("#");
-			ids.add(href_list[1]);
-		}
-		return ids;
-	}
-
-	/**
-	 * returns the first id that corresponds to a transaction in the pnml file
-	 * among all the candidateIds
-	 * 
-	 * @param candidateIds
-	 * @return the value of the transition id found. It will be one among the
-	 *         candidateIds
-	 */
-	public static String getTransitionId(List<String> candidateIds, String filename) {
-		Document doc = getDocument(filename);
-		XPathFactory xPathfactory = XPathFactory.newInstance();
-		XPath xpath = xPathfactory.newXPath();
-		XPathExpression expr;
-		NodeList nl = null;
-		for (String id : candidateIds) {
-			try {
-				expr = xpath.compile("//transition[@id=\"" + id + "\"]");
-				nl = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
-				if (nl.getLength() > 0) {
-					return id;
-				}
-			} catch (XPathExpressionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return null;
-	}
+	}	
 
 	public static void putPlaceHolders(String[] ids, String placeholder, String inputFilename, String outputFileName) {
 		try {
@@ -172,15 +99,12 @@ public class SparkFileManager {
 		}
 		moveDefFile(defFile, outputFilePath);
 
-		String pnmlFilePath = outputFilePath + ".pnml";
-
 		// These Id must be replaced with @@CORES@@
 		System.out.println("UsersId: " + sparkIds.getUsers());
 		System.out.println("devices2resourcesId: " + sparkIds.getDevices2resources());
 
-		// Find Id of the Last Transaction
-		String transitionId = getTransitionId(sparkIds.getNumberOfConcurrentUsers(), pnmlFilePath);
-		System.out.println("Last Transition Id: " + transitionId);
+		// TODO Id of the Last Transaction not used
+		System.out.println("Last Transition Id: " + sparkIds.getNumberOfConcurrentUsers());
 
 		String[] idsToReplace = { sparkIds.getDevices2resources(), sparkIds.getUsers() };
 		String netFilePath = outputFilePath + ".net";
