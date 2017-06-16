@@ -150,29 +150,7 @@ public class SparkFileManager {
 		putPlaceHolders(ids, placeholder, inputFilename, outputFileName);
 	}
 
-	public static void main(String[] args) {
-		String pnmlFilename = "res/pnml_gspn_files/OutputSimulation/PNML/acd6050b-0664-41e0-a5d5-314b85ddac27.anm.pnml";
-		String trcFilename = "res/pnml_gspn_files/OutputSimulation/PNML/acd6050b-0664-41e0-a5d5-314b85ddac27.trc.xmi";
-		String netFilename = "res/pnml_gspn_files/OutputSimulation/GSPN/acd6050b-0664-41e0-a5d5-314b85ddac27.net";
-		
-		// These Id must be replaced with @@CORES@@
-		String devices2resourcesId = getIdsFromTrc("devices2resources", trcFilename).get(0);
-		String usersId = getIdsFromTrc("Users", trcFilename).get(0);
-		
-		// Find Id of Last Transaction 
-		List<String> NumberOfConcurrentUsersIds = getIdsFromTrc("NumberOfConcurrentUsers", trcFilename);
-		System.out.println(NumberOfConcurrentUsersIds);
-		String transitionId = getTransitionId(NumberOfConcurrentUsersIds, pnmlFilename);
-		System.out.println(transitionId);
-		// transitionId va mandato al frontend 
-		
-		String[] idsForPlaceHolder = { devices2resourcesId, usersId };
-		putPlaceHolders(idsForPlaceHolder, "@@CORES@@", netFilename, "filename.txt");
-		
-		
-	}
-
-	public static void editFiles(int cdid, String alt) {
+	public static void editFiles(int cdid, String alt, SparkIds sparkIds) {
 		String savingDir = Preferences.getSavingDir();
 		Configuration conf = Configuration.getCurrent();
 		File folder = new File(savingDir + "tmp/");
@@ -194,27 +172,17 @@ public class SparkFileManager {
 		}
 		moveDefFile(defFile, outputFilePath);
 		
-		
-		// TODO I assume that the trc file will be located in the working
-		// directory, with the same name of the .pnml file. we have to verify
-		// naming conventions.
-		
-		String trcFilePath = outputFilePath + ".trc.xmi";
 		String pnmlFilePath = outputFilePath + ".pnml";
 		
 		// These Id must be replaced with @@CORES@@
-		String devices2resourcesId = getIdsFromTrc("devices2resources", trcFilePath).get(0);
-		String usersId = getIdsFromTrc("Users", trcFilePath).get(0);
-		
-		System.out.println("UsersId: " + usersId);
-		System.out.println("devices2resourcesId: " + devices2resourcesId);
+		System.out.println("UsersId: " + sparkIds.getUsers());
+		System.out.println("devices2resourcesId: " + sparkIds.getDevices2resources());
 		
 		// Find Id of the Last Transaction		
-		List<String> NumberOfConcurrentUsersIds = getIdsFromTrc("NumberOfConcurrentUsers", trcFilePath);
-		String transitionId = getTransitionId(NumberOfConcurrentUsersIds, pnmlFilePath);
+		String transitionId = getTransitionId(sparkIds.getNumberOfConcurrentUsers(), pnmlFilePath);
 		System.out.println("Last Transition Id: " + transitionId);
 		
-		String[] idsToReplace = { devices2resourcesId, usersId };
+		String[] idsToReplace = { sparkIds.getDevices2resources(), sparkIds.getUsers() };
 		String netFilePath = outputFilePath + ".net";
 		System.out.println("Putting placeholders over net file");
 		putPlaceHolders(idsToReplace, "@@CORES@@", netFile.getAbsolutePath(), netFilePath);

@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
@@ -129,8 +130,7 @@ public class DICEWrap {
 						buildSparkAnalyzableModel(c.getAltDtsm().get(alt));
 						generatePNML(String.valueOf(c.getId()), alt);
 						genGSPN();
-						genTrc();
-						SparkFileManager.editFiles(c.getId(), alt);
+						SparkFileManager.editFiles(c.getId(), alt, extractSparkIds());
 						extractParametersFromHadoopModel(c, alt);
 					} catch (Exception e) {
 						System.err.println("SPARK EXCEPTION");
@@ -240,10 +240,33 @@ public class DICEWrap {
 		System.out.println(e.size());
 		result = builder.createAnalyzableModel((Model) e.get(0), new BasicEList<PrimitiveVariableAssignment>());
 	}
-	
-	private void genTrc(){
-		TraceSet trc = result.getTraceSet();
-		// TODO generate xml file from trc
+
+	private SparkIds extractSparkIds() {
+		String devices2resourcesId = getIdFromTraces(SparkIds.DEVICES_2_RESOURCES).get(0);
+		String usersId = getIdFromTraces(SparkIds.USERS).get(0);
+
+		// Find Id of Last Transaction
+		List<String> numberOfConcurrentUsersIds = getIdFromTraces(SparkIds.NUMBER_OF_CONCURRENT_USERS);
+		return new SparkIds(devices2resourcesId, usersId, numberOfConcurrentUsersIds);
+	}
+
+	private List<String> getIdFromTraces(String rule) {
+		List<String> ids = new ArrayList<>();
+		String id = null;
+		for (Trace i : result.getTraceSet().getTraces()) {
+			if (rule.equalsIgnoreCase(i.getRule())) {
+				if (i.getToAnalyzableElement() instanceof Transition) {
+					id = ((Transition) i.getToAnalyzableElement()).getId();
+					ids.add(id);
+				} else if (i.getToAnalyzableElement() instanceof Place) {
+					id = ((Place) i.getToAnalyzableElement()).getId();
+					ids.add(id);
+				}
+			}
+		}
+
+		return ids;
+
 	}
 
 	/**
