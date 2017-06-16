@@ -166,28 +166,29 @@ public class SparkFileManager {
 		for (File f : files) {
 			if (f.getName().endsWith(".net")) {
 				netFile = f;
-			} else if (f.getName().endsWith(".def")){
+			} else if (f.getName().endsWith(".def")) {
 				defFile = f;
 			}
 		}
 		moveDefFile(defFile, outputFilePath);
-		
+
 		String pnmlFilePath = outputFilePath + ".pnml";
-		
+
 		// These Id must be replaced with @@CORES@@
 		System.out.println("UsersId: " + sparkIds.getUsers());
 		System.out.println("devices2resourcesId: " + sparkIds.getDevices2resources());
-		
-		// Find Id of the Last Transaction		
+
+		// Find Id of the Last Transaction
 		String transitionId = getTransitionId(sparkIds.getNumberOfConcurrentUsers(), pnmlFilePath);
 		System.out.println("Last Transition Id: " + transitionId);
-		
+
 		String[] idsToReplace = { sparkIds.getDevices2resources(), sparkIds.getUsers() };
 		String netFilePath = outputFilePath + ".net";
 		System.out.println("Putting placeholders over net file");
 		putPlaceHolders(idsToReplace, "@@CORES@@", netFile.getAbsolutePath(), netFilePath);
 
-		// I delete the file because I have a copy with placeholders in the savindDir
+		// I delete the file because I have a copy with placeholders in the
+		// savindDir
 		netFile.delete();
 	}
 
