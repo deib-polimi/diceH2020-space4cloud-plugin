@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
@@ -47,7 +46,6 @@ import es.unizar.disco.pnml.m2t.templates.gspn.GenerateGspn;
 import es.unizar.disco.simulation.models.builders.IAnalyzableModelBuilder.ModelResult;
 import es.unizar.disco.simulation.models.datatypes.PrimitiveVariableAssignment;
 import es.unizar.disco.simulation.models.traces.Trace;
-import es.unizar.disco.simulation.models.traces.TraceSet;
 import fr.lip6.move.pnml.ptnet.PetriNetDoc;
 import fr.lip6.move.pnml.ptnet.Place;
 import fr.lip6.move.pnml.ptnet.Transition;
@@ -122,8 +120,7 @@ public class DICEWrap {
 					}
 			}
 			break;
-		case "Spark": // TODO implement this. now it's a copy of Hadoop
-						// Map-reduce.
+		case "Spark":
 			for (ClassDesc c : conf.getClasses()) {
 				for (String alt : c.getAltDtsm().keySet())
 					try {
@@ -242,31 +239,38 @@ public class DICEWrap {
 	}
 
 	private SparkIds extractSparkIds() {
-		String devices2resourcesId = getIdFromTraces(SparkIds.DEVICES_2_RESOURCES).get(0);
-		String usersId = getIdFromTraces(SparkIds.USERS).get(0);
+		String devices2resourcesId = getPlaceIdFromTraces(SparkIds.DEVICES_2_RESOURCES);
+		String usersId = getPlaceIdFromTraces(SparkIds.USERS);
 
 		// Find Id of Last Transaction
-		List<String> numberOfConcurrentUsersIds = getIdFromTraces(SparkIds.NUMBER_OF_CONCURRENT_USERS);
+		String numberOfConcurrentUsersIds = getTransitionIdFromTraces(SparkIds.NUMBER_OF_CONCURRENT_USERS);
 		return new SparkIds(devices2resourcesId, usersId, numberOfConcurrentUsersIds);
 	}
 
-	private List<String> getIdFromTraces(String rule) {
-		List<String> ids = new ArrayList<>();
+	private String getTransitionIdFromTraces(String rule) {
 		String id = null;
 		for (Trace i : result.getTraceSet().getTraces()) {
 			if (rule.equalsIgnoreCase(i.getRule())) {
 				if (i.getToAnalyzableElement() instanceof Transition) {
 					id = ((Transition) i.getToAnalyzableElement()).getId();
-					ids.add(id);
-				} else if (i.getToAnalyzableElement() instanceof Place) {
-					id = ((Place) i.getToAnalyzableElement()).getId();
-					ids.add(id);
+					return id;
 				}
 			}
 		}
-
-		return ids;
-
+		return null;
+	}
+	
+	private String getPlaceIdFromTraces(String rule) {
+		String id = null;
+		for (Trace i : result.getTraceSet().getTraces()) {
+			if (rule.equalsIgnoreCase(i.getRule())) {
+				if (i.getToAnalyzableElement() instanceof Place) {
+					id = ((Place) i.getToAnalyzableElement()).getId();
+					return id;
+				}
+			}
+		}
+		return null;
 	}
 
 	/**
