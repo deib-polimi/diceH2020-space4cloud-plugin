@@ -204,7 +204,12 @@ public class FileManager {
 		setMapJobProfile(data, conf);
 		setMapClassParameters(data, conf);
 
-		if (!conf.getIsPrivate()) {
+		if (conf.getIsPrivate()) {
+
+			data.setMapPublicCloudParameters(null);
+			setPrivateParameters(data);
+			
+		} else {
 			// Set MapVMConfigurations
 			data.setMapVMConfigurations(null);
 			data.setPrivateCloudParameters(null);
@@ -214,15 +219,13 @@ public class FileManager {
 			} else {
 				data.setMapPublicCloudParameters(null);
 			}
-		} else {
-			data.setMapPublicCloudParameters(null);
-			setPrivateParameters(data);
 		}
 
 		setMachineLearningProfile(data, conf);
 
-		if (!Configuration.getCurrent().canSend())
+		if (!Configuration.getCurrent().canSend()){
 			return;
+		}
 
 		// Generate Json
 		ObjectMapper mapper = new ObjectMapper();
@@ -230,7 +233,7 @@ public class FileManager {
 
 		try {
 			mapper.writerWithDefaultPrettyPrinter()
-					.writeValue(new File(Preferences.getSavingDir() + conf.getID() + ".json"), data);
+				  .writeValue(new File(Preferences.getSavingDir() + conf.getID() + ".json"), data);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
