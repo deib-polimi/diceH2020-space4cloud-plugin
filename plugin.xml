@@ -55,7 +55,7 @@
       <page
             class="it.polimi.diceH2020.plugin.preferences.PreferencesPage"
             id="it.polimi.diceH2020.plugin.preferences"
-            name="Dice Plugin Preferences">
+            name="D-SPACE4Cloud Plugin">
       </page>
    </extension>
    <extension

@@ -21,6 +21,7 @@ public class PreferencesInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(Preferences.BACK_END_ADDRESS, "localhost");
 		store.setDefault(Preferences.BACK_END_PORT, 8080);
 		store.setDefault(Preferences.SAVING_DIR, Paths.get("").toAbsolutePath().toString() + File.separator);
+		store.setDefault(Preferences.SIMULATOR, Preferences.GSPN);
 	}
 
 }

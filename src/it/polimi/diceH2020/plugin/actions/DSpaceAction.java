@@ -53,6 +53,7 @@ public class DSpaceAction implements IWorkbenchWindowActionDelegate {
 		final String actionID = action.getId();
 		System.out.println("default dir: " + Paths.get("").toAbsolutePath().toString());
 		System.out.println("saving dir: " + Preferences.getSavingDir());
+		System.out.println("Simulator: " + Preferences.getSimulator());
 		if (actionID.endsWith("Start")) {
 			if (mode == '1') {
 				Configuration.getCurrent().reset();
