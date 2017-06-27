@@ -139,16 +139,17 @@ public class DICEWrap {
 						}
 						else if (simulator.equals(Preferences.GSPN)){
 							genGSPN();
+							SparkFileManager.editFiles(c.getId(), alt, extractSparkIds());
 						}
 						else if (simulator.equals(Preferences.JMT)){
 							genJSIM(c.getId(), alt, extractSparkIds());
+							SparkFileManager.editJSIMG(c.getId(), alt, extractSparkIds());
 						}
 						else {
 							System.err.println("Unknown simulator: " + simulator);
 							return;
 						}
 						
-						SparkFileManager.editFiles(c.getId(), alt, extractSparkIds());
 						extractParametersFromHadoopModel(c, alt);
 					} catch (Exception e) {
 						System.err.println("SPARK EXCEPTION");
@@ -358,12 +359,7 @@ public class DICEWrap {
 		String lastTransactionId = sparkIds.getNumberOfConcurrentUsers();
 		File sparkIdx = new File(savingDir + "spark.idx");
 		String fileName; 
-		
-		System.out.println("GENJSIM:");
-		System.out.println("jmt parser" + jmtParserPath);
-		System.out.println("sparkIdx" + sparkIdx);
-		
-		
+				
 		if (Configuration.getCurrent().getIsPrivate()) {
 			fileName = savingDir + conf.getID() + "J" + cdid + "inHouse" + alt;
 		} else {
@@ -385,7 +381,7 @@ public class DICEWrap {
 		String indexPath = sparkIdx.getAbsolutePath();
 		
 				
-		String command = String.format("java -cp \"%sbin:%slib/*\" PNML_Pre_Processor gspn %s %s %s", 
+		String command = String.format("java -cp %sbin:%slib/* PNML_Pre_Processor gspn %s %s %s", 
 									   jmtParserPath, jmtParserPath, pnmlPath, outputPath, indexPath);
 		
 		System.out.println("Executing: "+ command);

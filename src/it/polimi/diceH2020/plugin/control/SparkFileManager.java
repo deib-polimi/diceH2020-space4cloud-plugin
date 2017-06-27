@@ -8,6 +8,22 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+
 import it.polimi.diceH2020.plugin.preferences.Preferences;
 
 public class SparkFileManager {
@@ -65,6 +81,8 @@ public class SparkFileManager {
 
 		System.out.println("UsersId: " + sparkIds.getUsers());
 		System.out.println("devices2resourcesId: " + sparkIds.getDevices2resources());
+		System.out.println("Last Transaction Id: " + sparkIds.getNumberOfConcurrentUsers());
+
 
 		System.out.println("Putting placeholders over net file");
 
@@ -75,6 +93,52 @@ public class SparkFileManager {
 
 	}
 
+	public static void editJSIMG(int cdid, String alt, SparkIds sparkIds) {
+		String savingDir = Preferences.getSavingDir();
+		Configuration conf = Configuration.getCurrent();
+		
+		String filename;
+		if (Configuration.getCurrent().getIsPrivate()) {
+			filename = savingDir + conf.getID() + "J" + cdid + "inHouse" + alt;
+		} else {
+			filename = savingDir + conf.getID() + "J" + cdid + alt.replaceAll("-", "");
+		}
+
+		System.out.println("Putting placeholders over jsimg file");
+		
+		File jsimgFile = new File(savingDir + filename + ".jsimg");
+		putPlaceHolderXML(sparkIds.getUsers(), "@@CORES@@", jsimgFile);
+		putPlaceHolderXML(sparkIds.getDevices2resources(), "@@CORES@@", jsimgFile);
+
+	}
+	
+	private static void putPlaceHolderXML(String id, String placeholder, File file){
+
+		try {
+
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			Document doc = builder.parse(file);
+			XPathFactory xPathfactory = XPathFactory.newInstance();
+			XPath xpath = xPathfactory.newXPath();
+
+			XPathExpression expr = xpath.compile("//stationPopulations[@stationName=\""+id+"\"]/classPopulation");
+
+			Node node = (Node) expr.evaluate(doc, XPathConstants.NODE);
+			Node attr = node.getAttributes().getNamedItem("population");
+			attr.setNodeValue(placeholder);
+
+			// Write changes to a file
+			Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			transformer.transform(new DOMSource(doc), new StreamResult(file));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+		
+	
 	private static void moveFile(File InputFile, String outputFilePath, String extension) {
 		Path input = Paths.get(InputFile.getAbsolutePath());
 		Path output = Paths.get(outputFilePath + "." + extension);

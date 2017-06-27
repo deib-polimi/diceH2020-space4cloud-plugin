@@ -69,7 +69,7 @@ public class Configuration implements Serializable {
 	private String generateName() {
 		return String.valueOf(ThreadLocalRandom.current().nextInt(1000, 9998 + 1));
 	}
-
+	
 	public String getID(){
 		return ID;
 	}
