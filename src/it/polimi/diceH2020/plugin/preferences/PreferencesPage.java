@@ -24,7 +24,9 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
 		addField(new IntegerFieldEditor(Preferences.BACK_END_PORT, "Back End port:", getFieldEditorParent()));
 		addField(new DirectoryFieldEditor(Preferences.SAVING_DIR, "Directory where to save data:",
 				getFieldEditorParent()));
-		addField(new FileFieldEditor(Preferences.JMT_PARSER, "JMT executable parser fullpath:", getFieldEditorParent()));
+		
+		//addField(new FileFieldEditor(Preferences.JMT_PARSER, "JMT executable parser fullpath:", getFieldEditorParent()));
+		addField(new DirectoryFieldEditor(Preferences.JMT_PARSER, "Directory of JMT Prepocessor:", getFieldEditorParent()));
 		addField(new RadioGroupFieldEditor(Preferences.SIMULATOR,
 				"Simulator:", 1, new String[][] { { Preferences.GSPN, Preferences.GSPN },
 						{ Preferences.JMT, Preferences.JMT }, { Preferences.DAG_SIM, Preferences.DAG_SIM } },

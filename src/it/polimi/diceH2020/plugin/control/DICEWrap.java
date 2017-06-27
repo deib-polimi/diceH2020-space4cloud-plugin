@@ -18,6 +18,7 @@ limitations under the License.
 
 package it.polimi.diceH2020.plugin.control;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Map;
+import java.io.FileWriter;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.BasicEList;
@@ -126,7 +128,24 @@ public class DICEWrap {
 					try {
 						buildSparkAnalyzableModel(c.getAltDtsm().get(alt));
 						generatePNML(String.valueOf(c.getId()), alt);
-						genGSPN();
+						
+						String simulator = Preferences.getSimulator();
+						
+						if (simulator.equals(Preferences.DAG_SIM)){
+							System.err.println("Dag Sim not supported yet");	
+							return;
+						}
+						else if (simulator.equals(Preferences.GSPN)){
+							genGSPN();
+						}
+						else if (simulator.equals(Preferences.JMT)){
+							genJSIM(c.getId(), alt, extractSparkIds());
+						}
+						else {
+							System.err.println("Unknown simulator: " + simulator);
+							return;
+						}
+						
 						SparkFileManager.editFiles(c.getId(), alt, extractSparkIds());
 						extractParametersFromHadoopModel(c, alt);
 					} catch (Exception e) {
@@ -281,7 +300,7 @@ public class DICEWrap {
 	 */
 	public void generatePNML(String classID, String alt) {
 		PetriNetDoc pnd = (PetriNetDoc) result.getModel().get(0);
-		File aFile = new File(conf.getID() + "J" + classID + alt.replaceAll("-", "") + ".pnml");
+		File aFile = new File(Preferences.getSavingDir() + conf.getID() + "J" + classID + alt.replaceAll("-", "") + ".pnml");
 		FileOutputStream outputFile = null;
 		try {
 			outputFile = new FileOutputStream(aFile, true);
@@ -323,6 +342,45 @@ public class DICEWrap {
 		gspn.doGenerate(new BasicMonitor());
 		System.out.println("GSPN generated");
 	}
+	
+	/**
+	 * Creates JSIM model (.jsimg) from pnml in the given directory  
+	 * 
+	 * @throws IOException
+	 */
+	
+	public static void genJSIM(int cdid, String alt, SparkIds sparkIds) throws IOException {
+		String savingDir = Preferences.getSavingDir();
+		Configuration conf = Configuration.getCurrent();
+		String jmtPath = Preferences.getJmTPath();
+		String lastTransactionId = sparkIds.getNumberOfConcurrentUsers();
+		String pnmlFile;
+		File sparkIdx = new File(savingDir + "spark.idx");
+		
+		// trovo il pnml file 
+		if (Configuration.getCurrent().getIsPrivate()) {
+			pnmlFile = savingDir + conf.getID() + "J" + cdid + "inHouse" + alt + ".pnml";
+		} else {
+			pnmlFile = savingDir + conf.getID() + "J" + cdid + alt.replaceAll("-", "") + ".pnml";
+		}
+		
+		try {
+			FileWriter fw = new FileWriter(sparkIdx.getAbsoluteFile());
+			BufferedWriter bw = new BufferedWriter(fw);
+			bw.write(lastTransactionId);
+			bw.close();			
+		}
+		catch (IOException e){
+			e.printStackTrace();
+		}
+		
+		
+		// comando = java -cp "./bin:./lib/*" PNML_Pre_Processor gspn {i} {o} {idx}
+		
+		// exec del simulatore sul file 
+		
+	}
+	
 
 	public void myGeneratePNML(int cdid, String alt) {
 

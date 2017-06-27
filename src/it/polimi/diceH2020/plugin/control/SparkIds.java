@@ -8,7 +8,7 @@ public class SparkIds {
 
 	String devices2resources; // must be replaced with @@CORES@@
 	String users; // must be replaced with @@CORES@@
-	String numberOfConcurrentUsers;
+	String numberOfConcurrentUsers; // last transaction id 
 
 	public SparkIds(String devices2resources, String users, String numberOfConcurrentUsers) {
 		this.devices2resources = devices2resources;
