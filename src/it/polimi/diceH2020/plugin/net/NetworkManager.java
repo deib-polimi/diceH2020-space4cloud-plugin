@@ -49,17 +49,18 @@ import it.polimi.diceH2020.plugin.preferences.Preferences;
 
 /**
  * Manages interaction with the backend
+ * 
  * @author Giorgio Pea <giorgio.pea@mail.polimi.it>
  */
 public class NetworkManager {
 
 	private static NetworkManager instance;
 	private static String rootEndpoint = Preferences.getFrontEndUrl();
-	private static String vmConfigsEndpoint = Preferences.getBackEndUrl()+"vm-types";
-	private static String uploadRest=rootEndpoint+"/files/upload";
+	private static String vmConfigsEndpoint = Preferences.getBackEndUrl() + "vm-types";
+	private static String uploadRest = rootEndpoint + "/files/upload";
 
-	public static NetworkManager getInstance(){
-		if(instance != null){
+	public static NetworkManager getInstance() {
+		if (instance != null) {
 			return instance;
 		}
 		instance = new NetworkManager();
@@ -67,16 +68,17 @@ public class NetworkManager {
 	}
 
 	private NetworkManager() {
-		System.setProperty("org.apache.commons.logging.Log","org.apache.commons.logging.impl.SimpleLog");
+		System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
 		System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
 		System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http.wire", "DEBUG");
 	}
 
 	/**
 	 * Fetches vm configurations from the web
+	 * 
 	 * @return A json object representing the fetched vm configurations
 	 */
-	public JSONArray fetchVmConfigs(){
+	public JSONArray fetchVmConfigs() {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		HttpGet httpget = new HttpGet(vmConfigsEndpoint);
 		CloseableHttpResponse response;
@@ -85,11 +87,11 @@ public class NetworkManager {
 
 		try {
 			response = httpclient.execute(httpget);
-			if(response.getStatusLine().getStatusCode() != 200){
+			if (response.getStatusLine().getStatusCode() != 200) {
 				return null;
-			}
-			else{
-				//Converts response stream into string in order to parse everything int json
+			} else {
+				// Converts response stream into string in order to parse
+				// everything int json
 				body = IOUtils.toString(response.getEntity().getContent(), "UTF-8");
 				parser = new JSONParser();
 				response.close();
@@ -105,18 +107,21 @@ public class NetworkManager {
 
 	/**
 	 * Sends to the backend the models to be simulated
-	 * @param files The model files
-	 * @param scenario The scenario parameter
-	 * @throws UnsupportedEncodingException 
+	 * 
+	 * @param files
+	 *            The model files
+	 * @param scenario
+	 *            The scenario parameter
+	 * @throws UnsupportedEncodingException
 	 */
-	public void sendModel(List<File> files, String scenario) throws UnsupportedEncodingException{
-		HttpClient httpclient =HttpClients.createDefault();
+	public void sendModel(List<File> files, String scenario) throws UnsupportedEncodingException {
+		HttpClient httpclient = HttpClients.createDefault();
 		HttpResponse response;
-		HttpPost post = new HttpPost(uploadRest);	
-		MultipartEntityBuilder builder = MultipartEntityBuilder.create();  
-		builder.addPart("scenario",new StringBody(scenario,ContentType.DEFAULT_TEXT));
+		HttpPost post = new HttpPost(uploadRest);
+		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+		builder.addPart("scenario", new StringBody(scenario, ContentType.DEFAULT_TEXT));
 
-		for(File file:files){
+		for (File file : files) {
 			builder.addPart("file[]", new FileBody(file));
 		}
 
@@ -124,16 +129,15 @@ public class NetworkManager {
 		try {
 			response = httpclient.execute(post);
 			String json = EntityUtils.toString(response.getEntity());
-			HttpPost repost=new HttpPost(this.getLink(json));
-			response=httpclient.execute(repost);
+			HttpPost repost = new HttpPost(this.getLink(json));
+			response = httpclient.execute(repost);
 			String js = EntityUtils.toString(response.getEntity());
 			parseJson(js);
-			System.out.println("Code : "+response.getStatusLine().getStatusCode());
+			System.out.println("Code : " + response.getStatusLine().getStatusCode());
 
-			if(response.getStatusLine().getStatusCode() != 200){
+			if (response.getStatusLine().getStatusCode() != 200) {
 				System.err.println("Error: POST not succesfull");
-			}
-			else{
+			} else {
 			}
 			System.out.println(Configuration.getCurrent().getID());
 		} catch (IOException e) {
@@ -142,41 +146,40 @@ public class NetworkManager {
 		}
 	}
 
-	public String[] getTechnologies(){
-		String s[] = {"Storm", "Spark", "Hadoop Map-reduce"};
+	public String[] getTechnologies() {
+		String s[] = { "Storm", "Spark", "Hadoop Map-reduce" };
 		return s;
 	}
 
-	private void parseJson(String string){
+	private void parseJson(String string) {
 		JSONParser parser = new JSONParser();
 
 		try {
 			JSONObject json = (JSONObject) parser.parse(string);
-			JSONObject lin=(JSONObject) json.get("_links");
-			JSONObject sub=(JSONObject) lin.get("solution");
-			String link=(String) sub.get("href");
-			File f = new File("results");
+			JSONObject lin = (JSONObject) json.get("_links");
+			JSONObject sub = (JSONObject) lin.get("solution");
+			String link = (String) sub.get("href");
+			File f = new File(Preferences.getSavingDir() + "results");
 
-			if(!f.exists()) { 
-				try{
-					PrintWriter writer = new PrintWriter("results", "UTF-8");
+			if (!f.exists()) {
+				try {
+					PrintWriter writer = new PrintWriter(Preferences.getSavingDir() + "results", "UTF-8");
 					writer.println(Configuration.getCurrent().getID());
 					writer.println(link);
 					writer.close();
 				} catch (IOException e) {
 					// do something
 				}
-			}else{
-				try(FileWriter fw = new FileWriter("results", true);
+			} else {
+				try (FileWriter fw = new FileWriter(Preferences.getSavingDir() + "results", true);
 						BufferedWriter bw = new BufferedWriter(fw);
-						PrintWriter out = new PrintWriter(bw))
-				{
+						PrintWriter out = new PrintWriter(bw)) {
 					out.println(Configuration.getCurrent().getID());
-					//more code
+					// more code
 					out.println(link);
-					//more code
+					// more code
 				} catch (IOException e) {
-					//exception handling left as an exercise for the reader
+					// exception handling left as an exercise for the reader
 				}
 			}
 		} catch (ParseException e) {
@@ -185,15 +188,15 @@ public class NetworkManager {
 		}
 	}
 
-	private String getLink(String string){
+	private String getLink(String string) {
 		JSONParser parser = new JSONParser();
-		String link="";
+		String link = "";
 
 		try {
 			JSONObject json = (JSONObject) parser.parse(string);
-			JSONObject lin=(JSONObject) json.get("_links");
-			JSONObject sub=(JSONObject) lin.get("submit");
-			link=(String) sub.get("href");
+			JSONObject lin = (JSONObject) json.get("_links");
+			JSONObject sub = (JSONObject) lin.get("submit");
+			link = (String) sub.get("href");
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

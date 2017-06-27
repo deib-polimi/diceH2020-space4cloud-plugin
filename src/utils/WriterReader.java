@@ -8,11 +8,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import it.polimi.diceH2020.plugin.preferences.Preferences;
+
 public class WriterReader {
 
 	public static void writeClassDesc(Serializable obj) {
 		try {
-			FileOutputStream f = new FileOutputStream(new File("WriteObj.txt"));
+			FileOutputStream f = new FileOutputStream(new File(Preferences.getSavingDir() + "WriteObj.txt"));
 			ObjectOutputStream o = new ObjectOutputStream(f);
 			o.writeObject(obj);
 			o.close();
@@ -27,7 +29,7 @@ public class WriterReader {
 		FileInputStream fi;
 		Object obj = null;
 		try {
-			fi = new FileInputStream(new File(filename));
+			fi = new FileInputStream(new File(Preferences.getSavingDir() + filename));
 
 			ObjectInputStream oi = new ObjectInputStream(fi);
 

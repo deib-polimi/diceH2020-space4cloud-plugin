@@ -35,6 +35,8 @@ import java.util.TimerTask;
 
 import javax.swing.JOptionPane;
 
+import it.polimi.diceH2020.plugin.preferences.Preferences;
+
 public class ResultCheck extends TimerTask{
 	private static final int BUFFER_SIZE = 4096;
 
@@ -51,7 +53,7 @@ public class ResultCheck extends TimerTask{
 
 	@Override
 	public void run() {
-		File f = new File("results");
+		File f = new File(Preferences.getSavingDir() + "results");
 
 		if(f.exists()){
 			urls.clear();
@@ -103,7 +105,6 @@ public class ResultCheck extends TimerTask{
 		}
 	}
 
-	//TODO add about default saving directory
 	private void checkSolExistence(){
 		for(int i=0;i<this.urls.size();i++){
 			try {
@@ -113,7 +114,7 @@ public class ResultCheck extends TimerTask{
 					JOptionPane.showMessageDialog(null, "Results available", "InfoBox: " , JOptionPane.INFORMATION_MESSAGE);
 
 					JSonReader j = new JSonReader(fPath);
-					j.createMap(this.fileNames.get(i));
+					j.createMap(Preferences.getSavingDir() + this.fileNames.get(i));
 					j.read();
 					j.write();
 					this.removeLine(urls.get(i));
@@ -149,9 +150,8 @@ public class ResultCheck extends TimerTask{
 
 			// opens input stream from the HTTP connection
 			InputStream inputStream = httpConn.getInputStream();
-
 			// opens an output stream to save into file
-			String saveFilePath = fileName;
+			String saveFilePath = Preferences.getSavingDir() + fileName;
 			FileOutputStream outputStream = new FileOutputStream(saveFilePath);
 
 			int bytesRead = -1;
@@ -215,7 +215,7 @@ public class ResultCheck extends TimerTask{
 
 		PrintWriter writer;
 		try {
-			writer = new PrintWriter("results", "UTF-8");
+			writer = new PrintWriter(Preferences.getSavingDir() + "results", "UTF-8");
 
 			for(int i=0;i<this.urls.size();i++){
 				if(i==urlPos)

@@ -29,6 +29,7 @@ import java.util.TimerTask;
 import org.eclipse.ui.IStartup;
 
 import it.polimi.diceH2020.plugin.control.ResultCheck;
+import it.polimi.diceH2020.plugin.preferences.Preferences;
 
 public class StartUpThread implements IStartup{
 	private int time;
@@ -36,14 +37,14 @@ public class StartUpThread implements IStartup{
 	@Override
 	public void earlyStartup() {
 		loadConfiguration();
-		TimerTask timerTask = new ResultCheck("results");
+		TimerTask timerTask = new ResultCheck(Preferences.getSavingDir() + "results");
 		// running timer task as daemon thread
 		Timer timer = new Timer(true);
 		timer.scheduleAtFixedRate(timerTask, 0, time * 1000);
 	}
 
 	private void loadConfiguration(){
-		String filePath="ConfigFile.txt";
+		String filePath=Preferences.getSavingDir() + "ConfigFile.txt";
 		int defaultTime=5;
 
 		File f = new File(filePath);

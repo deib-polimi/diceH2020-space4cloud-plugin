@@ -429,7 +429,7 @@ public class FileManager {
 
 		try {
 			mapper.writerWithDefaultPrettyPrinter()
-					.writeValue(new File(Configuration.getCurrent().getID() + "OUT.json"), json);
+					.writeValue(new File(Preferences.getSavingDir() + Configuration.getCurrent().getID() + "OUT.json"), json);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
