@@ -37,27 +37,26 @@ import it.polimi.diceH2020.plugin.control.Configuration;
 import it.polimi.diceH2020.plugin.net.NetworkManager;
 
 /**
- * Initial page. The user can:
- * 		-choose among private/public solution
- * 		-select computation technology
- * 		-tune some general parameters (e.g. number of classes)
+ * Initial page. The user can: -choose among private/public solution -select
+ * computation technology -tune some general parameters (e.g. number of classes)
+ * 
  * @author kom
  *
  */
-public class ChoicePage extends WizardPage{
+public class ChoicePage extends WizardPage {
 	private Composite container;
 	private GridLayout layout;
 	private Button pri;
 	private Button pub;
 	private int classes = 0;
 	private int alternatives;
-	private Text t1,h1,h2,h3;
+	private Text t1, h1, h2, h3;
 	private List t2;
 	private Label l1;
 	private Label l2;
-	private GridData g1,g3,g5,g6,f1,f2,f3;
-	private Button existingLTC,nExistingLTC;
-	private Text rTextField,SpsrTextField;
+	private GridData g1, g3, g5, g6, f1, f2, f3;
+	private Button existingLTC, nExistingLTC;
+	private Text rTextField, SpsrTextField;
 	private Composite ltcCompositeText;
 	private boolean canSwitch;
 	private Label errSR;
@@ -66,7 +65,7 @@ public class ChoicePage extends WizardPage{
 		super("Choose service type");
 		setTitle(title);
 		setDescription(description);
-		canSwitch=false;
+		canSwitch = false;
 	}
 
 	@Override
@@ -107,7 +106,12 @@ public class ChoicePage extends WizardPage{
 
 		t2.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				Configuration.getCurrent().setTechnology(t2.getSelection()[0]);
+				Configuration.getCurrent().setTechnology(getTechnology());
+				if(getTechnology().equalsIgnoreCase("Storm")){
+					pri.setEnabled(false);
+				} else {
+					pri.setEnabled(true);
+				}
 				getWizard().getContainer().updateButtons();
 			}
 		});
@@ -151,7 +155,7 @@ public class ChoicePage extends WizardPage{
 		layoutRow_uber.fill = true;
 		ltcUberComposite.setLayout(layoutRow_uber);
 
-		//Composite for ltc radio btns
+		// Composite for ltc radio btns
 		final Composite ltcComposite = new Composite(ltcUberComposite, SWT.NONE);
 
 		RowLayout layoutRow = new RowLayout();
@@ -159,7 +163,7 @@ public class ChoicePage extends WizardPage{
 		ltcComposite.setLayout(layoutRow);
 		ltcComposite.setVisible(false);
 
-		//Composite for ltc text inputs
+		// Composite for ltc text inputs
 		ltcCompositeText = new Composite(ltcUberComposite, SWT.NONE);
 
 		RowLayout layoutRow_1 = new RowLayout();
@@ -186,7 +190,7 @@ public class ChoicePage extends WizardPage{
 
 		Label tTextLabel = new Label(tTextComposite, SWT.NONE);
 		tTextLabel.setText("Spot ratio");
-		this.SpsrTextField = new Text(tTextComposite,SWT.BORDER);
+		this.SpsrTextField = new Text(tTextComposite, SWT.BORDER);
 		this.SpsrTextField.setEditable(true);
 
 		Composite err = new Composite(ltcCompositeText, SWT.NONE);
@@ -195,12 +199,12 @@ public class ChoicePage extends WizardPage{
 		errRow_3.pack = false;
 		err.setLayout(errRow_3);
 
-		this.errSR=new Label(err,SWT.BORDER);
+		this.errSR = new Label(err, SWT.BORDER);
 
 		errSR.setText("Not a valid spot ratio");
 		errSR.setVisible(false);
 
-		this.existingLTC = new Button(ltcComposite,SWT.RADIO);
+		this.existingLTC = new Button(ltcComposite, SWT.RADIO);
 		this.existingLTC.setText("Existing LTC");
 
 		this.nExistingLTC = new Button(ltcComposite, SWT.RADIO);
@@ -211,7 +215,7 @@ public class ChoicePage extends WizardPage{
 				getWizard().getContainer().updateButtons();
 				System.out.println("Choice: PRIVATE");
 				ltcCompositeText.setVisible(false);
-				canSwitch=true;
+				canSwitch = true;
 				ltcComposite.setVisible(false);
 				Configuration.getCurrent().setPrivate(true);
 			}
@@ -221,7 +225,7 @@ public class ChoicePage extends WizardPage{
 			public void widgetSelected(SelectionEvent e) {
 				getWizard().getContainer().updateButtons();
 				ltcComposite.setVisible(true);
-				if(existingLTC.getSelection()){
+				if (existingLTC.getSelection()) {
 					ltcCompositeText.setVisible(true);
 				}
 				System.out.println("Choice: PUBLIC");
@@ -229,16 +233,16 @@ public class ChoicePage extends WizardPage{
 			}
 		});
 
-		this.existingLTC.addSelectionListener(new SelectionAdapter(){
+		this.existingLTC.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				ltcCompositeText.setVisible(true);
-				canSwitch=false;
+				canSwitch = false;
 				getWizard().getContainer().updateButtons();
 				Configuration.getCurrent().setLTC(true);
 			}
 		});
 
-		this.rTextField.addModifyListener(new ModifyListener(){
+		this.rTextField.addModifyListener(new ModifyListener() {
 
 			@Override
 			public void modifyText(ModifyEvent arg0) {
@@ -246,30 +250,30 @@ public class ChoicePage extends WizardPage{
 			}
 		});
 
-		this.SpsrTextField.addModifyListener(new ModifyListener(){
+		this.SpsrTextField.addModifyListener(new ModifyListener() {
 
 			@Override
 			public void modifyText(ModifyEvent arg0) {
-				try{
-					if(Float.parseFloat(SpsrTextField.getText())<=1){
+				try {
+					if (Float.parseFloat(SpsrTextField.getText()) <= 1) {
 						errSR.setVisible(false);
-						canSwitch=true;
-					}else{
+						canSwitch = true;
+					} else {
 						errSR.setVisible(true);
-						canSwitch=false;
+						canSwitch = false;
 					}
-				}catch(NumberFormatException e){
-					canSwitch=false;
+				} catch (NumberFormatException e) {
+					canSwitch = false;
 				}
 
 				getWizard().getContainer().updateButtons();
 			}
 		});
 
-		this.nExistingLTC.addSelectionListener(new SelectionAdapter(){
+		this.nExistingLTC.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				ltcCompositeText.setVisible(false);
-				canSwitch=true;
+				canSwitch = true;
 				getWizard().getContainer().updateButtons();
 				Configuration.getCurrent().setLTC(false);
 			}
@@ -279,45 +283,47 @@ public class ChoicePage extends WizardPage{
 		setPageComplete(false);
 	}
 
-	public boolean getChoice(){
-		if(this.ltcCompositeText.getVisible()){
-			if(!this.rTextField.getText().equals("") &&
-					!this.SpsrTextField.getText().equals("")){
+	public boolean getChoice() {
+		if (this.ltcCompositeText.getVisible()) {
+			if (!this.rTextField.getText().equals("") && !this.SpsrTextField.getText().equals("")) {
 				return true;
-			}
-			else{
+			} else {
 				return false;
 			}
 		}
 		return true;
 	}
 
-	public int getClasses(){
+	public int getClasses() {
 		classes = Integer.parseInt(t1.getText());
 		return classes;
 	}
 
-	public int getAlternatives(){
+	public int getAlternatives() {
 		return alternatives;
 	}
 
-	public String getTechnology(){
+	public String getTechnology() {
 		return t2.getSelection()[0];
 	}
 
 	@Override
-	public boolean canFlipToNextPage(){
-		if(this.getChoice() && t2.getSelectionCount() > 0 && (pri.getSelection() || pub.getSelection()) && getClasses() != 0&&canSwitch){
+	public boolean canFlipToNextPage() {
+		if (this.getChoice() && t2.getSelectionCount() > 0 && (pri.getSelection() || pub.getSelection())
+				&& getClasses() != 0 && canSwitch) {
+			if (getTechnology().equalsIgnoreCase("Storm") && pri.getSelection()) {
+				return false;
+			}
 			return true;
 		}
 		return false;
 	}
 
-	public int getR(){
+	public int getR() {
 		return Integer.parseInt(rTextField.getText());
 	}
 
-	public float getSpsr(){
+	public float getSpsr() {
 		return Float.parseFloat(SpsrTextField.getText());
 	}
 }
