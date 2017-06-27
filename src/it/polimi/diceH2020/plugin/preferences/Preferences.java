@@ -50,7 +50,11 @@ public class Preferences {
 	}
 
 	public static String getJmTPath() {
-		return Activator.getDefault().getPreferenceStore().getString(JMT_PARSER);
+		String savDir = Activator.getDefault().getPreferenceStore().getString(JMT_PARSER);
+		if (!savDir.endsWith("/")) {
+			savDir += "/";
+		}
+		return savDir;
 	}
 
 	public static String getSimulator() {

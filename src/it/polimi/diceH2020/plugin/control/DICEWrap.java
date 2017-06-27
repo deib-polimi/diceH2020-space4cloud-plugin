@@ -18,10 +18,12 @@ limitations under the License.
 
 package it.polimi.diceH2020.plugin.control;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
@@ -352,16 +354,20 @@ public class DICEWrap {
 	public static void genJSIM(int cdid, String alt, SparkIds sparkIds) throws IOException {
 		String savingDir = Preferences.getSavingDir();
 		Configuration conf = Configuration.getCurrent();
-		String jmtPath = Preferences.getJmTPath();
+		String jmtParserPath = Preferences.getJmTPath();
 		String lastTransactionId = sparkIds.getNumberOfConcurrentUsers();
-		String pnmlFile;
 		File sparkIdx = new File(savingDir + "spark.idx");
+		String fileName; 
 		
-		// trovo il pnml file 
+		System.out.println("GENJSIM:");
+		System.out.println("jmt parser" + jmtParserPath);
+		System.out.println("sparkIdx" + sparkIdx);
+		
+		
 		if (Configuration.getCurrent().getIsPrivate()) {
-			pnmlFile = savingDir + conf.getID() + "J" + cdid + "inHouse" + alt + ".pnml";
+			fileName = savingDir + conf.getID() + "J" + cdid + "inHouse" + alt;
 		} else {
-			pnmlFile = savingDir + conf.getID() + "J" + cdid + alt.replaceAll("-", "") + ".pnml";
+			fileName = savingDir + conf.getID() + "J" + cdid + alt.replaceAll("-", "");
 		}
 		
 		try {
@@ -374,73 +380,26 @@ public class DICEWrap {
 			e.printStackTrace();
 		}
 		
+		String pnmlPath = fileName+".pnml";
+		String outputPath = new File(fileName + ".jsimg").getAbsolutePath();
+		String indexPath = sparkIdx.getAbsolutePath();
 		
-		// comando = java -cp "./bin:./lib/*" PNML_Pre_Processor gspn {i} {o} {idx}
+				
+		String command = String.format("java -cp \"%sbin:%slib/*\" PNML_Pre_Processor gspn %s %s %s", 
+									   jmtParserPath, jmtParserPath, pnmlPath, outputPath, indexPath);
 		
-		// exec del simulatore sul file 
+		System.out.println("Executing: "+ command);
 		
+		Process proc;
+
+		try {
+			proc = Runtime.getRuntime().exec(command);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return; 
+		}
 	}
 	
-
-	public void myGeneratePNML(int cdid, String alt) {
-
-		String inputPath = Preferences.getSavingDir() + "res" + File.separator + "pnml_gspn_files" + File.separator
-				+ "OutputSimulation" + File.separator + "PNML";
-		String targetPath = Preferences.getSavingDir();
-
-		System.out.println("PNML Input Directory: " + inputPath);
-		System.out.println("PNML Output Directory: " + targetPath);
-
-		File source = new File(inputPath);
-		File dest = new File(targetPath);
-
-		try {
-			FileUtils.copyDirectory(source, dest);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// the pnml file has to have a specific name
-		File files[] = dest.listFiles();
-		String outputFilePath;
-		if (Configuration.getCurrent().getIsPrivate()) {
-			outputFilePath = Preferences.getSavingDir() + conf.getID() + "J" + cdid + "inHouse" + alt;
-		} else {
-			outputFilePath = Preferences.getSavingDir() + conf.getID() + "J" + cdid + alt.replaceAll("-", "");
-		}
-
-		File pnmlFilePath = new File(outputFilePath + ".pnml");
-		File trcFilePath = new File(outputFilePath + ".trc.xmi");
-		for (File f : files) {
-			if (f.getName().endsWith(".pnml")) {
-				f.renameTo(pnmlFilePath);
-			} else if (f.getName().endsWith(".trc.xmi")) {
-				f.renameTo(trcFilePath);
-			}
-		}
-		// TODO find another way to rename these files because there are
-		// different files that ends with pnml in this folder, so in order to
-		// work you have to delete these files every time
-	}
-
-	public void myGenGSPN() {
-
-		String inputPath = Preferences.getSavingDir() + "res" + File.separator + "pnml_gspn_files" + File.separator
-				+ "OutputSimulation" + File.separator + "GSPN";
-		String targetPath = Preferences.getSavingDir() + "tmp" + File.separator;
-
-		System.out.println("GSPN Input Directory: " + inputPath);
-		System.out.println("GSPN Output Directory: " + targetPath);
-
-		File source = new File(inputPath);
-		File dest = new File(targetPath);
-
-		try {
-			FileUtils.copyDirectory(source, dest);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 
 	public void setScenario() {
 		if (!Configuration.getCurrent().getIsPrivate()) {
