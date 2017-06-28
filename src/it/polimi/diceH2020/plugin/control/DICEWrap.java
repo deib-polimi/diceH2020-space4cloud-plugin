@@ -118,6 +118,7 @@ public class DICEWrap {
 						generatePNML(String.valueOf(c.getId()), alt);
 						genGSPN();
 						FileManager.editFiles(c.getId(), alt, extractHadoopId());
+						SparkFileManager.createStatFile(extractHadoopId());
 						extractParametersFromHadoopModel(c, alt);
 					} catch (Exception e) {
 						System.out.println(e.getMessage());
