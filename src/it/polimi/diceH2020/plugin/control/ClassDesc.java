@@ -23,7 +23,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Class descriptor. Holds all information about a class (i.e. parameters, alternatives).
+ * Class descriptor. Holds all information about a class (i.e. parameters,
+ * alternatives).
+ * 
  * @author kom
  *
  */
@@ -36,15 +38,16 @@ public class ClassDesc implements Serializable {
 	private Map<String, String> altDtsm;
 	private String ddsmPath;
 
-	//Storm only parameter
+	// Storm only parameter
 	private double stormU;
 
-	//Hadoop-only parameters
-	private Map<String, Map<String,String>> altDtsmHadoop; //Parameters from DTSM files
-	private Map<String, String> hadoopParUD; //User defined parameters
+	// Hadoop-only parameters
+	private Map<String, Map<String, String>> altDtsmHadoop; // Parameters from
+															// DTSM files
+	private Map<String, String> hadoopParUD; // User defined parameters
 	private String mlPath;
 
-	public ClassDesc(int id){
+	public ClassDesc(int id) {
 		this.id = id;
 	}
 
@@ -56,21 +59,21 @@ public class ClassDesc implements Serializable {
 		return altDtsm;
 	}
 
-	public void setAltDtsm(HashMap<String, String> altDtsm){
+	public void setAltDtsm(HashMap<String, String> altDtsm) {
 		this.altDtsm = new HashMap<String, String>(altDtsm);
 	}
 
-	public void setDdsmPath(String ddsmPath){
+	public void setDdsmPath(String ddsmPath) {
 		this.ddsmPath = ddsmPath;
 	}
 
-	public String getDdsmPath(){
+	public String getDdsmPath() {
 		return ddsmPath;
 	}
 
-	public Map<String, Map<String,String>> getAltDtsmHadoop() {
-		if(!Configuration.getCurrent().getTechnology().equals("Hadoop Map-reduce") && 
-				!Configuration.getCurrent().getTechnology().equals("Spark")){
+	public Map<String, Map<String, String>> getAltDtsmHadoop() {
+		if (!Configuration.getCurrent().getTechnology().equals("Hadoop Map-reduce")
+				&& !Configuration.getCurrent().getTechnology().equals("Spark")) {
 			return null;
 		}
 		return altDtsmHadoop;
@@ -78,11 +81,14 @@ public class ClassDesc implements Serializable {
 
 	/**
 	 * Expands alternatives with given Hadoop parameters
-	 * @param alt Alternative to expand with Hadoop params
-	 * @param exp Map of Hadoop parameters
+	 * 
+	 * @param alt
+	 *            Alternative to expand with Hadoop params
+	 * @param exp
+	 *            Map of Hadoop parameters
 	 */
-	public void expandAltDtsmHadoop(String alt, Map<String, String> exp){
-		if (altDtsmHadoop == null){
+	public void expandAltDtsmHadoop(String alt, Map<String, String> exp) {
+		if (altDtsmHadoop == null) {
 			altDtsmHadoop = new HashMap<String, Map<String, String>>();
 		}
 		exp.put("file", altDtsm.get(alt));
@@ -90,11 +96,11 @@ public class ClassDesc implements Serializable {
 	}
 
 	public Map<String, String> getHadoopParUD() {
-		if(!Configuration.getCurrent().getTechnology().equals("Hadoop Map-reduce") &&
-				!Configuration.getCurrent().getTechnology().equals("Spark")){
-			return null;
+		if (Configuration.getCurrent().getTechnology().equals("Hadoop Map-reduce")
+				|| Configuration.getCurrent().getTechnology().equals("Spark")) {
+			return hadoopParUD;
 		}
-		return hadoopParUD;
+		return null;
 	}
 
 	public void setHadoopParUD(Map<String, String> hadoopParUD) {

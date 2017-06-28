@@ -120,7 +120,8 @@ public class FileManager {
 
 			if (f.getName().endsWith(".net")) {
 				System.out.println("Renaming " + f.getName());
-				// find the id in the .net file and changes the following number in "@@CORES@@"
+				// find the id in the .net file and changes the following number
+				// in "@@CORES@@"
 				putPlaceHolder(hadoopId, f.getName(), "net");
 				if (Configuration.getCurrent().getIsPrivate()) {
 					f.renameTo(new File(savingDir + conf.getID() + "J" + cdid + "inHouse" + alt + ".net"));
@@ -208,7 +209,7 @@ public class FileManager {
 
 			data.setMapPublicCloudParameters(null);
 			setPrivateParameters(data);
-			
+
 		} else {
 			// Set MapVMConfigurations
 			data.setMapVMConfigurations(null);
@@ -223,7 +224,7 @@ public class FileManager {
 
 		setMachineLearningProfile(data, conf);
 
-		if (!Configuration.getCurrent().canSend()){
+		if (!Configuration.getCurrent().canSend()) {
 			return;
 		}
 
@@ -233,7 +234,7 @@ public class FileManager {
 
 		try {
 			mapper.writerWithDefaultPrettyPrinter()
-				  .writeValue(new File(Preferences.getSavingDir() + conf.getID() + ".json"), data);
+					.writeValue(new File(Preferences.getSavingDir() + conf.getID() + ".json"), data);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -329,6 +330,9 @@ public class FileManager {
 				clpm.setHlow(Integer.parseInt(c.getHadoopParUD().get("hlow")));
 				clpm.setHup(Integer.parseInt(c.getHadoopParUD().get("hup")));
 				clpm.setThink(Double.parseDouble(c.getHadoopParUD().get("think")));
+				if (Configuration.getCurrent().getIsPrivate()) {
+					clpm.setPenalty(Double.parseDouble(c.getHadoopParUD().get("penalty")));
+				}
 				classdesc1.put(String.valueOf(c.getId()), clpm);
 			}
 		} else {
@@ -428,8 +432,8 @@ public class FileManager {
 		ObjectMapper mapper = new ObjectMapper();
 
 		try {
-			mapper.writerWithDefaultPrettyPrinter()
-					.writeValue(new File(Preferences.getSavingDir() + Configuration.getCurrent().getID() + "OUT.json"), json);
+			mapper.writerWithDefaultPrettyPrinter().writeValue(
+					new File(Preferences.getSavingDir() + Configuration.getCurrent().getID() + "OUT.json"), json);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

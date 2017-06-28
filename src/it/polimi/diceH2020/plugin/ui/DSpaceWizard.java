@@ -27,11 +27,13 @@ import it.polimi.diceH2020.plugin.control.FileHandler;
 import it.polimi.diceH2020.plugin.control.PrivateConfiguration;
 
 /**
- * Class needed by Eclipse to manage wizards. The core of this class is getNextPage() method.
+ * Class needed by Eclipse to manage wizards. The core of this class is
+ * getNextPage() method.
+ * 
  * @author kom
  *
  */
-public class DSpaceWizard extends Wizard{
+public class DSpaceWizard extends Wizard {
 	private FileHandler fileHandler;
 	private ChoicePage choice;
 	private ClassPage classp;
@@ -49,7 +51,7 @@ public class DSpaceWizard extends Wizard{
 	public DSpaceWizard() {
 		super();
 		setNeedsProgressMonitor(true);
-		this.fileHandler=new FileHandler();
+		this.fileHandler = new FileHandler();
 	}
 
 	@Override
@@ -59,15 +61,15 @@ public class DSpaceWizard extends Wizard{
 	}
 
 	@Override
-	public void addPages(){
-		choice = new ChoicePage("Service type","Choose service type");
+	public void addPages() {
+		choice = new ChoicePage("Service type", "Choose service type");
 		classp = new ClassPage("Class page", "Select page parameters and alternatives");
 		fpage = new FinalPage("Goodbye", ".");
-		folPage=new SelectFolderPage("Select folder");
-		hPage=new HadoopDataPage("Set Hadoop parameters");
-		stPage=new StormDataPage("Set Storm parameter");
-		spPage=new SparkDataPage("Set Spark parameter");
-		prConfigPage=new PrivateConfigPage("Set cluster parameters");
+		folPage = new SelectFolderPage("Select folder");
+		hPage = new HadoopDataPage("Set Hadoop parameters");
+		stPage = new StormDataPage("Set Storm parameter");
+		spPage = new SparkDataPage("Set Spark parameter");
+		prConfigPage = new PrivateConfigPage("Set cluster parameters");
 
 		addPage(choice);
 		addPage(prConfigPage);
@@ -81,17 +83,22 @@ public class DSpaceWizard extends Wizard{
 
 	@Override
 	public IWizardPage getNextPage(IWizardPage currentPage) {
-		if (currentPage == choice){
+		if (currentPage == choice) {
 			classes = choice.getClasses();
 			Configuration.getCurrent().setNumClasses(classes);
 
-			if (Configuration.getCurrent().getHasLtc()){
+			if (Configuration.getCurrent().getHasLtc()) {
 				Configuration.getCurrent().setR(choice.getR());
 				Configuration.getCurrent().setSpsr(choice.getSpsr());
 			}
 
-			if(Configuration.getCurrent().getIsPrivate()){
+			if (Configuration.getCurrent().getIsPrivate()) {
+				spPage.privateCase();
+				hPage.privateCase();
 				return prConfigPage;
+			} else {
+				spPage.publicCase();
+				hPage.publicCase();
 			}
 
 			classp.udpate();
@@ -99,10 +106,10 @@ public class DSpaceWizard extends Wizard{
 			return classp;
 		}
 
-		if(currentPage==hPage){
+		if (currentPage == hPage) {
 			c.setHadoopParUD(hPage.getHadoopParUD());
 
-			if(n == classes){
+			if (n == classes) {
 				finish = true;
 				Configuration.getCurrent().dump();
 				return fpage;
@@ -111,30 +118,31 @@ public class DSpaceWizard extends Wizard{
 			classp.reset();
 			hPage.reset();
 
-			if(Configuration.getCurrent().getIsPrivate())
+			if (Configuration.getCurrent().getIsPrivate())
 				classp.privateCase();
 
 			return classp;
 		}
-		
-		if(currentPage==spPage){		
-			c.setHadoopParUD(spPage.getHadoopParUD());		
-			if(n == classes){		
-				finish = true;		
-				Configuration.getCurrent().dump();		
-				return fpage;		
-			}		
-			classp.reset();		
-			spPage.reset();		
-			if(Configuration.getCurrent().getIsPrivate())		
-				classp.privateCase();		
-			return classp;		
+
+		if (currentPage == spPage) {
+			c.setHadoopParUD(spPage.getHadoopParUD());
+			if (n == classes) {
+				finish = true;
+				Configuration.getCurrent().dump();
+				return fpage;
+			}
+			classp.reset();
+			spPage.reset();
+
+			if (Configuration.getCurrent().getIsPrivate())
+				classp.privateCase();
+			return classp;
 		}
 
-		if(currentPage==stPage){
+		if (currentPage == stPage) {
 			c.setStormU(stPage.getStormU());
 
-			if(n == classes){
+			if (n == classes) {
 				finish = true;
 				Configuration.getCurrent().dump();
 				return fpage;
@@ -143,40 +151,40 @@ public class DSpaceWizard extends Wizard{
 			classp.reset();
 			stPage.reset();
 
-			if(Configuration.getCurrent().getIsPrivate())
+			if (Configuration.getCurrent().getIsPrivate())
 				classp.privateCase();
 
 			return classp;
 		}
 
-		if(currentPage == classp){
+		if (currentPage == classp) {
 			c = new ClassDesc(++n);
-			System.out.println("N: "+n+" classes: "+classes);
+			System.out.println("N: " + n + " classes: " + classes);
 			c.setDdsmPath(classp.getDDSMPath());
 			c.setAltDtsm(classp.getAltDtsm());
 
 			Configuration.getCurrent().getClasses().add(c);
 
-			if(Configuration.getCurrent().getTechnology().contains("Hadoop Map-reduce")){
+			if (Configuration.getCurrent().getTechnology().contains("Hadoop Map-reduce")) {
 				c.setMlPath(classp.getMlPath());
 				return hPage;
-			} else if (Configuration.getCurrent().getTechnology().contains("Spark")){
+			} else if (Configuration.getCurrent().getTechnology().contains("Spark")) {
 				c.setMlPath(classp.getMlPath());
 				return spPage;
-			}else{
+			} else {
 				return stPage;
 			}
 		}
 
-		if(currentPage==this.folPage){
+		if (currentPage == this.folPage) {
 			fileHandler.setFolder(folPage.getSelectedFolder());
-			fileHandler.setScenario(false,false);
+			fileHandler.setScenario(false, false);
 			fileHandler.sendFile();
 			finish = true;
 			return fpage;
 		}
 
-		if(currentPage==this.prConfigPage){
+		if (currentPage == this.prConfigPage) {
 			PrivateConfiguration.getCurrent().setPriE(prConfigPage.getCostNode());
 			PrivateConfiguration.getCurrent().setPriM(prConfigPage.getMemForNode());
 			PrivateConfiguration.getCurrent().setPriN(prConfigPage.getNumNodes());

@@ -30,31 +30,40 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-public class SparkDataPage extends WizardPage{
+import it.polimi.diceH2020.plugin.control.Configuration;
+
+public class SparkDataPage extends WizardPage {
 	private Composite container;
 	private GridLayout layout;
 	private int thinkTime;
 	private int hlow;
 	private int hup;
-	private Map<String,String> hadoopParUD;
+	private float penalty;
+	private Map<String, String> hadoopParUD;
+	Label l5;
 	private double hadoopD;
-	private Text thinkTextField,hlowTextField,hupTextField,hadoopDTextField;
+	private Text thinkTextField, hlowTextField, hupTextField, hadoopDTextField, penaltyTextField;
 
 	protected SparkDataPage(String pageName) {
 		super("Select data for spark Technology");
-		hadoopParUD=new HashMap<String,String>();
+		hadoopParUD = new HashMap<String, String>();
 		setTitle(pageName);
-		thinkTime=-1;
-		hlow=-1;
-		hup=-1;
-		hadoopD=-1;
+		resetParameters();
+	}
+
+	private void resetParameters() {
+		thinkTime = -1;
+		hlow = -1;
+		hup = -1;
+		penalty = -1;
+		hadoopD = -1;
 	}
 
 	@Override
 	public void createControl(Composite arg0) {
 		container = new Composite(arg0, SWT.NONE);
 		layout = new GridLayout();
-		layout.numColumns=1;
+		layout.numColumns = 1;
 		container.setLayout(layout);
 
 		Label l1 = new Label(container, SWT.None);
@@ -65,114 +74,127 @@ public class SparkDataPage extends WizardPage{
 		thinkTextField.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent arg0) {
-				try{
-					thinkTime=Integer.parseInt(thinkTextField.getText());
+				try {
+					thinkTime = Integer.parseInt(thinkTextField.getText());
 					hadoopParUD.put("think", thinkTextField.getText());
-				}catch(NumberFormatException e){
+				} catch (NumberFormatException e) {
 
 				}
 				getWizard().getContainer().updateButtons();
 			}
 		});
 
-		Label l2 = new Label(container,SWT.None);
+		Label l2 = new Label(container, SWT.None);
 		l2.setText("Set deadline");
-		this.hadoopDTextField=new Text(container,SWT.BORDER);
+		this.hadoopDTextField = new Text(container, SWT.BORDER);
 		hadoopDTextField.setEditable(true);
-		hadoopDTextField.addModifyListener(new ModifyListener(){
+		hadoopDTextField.addModifyListener(new ModifyListener() {
 
 			@Override
 			public void modifyText(ModifyEvent arg0) {
-				try{
-					hadoopD=Double.parseDouble(hadoopDTextField.getText());
+				try {
+					hadoopD = Double.parseDouble(hadoopDTextField.getText());
 					hadoopParUD.put("d", hadoopDTextField.getText());
-				}catch(NumberFormatException e){
+				} catch (NumberFormatException e) {
 
 				}
 				getWizard().getContainer().updateButtons();
 			}
 		});
 
-		Label l3 = new Label(container,SWT.None);
+		Label l3 = new Label(container, SWT.None);
 		l3.setText("Set minimum level of concurrency");
-		hlowTextField=new Text(container,SWT.BORDER);
+		hlowTextField = new Text(container, SWT.BORDER);
 		hlowTextField.setEditable(true);
-		hlowTextField.addModifyListener(new ModifyListener(){
+		hlowTextField.addModifyListener(new ModifyListener() {
 
 			@Override
 			public void modifyText(ModifyEvent arg0) {
-				try{
-					hlow=Integer.parseInt(hlowTextField.getText());
+				try {
+					hlow = Integer.parseInt(hlowTextField.getText());
 					hadoopParUD.put("hlow", hlowTextField.getText());
-				}catch(NumberFormatException e){
+				} catch (NumberFormatException e) {
 
 				}
 				getWizard().getContainer().updateButtons();
 			}
 		});
 
-		Label l4 = new Label(container,SWT.None);
+		Label l4 = new Label(container, SWT.None);
 		l4.setText("Set maximum level of concurrency");
-		hupTextField=new Text(container,SWT.BORDER);
+		hupTextField = new Text(container, SWT.BORDER);
 		hupTextField.setEditable(true);
-		hupTextField.addModifyListener(new ModifyListener(){
+		hupTextField.addModifyListener(new ModifyListener() {
 
 			@Override
 			public void modifyText(ModifyEvent arg0) {
-				try{
-					hup=Integer.parseInt(hupTextField.getText());
+				try {
+					hup = Integer.parseInt(hupTextField.getText());
 					hadoopParUD.put("hup", hupTextField.getText());
-				}catch(NumberFormatException e){
+				} catch (NumberFormatException e) {
+				}
+				getWizard().getContainer().updateButtons();
+			}
+		});
+
+		l5 = new Label(container, SWT.None);
+		l5.setText("Set job penalty cost");
+		penaltyTextField = new Text(container, SWT.BORDER);
+		penaltyTextField.setEditable(true);
+		penaltyTextField.addModifyListener(new ModifyListener() {
+
+			@Override
+			public void modifyText(ModifyEvent arg0) {
+				try {
+					penalty = Float.parseFloat(penaltyTextField.getText());
+					hadoopParUD.put("penalty", penaltyTextField.getText());
+				} catch (NumberFormatException e) {
 				}
 				getWizard().getContainer().updateButtons();
 			}
 		});
 
 		setControl(container);
-		setPageComplete(false);	
+		setPageComplete(false);
 	}
 
 	@Override
-	public boolean canFlipToNextPage(){
-		if(this.hadoopD!=-1&&this.thinkTime!=-1&&this.hlow!=-1&&this.hup!=-1){
+	public boolean canFlipToNextPage() {
+		if (hadoopD != -1 && thinkTime != -1 && hlow != -1 && hup != -1) {
+			if (Configuration.getCurrent().getIsPrivate() && penalty == -1) {
+				return false;
+			}
 			return true;
 		}
 		return false;
 	}
 
-	public int getThinkTime() {
-		return thinkTime;
-	}
-
-	public void setThinkTime(int thinkTime) {
-		this.thinkTime = thinkTime;
-	}
-
-	public int getHlow() {
-		return hlow;
-	}
-
-	public double getHadoopD() {
-		return hadoopD;
-	}
-
-	public int getHup() {
-		return hup;
-	}
-
-	public Map<String,String> getHadoopParUD() {
+	public Map<String, String> getHadoopParUD() {
 		return hadoopParUD;
 	}
 
-	public void reset(){
+	public void reset() {
 		this.hadoopParUD.clear();
-		thinkTime=-1;
-		hlow=-1;
-		hup=-1;
-		hadoopD=-1;
+		resetParameters();
 		thinkTextField.setText("");
 		hlowTextField.setText("");
-		hupTextField.setText("");;
+		hupTextField.setText("");
+		penaltyTextField.setText("");
 		hadoopDTextField.setText("");
+		if (Configuration.getCurrent().getIsPrivate()) {
+			privateCase();
+		} else {
+			publicCase();
+		}
+	}
+
+	public void privateCase() {
+		l5.setVisible(true);
+		penaltyTextField.setVisible(true);
+	}
+
+	public void publicCase() {
+		l5.setVisible(false);
+		penaltyTextField.setVisible(false);
 	}
 }
