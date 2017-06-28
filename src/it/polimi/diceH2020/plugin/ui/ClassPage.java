@@ -36,14 +36,18 @@ import org.eclipse.swt.widgets.List;
 import it.polimi.diceH2020.plugin.control.Configuration;
 import it.polimi.diceH2020.plugin.control.PrivateConfiguration;
 import it.polimi.diceH2020.plugin.control.VmClass;
+import it.polimi.diceH2020.plugin.preferences.Preferences;
 import utils.JsonDatabase;
+import utils.Premium;
 
 /**
  * Allows user to set parameters for this class.
+ * 
  * @author kom
  *
  */
-public class ClassPage extends WizardPage{
+public class ClassPage extends WizardPage {
+	private static final String DEFAULT_ML_PROFILE_PATH = Preferences.getSavingDir() + "ml_model.txt";
 	private Composite container;
 	private GridLayout layout;
 	private List availableAlternatives;
@@ -90,7 +94,7 @@ public class ClassPage extends WizardPage{
 		remove.setText("<<");
 
 		chosenAlternatives = new List(container, SWT.BORDER);
-		GridData gdata = new GridData(SWT.BEGINNING, SWT.FILL, true,true);
+		GridData gdata = new GridData(SWT.BEGINNING, SWT.FILL, true, true);
 		gdata.widthHint = 300;
 		chosenAlternatives.setLayoutData(gdata);
 
@@ -102,12 +106,14 @@ public class ClassPage extends WizardPage{
 					final int selectedIdx = availableAlternatives.getSelectionIndices()[0];
 
 					// Open file browser
-					JFileChooser chooser = new JFileChooser ();
-					chooser.setMultiSelectionEnabled (false); //JUST ONE UML FILE
+					JFileChooser chooser = new JFileChooser();
+					// JUST ONE UML FILE
+					chooser.setMultiSelectionEnabled(false); 
+																
 
-					final int choice = chooser.showOpenDialog (null);
+					final int choice = chooser.showOpenDialog(null);
 					if (choice == JFileChooser.APPROVE_OPTION) {
-						altDtsm.put (selectedAlternative, chooser.getSelectedFile ().getPath ());
+						altDtsm.put(selectedAlternative, chooser.getSelectedFile().getPath());
 						chosenAlternatives.add(selectedAlternative);
 						availableAlternatives.remove(selectedIdx);
 					}
@@ -121,7 +127,7 @@ public class ClassPage extends WizardPage{
 
 		remove.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				if(chosenAlternatives.getSelectionCount() < 1){
+				if (chosenAlternatives.getSelectionCount() < 1) {
 					return;
 				}
 				availableAlternatives.add(chosenAlternatives.getSelection()[0]);
@@ -153,7 +159,7 @@ public class ClassPage extends WizardPage{
 
 		button = new Button(container, SWT.PUSH);
 		button.setText("Refresh vm configurations");
-		button.addSelectionListener(new SelectionAdapter(){
+		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				refreshAlternatives();
 			}
@@ -166,7 +172,7 @@ public class ClassPage extends WizardPage{
 		errorLabel = new Label(container, SWT.NONE);
 		errorLabel.setText("Error: Unable to get vm configurations from the webservice");
 		errorLabel.setVisible(false);
-		fileName.setLayoutData(new GridData(SWT.BEGINNING, SWT.END, false, false));	
+		fileName.setLayoutData(new GridData(SWT.BEGINNING, SWT.END, false, false));
 
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
@@ -179,39 +185,45 @@ public class ClassPage extends WizardPage{
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 
-		mlNameFile=new Label(container,SWT.NONE);
+		mlNameFile = new Label(container, SWT.NONE);
 
 		mlProfile.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				JFileChooser chooser= new JFileChooser();
-				chooser.setMultiSelectionEnabled(false); //JUST ONE UML FILE
+				JFileChooser chooser = new JFileChooser();
+				chooser.setMultiSelectionEnabled(false); // JUST ONE UML FILE
 
 				int choice = chooser.showOpenDialog(null);
 
-				if (choice != JFileChooser.APPROVE_OPTION) return;
+				if (choice != JFileChooser.APPROVE_OPTION)
+					return;
 
 				mlPath = chooser.getSelectedFile().getPath();
 
 				mlNameFile.setText(chooser.getSelectedFile().getName());
-				//setPageComplete(true);
+				// setPageComplete(true);
 				container.layout();
 				getWizard().getContainer().updateButtons();
 			}
 		});
+		
+		if(!Premium.isPremium()){
+			mlProfile.setVisible(false);
+		}
 
 		browse.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				JFileChooser chooser= new JFileChooser();
-				chooser.setMultiSelectionEnabled(false); //JUST ONE UML FILE
+				JFileChooser chooser = new JFileChooser();
+				chooser.setMultiSelectionEnabled(false); // JUST ONE UML FILE
 
 				int choice = chooser.showOpenDialog(null);
 
-				if (choice != JFileChooser.APPROVE_OPTION) return;
+				if (choice != JFileChooser.APPROVE_OPTION)
+					return;
 
 				ddsmPath = chooser.getSelectedFile().getPath();
 
 				fileName.setText(chooser.getSelectedFile().getName());
-				//setPageComplete(true);
+				// setPageComplete(true);
 				container.layout();
 				getWizard().getContainer().updateButtons();
 			}
@@ -224,52 +236,50 @@ public class ClassPage extends WizardPage{
 	}
 
 	@Override
-	public boolean canFlipToNextPage(){
-		if(Configuration.getCurrent().getTechnology().contains("Hadoop Map-reduce") ||
-				Configuration.getCurrent().getTechnology().contains("Spark")){
-			if(!ddsmPath.equals("") && chosenAlternatives.getItemCount() > 0&&!mlPath.equals("")){
+	public boolean canFlipToNextPage() {
+		if (Configuration.getCurrent().getTechnology().contains("Hadoop Map-reduce")
+				|| Configuration.getCurrent().getTechnology().contains("Spark")) {
+			if (!ddsmPath.equals("") && chosenAlternatives.getItemCount() > 0 && !mlPath.equals("")) {
 				return true;
-			}else{
+			} else {
 				return false;
 			}
 		}
-		if(!ddsmPath.equals("") && chosenAlternatives.getItemCount() > 0){
+		if (!ddsmPath.equals("") && chosenAlternatives.getItemCount() > 0) {
 			return true;
 		}
 		return false;
 	}
 
-	private void populateAlternatives(){
+	private void populateAlternatives() {
 		String[] vmConfigs = JsonDatabase.getInstance().getVmConfigs();
-		if(vmConfigs == null){
+		if (vmConfigs == null) {
 			errorLabel.setVisible(true);
-		}
-		else{
+		} else {
 			errorLabel.setVisible(false);
 			availableAlternatives.setItems(JsonDatabase.getInstance().getVmConfigs());
 		}
 	}
 
-	private void refreshAlternatives(){
+	private void refreshAlternatives() {
 		String[] vmConfigs = JsonDatabase.getInstance().refreshDbContents();
-		if(vmConfigs == null){
+		if (vmConfigs == null) {
 			errorLabel.setVisible(true);
-		}
-		else{
+		} else {
 			errorLabel.setVisible(false);
 			availableAlternatives.setItems(JsonDatabase.getInstance().getVmConfigs());
 		}
 	}
 
-	public String getDDSMPath(){
+	public String getDDSMPath() {
 		return ddsmPath;
 	}
 
-	public HashMap<String, String> getAltDtsm(){
+	public HashMap<String, String> getAltDtsm() {
 		return altDtsm;
 	}
 
-	public void reset(){
+	public void reset() {
 		chosenAlternatives.removeAll();
 		populateAlternatives();
 		fileName.setText("");
@@ -277,33 +287,38 @@ public class ClassPage extends WizardPage{
 		getWizard().getContainer().updateButtons();
 		container.layout();
 		altDtsm = new HashMap<String, String>();
-		mlPath="";
+		mlPath = "";
 	}
 
 	public String[] getSelectedAlternatives() {
 		return chosenAlternatives.getItems();
 	}
 
-	public void setNumClasses(int numClasses){
+	public void setNumClasses(int numClasses) {
 	}
 
-	public void udpate(){
-		if(Configuration.getCurrent().getTechnology().contains("Hadoop Map-reduce") ||
-				Configuration.getCurrent().getTechnology().contains("Spark")){
-			mlProfile.setVisible(true);
-		}else{
+	public void udpate() {
+		if (Configuration.getCurrent().getTechnology().contains("Hadoop Map-reduce")
+				|| Configuration.getCurrent().getTechnology().contains("Spark")) {
+			if (Premium.isPremium()) {
+				mlProfile.setVisible(true);
+			}
+		} else {
 			mlProfile.setVisible(false);
 		}
 	}
 
-	public String getMlPath(){
+	public String getMlPath() {
+		if(mlPath.isEmpty()){
+			return DEFAULT_ML_PROFILE_PATH;
+		}
 		return mlPath;
 	}
 
-	public void privateCase(){
+	public void privateCase() {
 		button.setVisible(false);
 		availableAlternatives.removeAll();
-		for(VmClass vm:PrivateConfiguration.getCurrent().getVmList()){
+		for (VmClass vm : PrivateConfiguration.getCurrent().getVmList()) {
 			availableAlternatives.add(vm.getName());
 		}
 	}
