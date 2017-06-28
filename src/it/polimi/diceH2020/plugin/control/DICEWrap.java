@@ -150,6 +150,7 @@ public class DICEWrap {
 							return;
 						}
 						
+						SparkFileManager.createStatFile(extractSparkIds().getNumberOfConcurrentUsers());
 						extractParametersFromHadoopModel(c, alt);
 					} catch (Exception e) {
 						System.err.println("SPARK EXCEPTION");
@@ -384,7 +385,7 @@ public class DICEWrap {
 		String command = String.format("java -cp %sbin:%slib/* PNML_Pre_Processor gspn %s %s %s", 
 									   jmtParserPath, jmtParserPath, pnmlPath, outputPath, indexPath);
 		
-		System.out.println("Executing: "+ command);
+		System.out.println("Calling PNML_Pre_Processor");
 		
 		Process proc;
 
@@ -393,6 +394,12 @@ public class DICEWrap {
 		} catch (IOException e) {
 			e.printStackTrace();
 			return; 
+		}
+		
+		try {
+			proc.waitFor();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 	

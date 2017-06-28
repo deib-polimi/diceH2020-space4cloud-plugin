@@ -19,9 +19,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 
 import it.polimi.diceH2020.plugin.preferences.Preferences;
@@ -48,6 +46,7 @@ public class SparkFileManager {
 
 			try (PrintWriter out = new PrintWriter(inputFile)) {
 				out.println(finalContent);
+				out.close();
 			}
 
 		} catch (IOException e) {
@@ -104,11 +103,14 @@ public class SparkFileManager {
 			filename = savingDir + conf.getID() + "J" + cdid + alt.replaceAll("-", "");
 		}
 
-		System.out.println("Putting placeholders over jsimg file");
+		System.out.println(String.format("Putting placeholders over %s.jsimg", filename));
 		
-		File jsimgFile = new File(savingDir + filename + ".jsimg");
+		File jsimgFile = new File(filename + ".jsimg");
 		putPlaceHolderXML(sparkIds.getUsers(), "@@CORES@@", jsimgFile);
 		putPlaceHolderXML(sparkIds.getDevices2resources(), "@@CORES@@", jsimgFile);
+		
+		//putPlaceHolderXML(sparkIds.getUsers(),"10", jsimgFile);
+		//putPlaceHolderXML(sparkIds.getDevices2resources(), "10", jsimgFile);
 
 	}
 	
@@ -138,7 +140,6 @@ public class SparkFileManager {
 
 	}
 		
-	
 	private static void moveFile(File InputFile, String outputFilePath, String extension) {
 		Path input = Paths.get(InputFile.getAbsolutePath());
 		Path output = Paths.get(outputFilePath + "." + extension);
@@ -147,6 +148,20 @@ public class SparkFileManager {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static void createStatFile(String LastTransitionId){
+		
+		String id = Configuration.getCurrent().getID();
+		File statFile = new File(Preferences.getSavingDir()+id+"end_transition.stat");
+		
+		try (PrintWriter out = new PrintWriter(statFile)){
+			out.println(LastTransitionId);
+			out.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
 	}
 
 }
