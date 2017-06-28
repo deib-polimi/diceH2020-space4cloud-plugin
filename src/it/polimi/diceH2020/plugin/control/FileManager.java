@@ -18,12 +18,8 @@ limitations under the License.
 
 package it.polimi.diceH2020.plugin.control;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -97,99 +93,36 @@ public class FileManager {
 	public static void editFiles(int cdid, String alt, String hadoopId) {
 		String savingDir = Preferences.getSavingDir();
 		Configuration conf = Configuration.getCurrent();
+		
 		File folder = new File(savingDir + "tmp/");
 		File files[] = folder.listFiles();
-
+		String outputFilePath;
+		
+		if (Configuration.getCurrent().getIsPrivate()) {
+			outputFilePath = savingDir + conf.getID() + "J" + cdid + "inHouse" + alt;
+		} else {
+			outputFilePath = savingDir + conf.getID() + "J" + cdid + alt.replaceAll("-", "");
+		}
+		File netFile = null;
+		File defFile = null;
+		
 		for (File f : files) {
-			if (f.getName().endsWith(".def")) {
-				System.out.println("Renaming " + f.getName());
-
-				if (conf.getTechnology().equals("Hadoop Map-reduce") || conf.getTechnology().equals("Spark"))
-					putPlaceHolder("(starta ", f.getName(), "def");
-
-				if (Configuration.getCurrent().getIsPrivate()) {
-
-					f.renameTo(new File(savingDir + conf.getID() + "J" + cdid + "inHouse" + alt + ".def"));
-					f.delete();
-				} else {
-					String newFileName = savingDir + conf.getID() + "J" + cdid + alt.replaceAll("-", "") + ".def";
-					f.renameTo(new File(newFileName));
-					f.delete();
-				}
-			}
-
 			if (f.getName().endsWith(".net")) {
-				System.out.println("Renaming " + f.getName());
-				// find the id in the .net file and changes the following number
-				// in "@@CORES@@"
-				putPlaceHolder(hadoopId, f.getName(), "net");
-				if (Configuration.getCurrent().getIsPrivate()) {
-					f.renameTo(new File(savingDir + conf.getID() + "J" + cdid + "inHouse" + alt + ".net"));
-					f.delete();
-				} else {
-					f.renameTo(new File(savingDir + conf.getID() + "J" + cdid + alt.replaceAll("-", "") + ".net"));
-					f.delete();
-				}
+				netFile = f;
+			} else if (f.getName().endsWith(".def")) {
+				defFile = f;
 			}
 		}
-	}
+		
+		System.out.println("Putting placeholder over " + defFile);
+		SparkFileManager.putPlaceHolder("sa{1-", "@@CONCURRENCY@@", defFile);
+		
+		System.out.println("Putting placeholder over " + netFile);
+		SparkFileManager.putPlaceHolder(hadoopId, "@@CORES@@", netFile);
+		
+		SparkFileManager.moveFile(netFile, outputFilePath, "net");
+		SparkFileManager.moveFile(defFile, outputFilePath, "def");
 
-	/**
-	 * Scans the input file and replaces id String with a placeholder
-	 * 
-	 * @param id
-	 *            String to be replaced
-	 * @param file
-	 *            Input file path
-	 */
-	public static void putPlaceHolder(String id, String file, String ext) {
-		File f = new File(Preferences.getSavingDir() + "tmp/" + file);
-		System.out.println("Putting placeholder over " + id + " in file " + file);
-		try {
-			int i;
-			String newLine;
-			String s = "";
-			String lines[];
-			String words[] = null;
-			BufferedReader in = new BufferedReader(new FileReader(f));
-
-			// I search the point in which put the placeholder
-			newLine = in.readLine();
-			while (newLine != null) {
-				s = s + "\n" + newLine;
-				newLine = in.readLine();
-			}
-			in.close();
-
-			lines = s.split("\n");
-			for (i = 0; i < lines.length; i++) {
-				if (lines[i].contains(id)) {
-					words = ext.equals("net") ? lines[i].split(" ") : lines[++i].split("-");
-					break;
-				}
-			}
-
-			if (words == null) {
-				System.err.println("ID not found, couldn't put placehoder");
-				return;
-			}
-
-			words[1] = ext.equals("net") ? "@@CORES@@" : "@@CONCURRENCY@@}";
-
-			lines[i] = ext.equals("net") ? String.join(" ", words) : String.join("-", words);
-			s = String.join("\n", lines);
-
-			BufferedWriter out = new BufferedWriter(new FileWriter(f));
-			out.write(s);
-
-			out.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			System.err.println("File: " + f.getAbsolutePath() + " not found!");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	/**

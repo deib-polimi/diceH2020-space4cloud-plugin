@@ -116,8 +116,23 @@ public class DICEWrap {
 					try {
 						buildHadoopAnalyzableModel(c.getAltDtsm().get(alt));
 						generatePNML(String.valueOf(c.getId()), alt);
-						genGSPN();
-						FileManager.editFiles(c.getId(), alt, extractHadoopId());
+						
+						if (Preferences.getSimulator().equals(Preferences.GSPN)){
+							genGSPN();
+							FileManager.editFiles(c.getId(), alt, extractHadoopId());
+						} 
+						else if (Preferences.getSimulator().equals(Preferences.JMT)){
+							genJSIM(c.getId(), alt, extractHadoopId());
+							SparkFileManager.editJSIMG(c.getId(), alt, extractHadoopId());		
+						}
+						
+						// else if dagSim ??? 
+						
+						else {
+							System.err.println("Unknown simulator: " + Preferences.getSimulator());
+							return;
+						}
+										
 						SparkFileManager.createStatFile(extractHadoopId());
 						extractParametersFromHadoopModel(c, alt);
 					} catch (Exception e) {
@@ -132,22 +147,20 @@ public class DICEWrap {
 						buildSparkAnalyzableModel(c.getAltDtsm().get(alt));
 						generatePNML(String.valueOf(c.getId()), alt);
 						
-						String simulator = Preferences.getSimulator();
-						
-						if (simulator.equals(Preferences.DAG_SIM)){
+						if (Preferences.getSimulator().equals(Preferences.DAG_SIM)){
 							System.err.println("Dag Sim not supported yet");	
 							return;
 						}
-						else if (simulator.equals(Preferences.GSPN)){
+						else if (Preferences.getSimulator().equals(Preferences.GSPN)){
 							genGSPN();
 							SparkFileManager.editFiles(c.getId(), alt, extractSparkIds());
 						}
-						else if (simulator.equals(Preferences.JMT)){
-							genJSIM(c.getId(), alt, extractSparkIds());
+						else if (Preferences.getSimulator().equals(Preferences.JMT)){
+							genJSIM(c.getId(), alt, extractSparkIds().getNumberOfConcurrentUsers());
 							SparkFileManager.editJSIMG(c.getId(), alt, extractSparkIds());
 						}
 						else {
-							System.err.println("Unknown simulator: " + simulator);
+							System.err.println("Unknown simulator: " + Preferences.getSimulator());
 							return;
 						}
 						
@@ -354,18 +367,15 @@ public class DICEWrap {
 	 * @throws IOException
 	 */
 	
-	public static void genJSIM(int cdid, String alt, SparkIds sparkIds) throws IOException {
-		String savingDir = Preferences.getSavingDir();
+	public static void genJSIM(int cdid, String alt, String lastTransactionId) throws IOException {
 		Configuration conf = Configuration.getCurrent();
-		String jmtParserPath = Preferences.getJmTPath();
-		String lastTransactionId = sparkIds.getNumberOfConcurrentUsers();
-		File sparkIdx = new File(savingDir + "spark.idx");
+		File sparkIdx = new File(Preferences.getSavingDir() + "spark.idx");
 		String fileName; 
 				
 		if (Configuration.getCurrent().getIsPrivate()) {
-			fileName = savingDir + conf.getID() + "J" + cdid + "inHouse" + alt;
+			fileName = Preferences.getSavingDir() + conf.getID() + "J" + cdid + "inHouse" + alt;
 		} else {
-			fileName = savingDir + conf.getID() + "J" + cdid + alt.replaceAll("-", "");
+			fileName = Preferences.getSavingDir() + conf.getID() + "J" + cdid + alt.replaceAll("-", "");
 		}
 		
 		try {
@@ -384,7 +394,7 @@ public class DICEWrap {
 		
 				
 		String command = String.format("java -cp %sbin:%slib/* PNML_Pre_Processor gspn %s %s %s", 
-									   jmtParserPath, jmtParserPath, pnmlPath, outputPath, indexPath);
+						 Preferences.getJmTPath(), Preferences.getJmTPath(), pnmlPath, outputPath, indexPath);
 		
 		System.out.println("Calling PNML_Pre_Processor");
 		
