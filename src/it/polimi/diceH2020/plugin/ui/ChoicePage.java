@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Text;
 
 import it.polimi.diceH2020.plugin.control.Configuration;
 import it.polimi.diceH2020.plugin.net.NetworkManager;
+import utils.Premium;
 
 /**
  * Initial page. The user can: -choose among private/public solution -select
@@ -58,14 +59,12 @@ public class ChoicePage extends WizardPage {
 	private Button existingLTC, nExistingLTC;
 	private Text rTextField, SpsrTextField;
 	private Composite ltcCompositeText;
-	private boolean canSwitch;
 	private Label errSR;
 
 	protected ChoicePage(String title, String description) {
 		super("Choose service type");
 		setTitle(title);
 		setDescription(description);
-		canSwitch = false;
 	}
 
 	@Override
@@ -107,7 +106,7 @@ public class ChoicePage extends WizardPage {
 		t2.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				Configuration.getCurrent().setTechnology(getTechnology());
-				if(getTechnology().equalsIgnoreCase("Storm")){
+				if (getTechnology().equalsIgnoreCase("Storm")) {
 					pri.setEnabled(false);
 				} else {
 					pri.setEnabled(true);
@@ -179,8 +178,8 @@ public class ChoicePage extends WizardPage {
 
 		Label rTextLabel = new Label(rTextComposite, SWT.NONE);
 		rTextLabel.setText("# reserved");
-		this.rTextField = new Text(rTextComposite, SWT.BORDER);
-		this.rTextField.setEditable(true);
+		rTextField = new Text(rTextComposite, SWT.BORDER);
+		rTextField.setEditable(true);
 
 		Composite tTextComposite = new Composite(ltcCompositeText, SWT.NONE);
 		RowLayout layoutRow_3 = new RowLayout();
@@ -190,8 +189,12 @@ public class ChoicePage extends WizardPage {
 
 		Label tTextLabel = new Label(tTextComposite, SWT.NONE);
 		tTextLabel.setText("Spot ratio");
-		this.SpsrTextField = new Text(tTextComposite, SWT.BORDER);
-		this.SpsrTextField.setEditable(true);
+		SpsrTextField = new Text(tTextComposite, SWT.BORDER);
+		SpsrTextField.setEditable(true);
+		if (!Premium.isPremium()) {
+			tTextLabel.setVisible(false);
+			SpsrTextField.setVisible(false);
+		}
 
 		Composite err = new Composite(ltcCompositeText, SWT.NONE);
 		RowLayout errRow_3 = new RowLayout();
@@ -199,23 +202,22 @@ public class ChoicePage extends WizardPage {
 		errRow_3.pack = false;
 		err.setLayout(errRow_3);
 
-		this.errSR = new Label(err, SWT.BORDER);
+		errSR = new Label(err, SWT.BORDER);
 
 		errSR.setText("Not a valid spot ratio");
 		errSR.setVisible(false);
 
-		this.existingLTC = new Button(ltcComposite, SWT.RADIO);
-		this.existingLTC.setText("Existing LTC");
+		existingLTC = new Button(ltcComposite, SWT.RADIO);
+		existingLTC.setText("Existing LTC");
 
-		this.nExistingLTC = new Button(ltcComposite, SWT.RADIO);
-		this.nExistingLTC.setText("Non existing LTC");
+		nExistingLTC = new Button(ltcComposite, SWT.RADIO);
+		nExistingLTC.setText("Non existing LTC");
 
 		pri.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				getWizard().getContainer().updateButtons();
 				System.out.println("Choice: PRIVATE");
 				ltcCompositeText.setVisible(false);
-				canSwitch = true;
 				ltcComposite.setVisible(false);
 				Configuration.getCurrent().setPrivate(true);
 			}
@@ -233,16 +235,15 @@ public class ChoicePage extends WizardPage {
 			}
 		});
 
-		this.existingLTC.addSelectionListener(new SelectionAdapter() {
+		existingLTC.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				ltcCompositeText.setVisible(true);
-				canSwitch = false;
 				getWizard().getContainer().updateButtons();
 				Configuration.getCurrent().setLTC(true);
 			}
 		});
 
-		this.rTextField.addModifyListener(new ModifyListener() {
+		rTextField.addModifyListener(new ModifyListener() {
 
 			@Override
 			public void modifyText(ModifyEvent arg0) {
@@ -250,30 +251,29 @@ public class ChoicePage extends WizardPage {
 			}
 		});
 
-		this.SpsrTextField.addModifyListener(new ModifyListener() {
+		if (Premium.isPremium()) {
+			SpsrTextField.addModifyListener(new ModifyListener() {
 
-			@Override
-			public void modifyText(ModifyEvent arg0) {
-				try {
-					if (Float.parseFloat(SpsrTextField.getText()) <= 1) {
-						errSR.setVisible(false);
-						canSwitch = true;
-					} else {
-						errSR.setVisible(true);
-						canSwitch = false;
+				@Override
+				public void modifyText(ModifyEvent arg0) {
+					try {
+						if (Float.parseFloat(SpsrTextField.getText()) <= 1) {
+							errSR.setVisible(false);
+						} else {
+							errSR.setVisible(true);
+						}
+					} catch (NumberFormatException e) {
+
 					}
-				} catch (NumberFormatException e) {
-					canSwitch = false;
+
+					getWizard().getContainer().updateButtons();
 				}
+			});
+		}
 
-				getWizard().getContainer().updateButtons();
-			}
-		});
-
-		this.nExistingLTC.addSelectionListener(new SelectionAdapter() {
+		nExistingLTC.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				ltcCompositeText.setVisible(false);
-				canSwitch = true;
 				getWizard().getContainer().updateButtons();
 				Configuration.getCurrent().setLTC(false);
 			}
@@ -283,13 +283,20 @@ public class ChoicePage extends WizardPage {
 		setPageComplete(false);
 	}
 
-	public boolean getChoice() {
-		if (this.ltcCompositeText.getVisible()) {
-			if (!this.rTextField.getText().equals("") && !this.SpsrTextField.getText().equals("")) {
-				return true;
-			} else {
+	private boolean areLtcFieldsValid() {
+		if (ltcCompositeText.getVisible()) {
+			if (rTextField.getText().equals("")) {
 				return false;
 			}
+			try {
+				if (Premium.isPremium()
+						&& (SpsrTextField.getText().equals("") || Float.parseFloat(SpsrTextField.getText()) > 1)) {
+					return false;
+				}
+			} catch (NumberFormatException e) {
+				return false;
+			}
+			return true;
 		}
 		return true;
 	}
@@ -309,8 +316,8 @@ public class ChoicePage extends WizardPage {
 
 	@Override
 	public boolean canFlipToNextPage() {
-		if (this.getChoice() && t2.getSelectionCount() > 0 && (pri.getSelection() || pub.getSelection())
-				&& getClasses() != 0 && canSwitch) {
+		if (areLtcFieldsValid() && t2.getSelectionCount() > 0 && (pri.getSelection() || pub.getSelection())
+				&& getClasses() != 0) {
 			if (getTechnology().equalsIgnoreCase("Storm") && pri.getSelection()) {
 				return false;
 			}
@@ -324,6 +331,11 @@ public class ChoicePage extends WizardPage {
 	}
 
 	public float getSpsr() {
-		return Float.parseFloat(SpsrTextField.getText());
+		if (SpsrTextField.getText().isEmpty()) {
+			return 0;
+		} else {
+			return Float.parseFloat(SpsrTextField.getText());
+		}
+
 	}
 }
