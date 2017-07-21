@@ -98,11 +98,6 @@ public class FileManager {
 		File files[] = folder.listFiles();
 		String outputFilePath;
 		
-		if (Configuration.getCurrent().getIsPrivate()) {
-			outputFilePath = savingDir + conf.getID() + "J" + cdid + "inHouse" + alt;
-		} else {
-			outputFilePath = savingDir + conf.getID() + "J" + cdid + alt.replaceAll("-", "");
-		}
 		File netFile = null;
 		File defFile = null;
 		
@@ -112,6 +107,12 @@ public class FileManager {
 			} else if (f.getName().endsWith(".def")) {
 				defFile = f;
 			}
+		}
+		
+		if (Configuration.getCurrent().getIsPrivate()) {
+			outputFilePath = savingDir + conf.getID() + "J" + cdid + "inHouse" + alt;
+		} else {
+			outputFilePath = savingDir + conf.getID() + "J" + cdid + alt.replaceAll("-", "");
 		}
 		
 		System.out.println("Putting placeholder over " + defFile);

@@ -96,6 +96,7 @@ public class DICEWrap {
 		}
 
 		switch (conf.getTechnology()) {
+		
 		case "Storm":
 			for (ClassDesc c : conf.getClasses()) {
 				for (String alt : c.getAltDtsm().keySet()) {
@@ -110,6 +111,7 @@ public class DICEWrap {
 				}
 			}
 			break;
+			
 		case "Hadoop Map-reduce":
 			for (ClassDesc c : conf.getClasses()) {
 				for (String alt : c.getAltDtsm().keySet())
@@ -126,20 +128,19 @@ public class DICEWrap {
 							SparkFileManager.editJSIMG(c.getId(), alt, extractHadoopId());		
 						}
 						
-						// else if dagSim ??? 
-						
 						else {
 							System.err.println("Unknown simulator: " + Preferences.getSimulator());
 							return;
 						}
 										
-						SparkFileManager.createStatFile(extractHadoopId());
+						SparkFileManager.createStatFile(c.getId(), alt, extractHadoopId());
 						extractParametersFromHadoopModel(c, alt);
 					} catch (Exception e) {
 						System.out.println(e.getMessage());
 					}
 			}
 			break;
+			
 		case "Spark":
 			for (ClassDesc c : conf.getClasses()) {
 				for (String alt : c.getAltDtsm().keySet())
@@ -164,7 +165,7 @@ public class DICEWrap {
 							return;
 						}
 						
-						SparkFileManager.createStatFile(extractSparkIds().getNumberOfConcurrentUsers());
+						SparkFileManager.createStatFile(c.getId(), alt, extractSparkIds().getNumberOfConcurrentUsers());
 						extractParametersFromHadoopModel(c, alt);
 					} catch (Exception e) {
 						System.err.println("SPARK EXCEPTION");
@@ -172,6 +173,7 @@ public class DICEWrap {
 					}
 			}
 			break;
+			
 		default:
 			System.err.println("Unknown technology: " + conf.getTechnology());
 			return;
@@ -412,6 +414,8 @@ public class DICEWrap {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
+		sparkIdx.delete();
 	}
 	
 
