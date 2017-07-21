@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/it.polimi.diceH2020.feature_0.0.1.qualifier.jar" id="it.polimi.diceH2020.feature" version="0.0.1.qualifier">
+      <category name="DSPACE.diceH2020"/>
+   </feature>
+
+   <category-def name="DSPACE.diceH2020" label="DSPACE4Cloud"/>
+</site>
