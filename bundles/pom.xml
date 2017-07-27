@@ -1,17 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>it.polimi</groupId>
-    <artifactId>it.polimi.bundles</artifactId>
+
+    <artifactId>D-SPACE4Cloud-plugin.bundles</artifactId>
     <packaging>pom</packaging>
 
-		<parent>
-        <groupId>D-SPACE4Cloud</groupId>
-        <artifactId>D-SPACE4Cloud.parent</artifactId>
+    <parent>
+        <groupId>it.polimi.diceH2020</groupId>
+        <artifactId>D-SPACE4Cloud-plugin.parent</artifactId>
         <version>0.2.0</version>
     </parent>
 
     <modules>
-        <module>it.polimi.diceH2020</module>
+        <module>it.polimi.diceH2020.D-SPACE4Cloud-plugin</module>
     </modules>
 </project>

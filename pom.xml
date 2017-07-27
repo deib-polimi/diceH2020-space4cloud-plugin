@@ -1,17 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>D-SPACE4Cloud</groupId>
-	<version>0.2.0</version>
-	<artifactId>D-SPACE4Cloud.parent</artifactId>
+
+	<artifactId>D-SPACE4Cloud-plugin.parent</artifactId>
 	<packaging>pom</packaging>
 
-  <parent>
- 	  <groupId>it.polimi</groupId>
-  	<artifactId>it.polimi.configuration</artifactId>
-  	<version>0.2.0</version>
-  	<relativePath>.\releng\it.polimi.configuration</relativePath>
- 	</parent>
+	<parent>
+		<groupId>it.polimi.diceH2020</groupId>
+		<artifactId>D-SPACE4Cloud-plugin.configuration</artifactId>
+		<version>0.2.0</version>
+		<relativePath>./releng/it.polimi.diceH2020.D-SPACE4Cloud-plugin.configuration/pom.xml</relativePath>
+	</parent>
 
 	<properties>
 		<xtextVersion>2.10.0</xtextVersion>
@@ -22,8 +21,8 @@
 
 	<modules>
 		<module>bundles</module>
-    <module>features</module>
-    <module>releng</module>
+		<module>features</module>
+		<module>releng</module>
 	</modules>
 
 	<repositories>
@@ -39,6 +38,7 @@
 			</snapshots>
 		</repository>
 	</repositories>
+
 	<pluginRepositories>
 		<pluginRepository>
 			<id>codehaus-snapshots</id>
