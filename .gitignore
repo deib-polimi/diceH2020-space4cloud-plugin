@@ -3,10 +3,11 @@ target/
 .metadata
 .settings/
 /bin/
-*.zip
-**/*.log
+*.log
 .java-version
 pom.xml.*
 .DS_Store
 .project
 *.xtendbin
+.idea/
+*.iml
