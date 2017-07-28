@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import it.polimi.diceH2020.plugin.control.Configuration;
+import it.polimi.diceH2020.plugin.preferences.Preferences;
 
 public class HadoopDataPage extends WizardPage {
 	private Composite container;
@@ -43,6 +44,7 @@ public class HadoopDataPage extends WizardPage {
 	private Map<String, String> hadoopParUD;
 	private double hadoopD;
 	private Text thinkTextField, hlowTextField, hupTextField, hadoopDTextField, penaltyTextField;
+	private Configuration conf = Configuration.getCurrent();
 
 	protected HadoopDataPage(String pageName) {
 		super("Select data for hadoop Technology");
@@ -69,24 +71,34 @@ public class HadoopDataPage extends WizardPage {
 		Label l1 = new Label(container, SWT.None);
 		l1.setText("Set Think Time");
 		this.thinkTextField = new Text(container, SWT.BORDER);
-		thinkTextField.setEditable(true);
-
-		thinkTextField.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent arg0) {
-				try {
-					thinkTime = Integer.parseInt(thinkTextField.getText());
-					hadoopParUD.put("think", thinkTextField.getText());
-				} catch (NumberFormatException e) {
-
+		
+		if (Preferences.getSimulator().equals(Preferences.JMT)){
+			thinkTextField.setEditable(false);
+			thinkTextField.setText("0");
+			hadoopParUD.put("think", "0");
+			conf.setThinkTime(0);	
+		}
+		else {
+			thinkTextField.setEditable(true);
+			thinkTextField.addModifyListener(new ModifyListener() {
+				@Override
+				public void modifyText(ModifyEvent arg0) {
+					try {
+						thinkTime = Integer.parseInt(thinkTextField.getText());
+						hadoopParUD.put("think", thinkTextField.getText());
+						conf.setThinkTime(thinkTime);
+					} catch (NumberFormatException e) {
+	
+					}
+					getWizard().getContainer().updateButtons();
 				}
-				getWizard().getContainer().updateButtons();
-			}
-		});
+			});
+		}
 
 		Label l2 = new Label(container, SWT.None);
 		l2.setText("Set deadline");
 		this.hadoopDTextField = new Text(container, SWT.BORDER);
+		
 		hadoopDTextField.setEditable(true);
 		hadoopDTextField.addModifyListener(new ModifyListener() {
 
@@ -95,6 +107,7 @@ public class HadoopDataPage extends WizardPage {
 				try {
 					hadoopD = Double.parseDouble(hadoopDTextField.getText());
 					hadoopParUD.put("d", hadoopDTextField.getText());
+					conf.setHadoopD(hadoopD);
 				} catch (NumberFormatException e) {
 
 				}
@@ -105,37 +118,60 @@ public class HadoopDataPage extends WizardPage {
 		Label l3 = new Label(container, SWT.None);
 		l3.setText("Set minimum level of concurrency");
 		hlowTextField = new Text(container, SWT.BORDER);
-		hlowTextField.setEditable(true);
-		hlowTextField.addModifyListener(new ModifyListener() {
-
-			@Override
-			public void modifyText(ModifyEvent arg0) {
-				try {
-					hlow = Integer.parseInt(hlowTextField.getText());
-					hadoopParUD.put("hlow", hlowTextField.getText());
-				} catch (NumberFormatException e) {
-
+		
+		if (Preferences.getSimulator().equals(Preferences.JMT)){
+			hlowTextField.setEditable(false);
+			hlowTextField.setText("1");
+			hadoopParUD.put("hlow", "1");
+			conf.setHlow(1);	
+		}
+		
+		else {
+			hlowTextField.setEditable(true);
+			hlowTextField.addModifyListener(new ModifyListener() {
+	
+				@Override
+				public void modifyText(ModifyEvent arg0) {
+					try {
+						hlow = Integer.parseInt(hlowTextField.getText());
+						hadoopParUD.put("hlow", hlowTextField.getText());
+						conf.setHlow(hlow);
+						
+					} catch (NumberFormatException e) {
+	
+					}
+					getWizard().getContainer().updateButtons();
 				}
-				getWizard().getContainer().updateButtons();
-			}
-		});
+			});
+		}
 
 		Label l4 = new Label(container, SWT.None);
 		l4.setText("Set maximum level of concurrency");
 		hupTextField = new Text(container, SWT.BORDER);
-		hupTextField.setEditable(true);
-		hupTextField.addModifyListener(new ModifyListener() {
-
-			@Override
-			public void modifyText(ModifyEvent arg0) {
-				try {
-					hup = Integer.parseInt(hupTextField.getText());
-					hadoopParUD.put("hup", hupTextField.getText());
-				} catch (NumberFormatException e) {
+		
+		if (Preferences.getSimulator().equals(Preferences.JMT)){
+			hupTextField.setEditable(false);
+			hupTextField.setText("1");
+			hadoopParUD.put("hup", "1");
+			conf.setHup(1);	
+		}
+		
+		else {
+			hupTextField.setEditable(true);
+			hupTextField.addModifyListener(new ModifyListener() {
+	
+				@Override
+				public void modifyText(ModifyEvent arg0) {
+					try {
+						hup = Integer.parseInt(hupTextField.getText());
+						hadoopParUD.put("hup", hupTextField.getText());
+						conf.setHup(hup);
+					} catch (NumberFormatException e) {
+					}
+					getWizard().getContainer().updateButtons();
 				}
-				getWizard().getContainer().updateButtons();
-			}
-		});
+			});
+		}
 
 		l5 = new Label(container, SWT.None);
 		l5.setText("Set job penalty cost");
@@ -160,7 +196,7 @@ public class HadoopDataPage extends WizardPage {
 
 	@Override
 	public boolean canFlipToNextPage() {
-		if (hadoopD != -1 && thinkTime != -1 && hlow != -1 && hup != -1) {
+		if ((hadoopD != -1 && thinkTime != -1 && hlow != -1 && hup != -1) || (hadoopD != -1 && Preferences.getSimulator().equals(Preferences.JMT))){
 			if (Configuration.getCurrent().getIsPrivate() && penalty == -1) {
 				return false;
 			}

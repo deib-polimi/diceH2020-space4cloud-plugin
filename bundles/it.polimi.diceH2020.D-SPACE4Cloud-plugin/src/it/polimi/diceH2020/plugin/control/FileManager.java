@@ -115,8 +115,13 @@ public class FileManager {
 			outputFilePath = savingDir + conf.getID() + "J" + cdid + alt.replaceAll("-", "");
 		}
 		
+		String hup = String.valueOf(Configuration.getCurrent().getHup());
+		
 		System.out.println("Putting placeholder over " + defFile);
+		SparkFileManager.putPlaceHolder("Ra{1-", "@@CORES@@", defFile);
 		SparkFileManager.putPlaceHolder("sa{1-", "@@CONCURRENCY@@", defFile);
+		SparkFileManager.putPlaceHolder("ia{1-", hup, defFile);
+		
 		
 		System.out.println("Putting placeholder over " + netFile);
 		SparkFileManager.putPlaceHolder(hadoopId, "@@CORES@@", netFile);
@@ -260,10 +265,14 @@ public class FileManager {
 		if (conf.getTechnology().contains("Hadoop Map-reduce") || conf.getTechnology().contains("Spark")) {
 			for (ClassDesc c : conf.getClasses()) {
 				ClassParameters clpm = ClassParametersGenerator.build(c.getHadoopParUD().size());
+				
 				clpm.setD(Double.parseDouble(c.getHadoopParUD().get("d")));
 				clpm.setHlow(Integer.parseInt(c.getHadoopParUD().get("hlow")));
 				clpm.setHup(Integer.parseInt(c.getHadoopParUD().get("hup")));
 				clpm.setThink(Double.parseDouble(c.getHadoopParUD().get("think")));
+				clpm.setM(0.0);
+				clpm.setV(1.0);
+				
 				if (Configuration.getCurrent().getIsPrivate()) {
 					clpm.setPenalty(Double.parseDouble(c.getHadoopParUD().get("penalty")));
 				}
