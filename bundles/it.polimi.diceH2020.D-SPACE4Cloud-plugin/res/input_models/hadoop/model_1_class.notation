@@ -244,6 +244,14 @@
               <element xmi:type="uml:Comment" href="model_1_class.uml#_EWHQIDliEeaE4deiM0Jlvg"/>
               <layoutConstraint xmi:type="notation:Bounds" xmi:id="_EWg4wTliEeaE4deiM0Jlvg" x="17" y="124"/>
             </children>
+            <children xmi:type="notation:Shape" xmi:id="_J78yQGrGEee184JRs8ZCnA" type="StereotypeComment">
+              <styles xmi:type="notation:TitleStyle" xmi:id="_J78yQWrGEee184JRs8ZCnA"/>
+              <styles xmi:type="notation:EObjectValueStyle" xmi:id="_J79ZUGrGEee184JRs8ZCnA" name="BASE_ELEMENT">
+                <eObjectValue xmi:type="uml:OpaqueAction" href="model_1_class.uml#_uZmhEDlXEeaE4deiM0Jlvg"/>
+              </styles>
+              <element xsi:nil="true"/>
+              <layoutConstraint xmi:type="notation:Bounds" xmi:id="_J78yQmrGEee184JRs8ZCnA" x="245" y="56"/>
+            </children>
             <element xmi:type="uml:ActivityPartition" href="model_1_class.uml#_qYQqMDllEeaE4deiM0Jlvg"/>
             <layoutConstraint xmi:type="notation:Bounds" xmi:id="_qYlaUTllEeaE4deiM0Jlvg"/>
           </children>
@@ -386,6 +394,16 @@
       <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_z3wK0jliEeaE4deiM0Jlvg" points="[2, -16, -12, 51]$[10, -59, -4, 8]"/>
       <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_z4r-8DliEeaE4deiM0Jlvg" id="(0.11734693877551021,0.0)"/>
       <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_z4smADliEeaE4deiM0Jlvg" id="(0.2,1.0)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_J7-AYGrGEee184JRs8ZCnA" type="StereotypeCommentLink" source="_uZ2YsDlXEeaE4deiM0Jlvg" target="_J78yQGrGEee184JRs8ZCnA">
+      <styles xmi:type="notation:FontStyle" xmi:id="_J7-AYWrGEee184JRs8ZCnA"/>
+      <styles xmi:type="notation:EObjectValueStyle" xmi:id="_J8EHAmrGEee184JRs8ZCnA" name="BASE_ELEMENT">
+        <eObjectValue xmi:type="uml:OpaqueAction" href="model_1_class.uml#_uZmhEDlXEeaE4deiM0Jlvg"/>
+      </styles>
+      <element xsi:nil="true"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_J7-AYmrGEee184JRs8ZCnA" points="[0, 0, 0, 0]$[0, 0, 0, 0]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_J8EHAGrGEee184JRs8ZCnA"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_J8EHAWrGEee184JRs8ZCnA"/>
     </edges>
   </notation:Diagram>
   <notation:Diagram xmi:id="_KNlH4DlkEeaE4deiM0Jlvg" type="PapyrusUMLDeploymentDiagram" name="Deployment" measurementUnit="Pixel">

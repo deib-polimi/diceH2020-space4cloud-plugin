@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xmi:XMI xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:GQAM="http://www.eclipse.org/papyrus/GQAM/1" xmlns:Spark="http://es.unizar.disco.dice/profiles/DTSM/Spark/1.0" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xsi:schemaLocation="http://www.eclipse.org/papyrus/GQAM/1 http://www.eclipse.org/papyrus/MARTE/1#//GQAM http://es.unizar.disco.dice/profiles/DTSM/Spark/1.0 http://es.unizar.disco.dice/profiles/DICE/1.0#//Spark">
-  <uml:Model xmi:id="_RSOiQDlXEeaE4deiM0Jlvg" name="RootElement">
+  <uml:Model xmi:id="_RSOiQDlXEeaE4deiM0Jlvg" name="RootElement" visibility="package">
     <ownedComment xmi:type="uml:Comment" xmi:id="_ep4M8DlkEeaE4deiM0Jlvg" annotatedElement="_LGzO4DlkEeaE4deiM0Jlvg">
       <body>{nCores=[$nP1];
 nMemory=[$nM1]}</body>
@@ -148,9 +148,9 @@ nMemory=[$nM1]}</body>
     <context>out$UNode</context>
     <context>out$USpark</context>
   </GQAM:GaAnalysisContext>
-  <Spark:SparkWorkloadEvent xmi:id="_xAw4AAMzEeec2YL9FlAkDw" pattern="" base_NamedElement="_p15FUDlXEeaE4deiM0Jlvg" sparkPopulation="100" sparkExtDelay="(expr=5,unit=ms,statQ=mean,source=est)"/>
-  <Spark:SparkReduce xmi:id="_zhtKwAMzEeec2YL9FlAkDw" base_NamedElement="_vVW-sDlXEeaE4deiM0Jlvg" base_Action="_vVW-sDlXEeaE4deiM0Jlvg" OpType="Action">
-    <hostDemand>(expr=7,unit=ms,statQ=mean,source=est)</hostDemand>
+  <Spark:SparkWorkloadEvent xmi:id="_xAw4AAMzEeec2YL9FlAkDw" pattern="" base_NamedElement="_p15FUDlXEeaE4deiM0Jlvg" sparkPopulation="100" sparkExtDelay="(expr=0,unit=ms,statQ=mean,source=est)&#xA;&#xA;"/>
+  <Spark:SparkReduce xmi:id="_zhtKwAMzEeec2YL9FlAkDw" base_NamedElement="_vVW-sDlXEeaE4deiM0Jlvg" base_Action="_vVW-sDlXEeaE4deiM0Jlvg" numTasks="5&#xA;" OpType="Action">
+    <hostDemand>(expr=5000,unit=ms,statQ=mean,source=est)</hostDemand>
   </Spark:SparkReduce>
   <Spark:SparkScenario xmi:id="_0_4Y8AMzEeec2YL9FlAkDw" base_NamedElement="_WuYo8DlXEeaE4deiM0Jlvg" usedResources="_6kBW8AMzEeec2YL9FlAkDw" base_Behavior="_WuYo8DlXEeaE4deiM0Jlvg" nAssignedCores="5" nAssignedMemory="6" sparkDefaultParallelism="7">
     <throughput>(expr=$T,unit=s,statQ=mean,source=calc)</throughput>
@@ -160,7 +160,7 @@ nMemory=[$nM1]}</body>
   <Spark:SparkNode xmi:id="_6kBW8AMzEeec2YL9FlAkDw" base_Classifier="_LGzO4DlkEeaE4deiM0Jlvg" base_NamedElement="_LGzO4DlkEeaE4deiM0Jlvg" nCores="7" Memory="6">
     <utilization>(expr=$UNode,statQ=mean,source=calc)</utilization>
   </Spark:SparkNode>
-  <Spark:SparkMap xmi:id="_aNzKoANAEeeSnsiFmFrbqA" base_NamedElement="_uZmhEDlXEeaE4deiM0Jlvg" base_Action="_uZmhEDlXEeaE4deiM0Jlvg">
-    <hostDemand>(expr=10,unit=ms,statQ=mean,source=est)</hostDemand>
+  <Spark:SparkMap xmi:id="_aNzKoANAEeeSnsiFmFrbqA" base_NamedElement="_uZmhEDlXEeaE4deiM0Jlvg" base_Action="_uZmhEDlXEeaE4deiM0Jlvg" blockT="" numTasks="5">
+    <hostDemand>(expr=5000,unit=ms,statQ=mean,source=est)</hostDemand>
   </Spark:SparkMap>
 </xmi:XMI>
