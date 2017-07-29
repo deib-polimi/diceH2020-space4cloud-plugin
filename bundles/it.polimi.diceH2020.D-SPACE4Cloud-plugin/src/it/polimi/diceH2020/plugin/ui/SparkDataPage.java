@@ -71,32 +71,11 @@ public class SparkDataPage extends WizardPage {
         Label l1 = new Label(container, SWT.None);
         l1.setText("Set Think Time");
         this.thinkTextField = new Text(container, SWT.BORDER);
+        thinkTextField.setEditable(false);
+        thinkTextField.setText("0");
+        hadoopParUD.put("think", "1");
+        conf.setThinkTime(1);
 
-        if (Preferences.getSimulator().equals(Preferences.JMT)){
-            thinkTextField.setEditable(false);
-            thinkTextField.setText("0");
-            hadoopParUD.put("think", "0");
-            conf.setThinkTime(0);
-        }
-
-        else {
-
-            thinkTextField.setEditable(true);
-            thinkTextField.addModifyListener(new ModifyListener() {
-                    @Override
-                    public void modifyText(ModifyEvent arg0) {
-                        try {
-                            thinkTime = Integer.parseInt(thinkTextField.getText());
-                            hadoopParUD.put("think", thinkTextField.getText());
-                            conf.setThinkTime(thinkTime);
-
-                        } catch (NumberFormatException e) {
-
-                        }
-                        getWizard().getContainer().updateButtons();
-                    }
-                });
-        }
 
         Label l2 = new Label(container, SWT.None);
         l2.setText("Set deadline");
@@ -121,59 +100,20 @@ public class SparkDataPage extends WizardPage {
         l3.setText("Set minimum level of concurrency");
         hlowTextField = new Text(container, SWT.BORDER);
 
-        if (Preferences.getSimulator().equals(Preferences.JMT)){
-            hlowTextField.setEditable(false);
-            hlowTextField.setText("1");
-            hadoopParUD.put("hlow", "1");
-            conf.setHlow(1);
-        }
-
-        else {
-
-            hlowTextField.setEditable(true);
-            hlowTextField.addModifyListener(new ModifyListener() {
-
-                    @Override
-                    public void modifyText(ModifyEvent arg0) {
-                        try {
-                            hlow = Integer.parseInt(hlowTextField.getText());
-                            hadoopParUD.put("hlow", hlowTextField.getText());
-                            conf.setHlow(hlow);
-                        } catch (NumberFormatException e) {
-
-                        }
-                        getWizard().getContainer().updateButtons();
-                    }
-                });
-        }
+        hlowTextField.setEditable(false);
+        hlowTextField.setText("1");
+        hadoopParUD.put("hlow", "1");
+        conf.setHlow(1);
 
         Label l4 = new Label(container, SWT.None);
         l4.setText("Set maximum level of concurrency");
         hupTextField = new Text(container, SWT.BORDER);
 
-        if (Preferences.getSimulator().equals(Preferences.JMT)){
-            hupTextField.setEditable(false);
-            hupTextField.setText("1");
-            hadoopParUD.put("hup", "1");
-            conf.setHup(1);
-        }
+        hupTextField.setEditable(false);
+        hupTextField.setText("1");
+        hadoopParUD.put("hup", "1");
+        conf.setHup(1);
 
-        else {
-            hupTextField.setEditable(true);
-            hupTextField.addModifyListener(new ModifyListener() {
-
-                    @Override
-                    public void modifyText(ModifyEvent arg0) {
-                        try {
-                            hup = Integer.parseInt(hupTextField.getText());
-                            hadoopParUD.put("hup", hupTextField.getText());
-                            conf.setHup(hup);
-                        } catch (NumberFormatException e) {
-                        }
-                        getWizard().getContainer().updateButtons();
-                    }
-                });
-        }
 
         l5 = new Label(container, SWT.None);
         l5.setText("Set job penalty cost");
@@ -198,7 +138,7 @@ public class SparkDataPage extends WizardPage {
 
     @Override
     public boolean canFlipToNextPage() {
-        if ((hadoopD != -1 && thinkTime != -1 && hlow != -1 && hup != -1) || (hadoopD != -1 && Preferences.getSimulator().equals(Preferences.JMT))) {
+        if (hadoopD != -1 ){
             if (Configuration.getCurrent().getIsPrivate() && penalty == -1) {
                 return false;
             }

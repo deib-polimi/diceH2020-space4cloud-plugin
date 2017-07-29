@@ -72,13 +72,6 @@ public class HadoopDataPage extends WizardPage {
 		l1.setText("Set Think Time");
 		this.thinkTextField = new Text(container, SWT.BORDER);
 		
-		if (Preferences.getSimulator().equals(Preferences.JMT)){
-			thinkTextField.setEditable(false);
-			thinkTextField.setText("0");
-			hadoopParUD.put("think", "0");
-			conf.setThinkTime(0);	
-		}
-		else {
 			thinkTextField.setEditable(true);
 			thinkTextField.addModifyListener(new ModifyListener() {
 				@Override
@@ -93,7 +86,6 @@ public class HadoopDataPage extends WizardPage {
 					getWizard().getContainer().updateButtons();
 				}
 			});
-		}
 
 		Label l2 = new Label(container, SWT.None);
 		l2.setText("Set deadline");
@@ -119,14 +111,7 @@ public class HadoopDataPage extends WizardPage {
 		l3.setText("Set minimum level of concurrency");
 		hlowTextField = new Text(container, SWT.BORDER);
 		
-		if (Preferences.getSimulator().equals(Preferences.JMT)){
-			hlowTextField.setEditable(false);
-			hlowTextField.setText("1");
-			hadoopParUD.put("hlow", "1");
-			conf.setHlow(1);	
-		}
-		
-		else {
+
 			hlowTextField.setEditable(true);
 			hlowTextField.addModifyListener(new ModifyListener() {
 	
@@ -143,20 +128,13 @@ public class HadoopDataPage extends WizardPage {
 					getWizard().getContainer().updateButtons();
 				}
 			});
-		}
+
 
 		Label l4 = new Label(container, SWT.None);
 		l4.setText("Set maximum level of concurrency");
 		hupTextField = new Text(container, SWT.BORDER);
 		
-		if (Preferences.getSimulator().equals(Preferences.JMT)){
-			hupTextField.setEditable(false);
-			hupTextField.setText("1");
-			hadoopParUD.put("hup", "1");
-			conf.setHup(1);	
-		}
 		
-		else {
 			hupTextField.setEditable(true);
 			hupTextField.addModifyListener(new ModifyListener() {
 	
@@ -171,7 +149,6 @@ public class HadoopDataPage extends WizardPage {
 					getWizard().getContainer().updateButtons();
 				}
 			});
-		}
 
 		l5 = new Label(container, SWT.None);
 		l5.setText("Set job penalty cost");
@@ -196,7 +173,7 @@ public class HadoopDataPage extends WizardPage {
 
 	@Override
 	public boolean canFlipToNextPage() {
-		if ((hadoopD != -1 && thinkTime != -1 && hlow != -1 && hup != -1) || (hadoopD != -1 && Preferences.getSimulator().equals(Preferences.JMT))){
+		if (hadoopD != -1 && thinkTime != -1 && hlow != -1 && hup != -1){
 			if (Configuration.getCurrent().getIsPrivate() && penalty == -1) {
 				return false;
 			}

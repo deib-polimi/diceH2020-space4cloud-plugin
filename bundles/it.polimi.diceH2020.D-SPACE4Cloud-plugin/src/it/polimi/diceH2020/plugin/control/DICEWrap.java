@@ -155,6 +155,8 @@ public class DICEWrap {
 						else if (Preferences.getSimulator().equals(Preferences.GSPN)){
 							genGSPN();
 							SparkFileManager.editFiles(c.getId(), alt, extractSparkIds());
+							Thread.sleep(5000);
+							
 						}
 						else if (Preferences.getSimulator().equals(Preferences.JMT)){
 							genJSIM(c.getId(), alt, extractSparkIds().getNumberOfConcurrentUsers());
@@ -390,7 +392,7 @@ public class DICEWrap {
 			e.printStackTrace();
 		}
 		
-		String pnmlPath = fileName+".pnml";
+		String pnmlPath = Preferences.getSavingDir() + conf.getID() + "J" + cdid + alt.replaceAll("-", "") + ".pnml";
 		String outputPath = new File(fileName + ".jsimg").getAbsolutePath();
 		String indexPath = sparkIdx.getAbsolutePath();
 		
@@ -399,6 +401,7 @@ public class DICEWrap {
 						 Preferences.getJmTPath(), Preferences.getJmTPath(), pnmlPath, outputPath, indexPath);
 		
 		System.out.println("Calling PNML_Pre_Processor");
+		System.out.println(command);
 		
 		Process proc;
 
@@ -415,7 +418,6 @@ public class DICEWrap {
 			e.printStackTrace();
 		}
 		
-		sparkIdx.delete();
 	}
 	
 
