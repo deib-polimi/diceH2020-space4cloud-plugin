@@ -4,16 +4,15 @@
 
 	<groupId>it.polimi.diceH2020</groupId>
 	<artifactId>D-SPACE4Cloud-plugin.configuration</artifactId>
-	<version>0.2.1</version>
+	<version>0.2.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
-		<tycho.version>0.25.0</tycho.version>
+		<tycho.version>1.0.0</tycho.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<dice-profiles.url>http://dice-project.github.io/DICE-Profiles/updates</dice-profiles.url>
 		<pnml.url>http://pnml.lip6.fr/pnmlframework/updatesite/2.2.12/</pnml.url>
 		<neon-repo.url>http://download.eclipse.org/releases/neon</neon-repo.url>
-		<project.version>0.1.0</project.version>
 		<orbit.url>http://download.eclipse.org/tools/orbit/R-builds/R20170307180635/repository</orbit.url>
 		<eclipse-updates.url>http://download.eclipse.org/eclipse/updates/4.6</eclipse-updates.url>
 		<papyrus.url>http://download.eclipse.org/modeling/mdt/papyrus/updates/releases/neon/</papyrus.url>

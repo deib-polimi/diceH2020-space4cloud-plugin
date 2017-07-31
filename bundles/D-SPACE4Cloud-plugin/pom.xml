@@ -1,0 +1,112 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>it.polimi.diceH2020.D-SPACE4Cloud-plugin</artifactId>
+    <packaging>eclipse-plugin</packaging>
+
+    <parent>
+        <groupId>it.polimi.diceH2020</groupId>
+        <artifactId>D-SPACE4Cloud-plugin.parent</artifactId>
+        <version>0.2.1-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <properties>
+        <SPACE4Cloud-shared.version>0.2.11-SNAPSHOT</SPACE4Cloud-shared.version>
+        <json-simple.version>1.1.1</json-simple.version>
+        <httpmime.version>4.5.2</httpmime.version>
+        <jackson-datatype-jdk8.version>2.8.5</jackson-datatype-jdk8.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>${json-simple.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>${httpmime.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jdk8</artifactId>
+            <version>${jackson-datatype-jdk8.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>it.polimi.diceH2020</groupId>
+            <artifactId>SPACE4Cloud-shared</artifactId>
+            <version>${SPACE4Cloud-shared.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-compiler-plugin</artifactId>
+                <version>${tycho.version}</version>
+                <configuration>
+                    <useProjectSettings>false</useProjectSettings>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <artifactItems>
+                        <artifactItem>
+                            <groupId>com.googlecode.json-simple</groupId>
+                            <artifactId>json-simple</artifactId>
+                            <version>${json-simple.version}</version>
+                        </artifactItem>
+                        <artifactItem>
+                            <groupId>org.apache.httpcomponents</groupId>
+                            <artifactId>httpmime</artifactId>
+                            <version>${httpmime.version}</version>
+                        </artifactItem>
+                        <artifactItem>
+                            <groupId>com.fasterxml.jackson.datatype</groupId>
+                            <artifactId>jackson-datatype-jdk8</artifactId>
+                            <version>${jackson-datatype-jdk8.version}</version>
+                        </artifactItem>
+                        <artifactItem>
+                            <groupId>it.polimi.diceH2020</groupId>
+                            <artifactId>SPACE4Cloud-shared</artifactId>
+                            <version>${SPACE4Cloud-shared.version}</version>
+                        </artifactItem>
+                    </artifactItems>
+                    <outputDirectory>imported_packages</outputDirectory>
+                    <stripVersion>true</stripVersion>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>imported_packages</directory>
+                            <followSymlinks>false</followSymlinks>
+                            <useDefaultExcludes>true</useDefaultExcludes>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
