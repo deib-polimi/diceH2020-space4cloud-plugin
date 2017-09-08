@@ -14,7 +14,7 @@ respT=(expr=$RT,statQ=mean,source=calc)}</body>
       </ownedComment>
       <ownedComment xmi:type="uml:Comment" xmi:id="_ol2_0DliEeaE4deiM0Jlvg" annotatedElement="_p15FUDlXEeaE4deiM0Jlvg">
         <body>{hadoopPopulation=[5];
-hadoopExtDelay=[10000]}</body>
+ hadoopExtDelay=[5]}</body>
       </ownedComment>
       <edge xmi:type="uml:ControlFlow" xmi:id="_zfomwDlXEeaE4deiM0Jlvg" target="_uZmhEDlXEeaE4deiM0Jlvg" source="_p15FUDlXEeaE4deiM0Jlvg"/>
       <edge xmi:type="uml:ControlFlow" xmi:id="_0K38IDlXEeaE4deiM0Jlvg" target="_vVW-sDlXEeaE4deiM0Jlvg" source="_uZmhEDlXEeaE4deiM0Jlvg"/>
@@ -22,13 +22,13 @@ hadoopExtDelay=[10000]}</body>
       <group xmi:type="uml:ActivityPartition" xmi:id="_VYd2gDllEeaE4deiM0Jlvg" name="Reducer" node="_vVW-sDlXEeaE4deiM0Jlvg" represents="_EPQdYDlmEeaE4deiM0Jlvg">
         <ownedComment xmi:type="uml:Comment" xmi:id="_XVttsDliEeaE4deiM0Jlvg" annotatedElement="_vVW-sDlXEeaE4deiM0Jlvg">
           <body>{nTasks=[10];
-hostDemand=[(expr=8000,unit=ms,statQ=mean,source=est)]}</body>
+ hostDemand=[(expr=5,unit=ms,statQ=mean,source=est)]}</body>
         </ownedComment>
       </group>
       <group xmi:type="uml:ActivityPartition" xmi:id="_qYQqMDllEeaE4deiM0Jlvg" name="Mapper" node="_uZmhEDlXEeaE4deiM0Jlvg" represents="_DTxskDlmEeaE4deiM0Jlvg">
         <ownedComment xmi:type="uml:Comment" xmi:id="_EWHQIDliEeaE4deiM0Jlvg" annotatedElement="_uZmhEDlXEeaE4deiM0Jlvg">
           <body>{nTasks=[5];
- hostDemand=[(expr=5000,unit=ms,statQ=mean,source=est)]}</body>
+ hostDemand=[(expr=5,unit=ms,statQ=mean,source=est)]}</body>
         </ownedComment>
       </group>
       <node xmi:type="uml:InitialNode" xmi:id="_p15FUDlXEeaE4deiM0Jlvg" name="start" outgoing="_zfomwDlXEeaE4deiM0Jlvg"/>
@@ -151,7 +151,7 @@ hostDemand=[(expr=8000,unit=ms,statQ=mean,source=est)]}</body>
   </uml:Model>
   <Hadoop:HadoopOperation xmi:id="_-VVlADlXEeaE4deiM0Jlvg" base_NamedElement="_uZmhEDlXEeaE4deiM0Jlvg" base_Action="_uZmhEDlXEeaE4deiM0Jlvg" blockT="">
     <hostDemand>(expr=5000,unit=ms,statQ=mean,source=est)</hostDemand>
-    <nTasks>5</nTasks>
+    <nTasks>4</nTasks>
   </Hadoop:HadoopOperation>
   <Hadoop:HadoopWorkloadEvent xmi:id="_CdyoIDlYEeaE4deiM0Jlvg" base_NamedElement="_p15FUDlXEeaE4deiM0Jlvg">
     <hadoopPopulation>5</hadoopPopulation>
@@ -159,10 +159,10 @@ hostDemand=[(expr=8000,unit=ms,statQ=mean,source=est)]}</body>
   </Hadoop:HadoopWorkloadEvent>
   <Hadoop:HadoopOperation xmi:id="_-5CVsDlcEeaE4deiM0Jlvg" base_NamedElement="_vVW-sDlXEeaE4deiM0Jlvg" base_Action="_vVW-sDlXEeaE4deiM0Jlvg">
     <hostDemand>(expr=5000,unit=ms,statQ=mean,source=est)</hostDemand>
-    <nTasks>10</nTasks>
+    <nTasks>8</nTasks>
   </Hadoop:HadoopOperation>
   <Hadoop:HadoopComputationNode xmi:id="_S0M_cDlkEeaE4deiM0Jlvg" base_Classifier="_LGzO4DlkEeaE4deiM0Jlvg">
-    <nCores>5</nCores>
+    <nCores>4</nCores>
   </Hadoop:HadoopComputationNode>
   <GQAM:GaAnalysisContext xmi:id="_5a5ckDldEeaE4deiM0Jlvg" base_StructuredClassifier="_WuYo8DlXEeaE4deiM0Jlvg" base_NamedElement="_WuYo8DlXEeaE4deiM0Jlvg">
     <context>5</context>
