@@ -2,7 +2,7 @@
 <feature
         id="it.polimi.diceH2020.D-SPACE4Cloud-plugin.features.feature"
         label="DSPACE4Cloud"
-        version="0.2.1.qualifier">
+        version="0.2.1">
 
    <description>
       This feature adds a launch configuration for the D-SPACE4Cloud-plugin
