@@ -18,9 +18,18 @@
 		<eclipse-updates.url>http://download.eclipse.org/eclipse/updates/4.6</eclipse-updates.url>
 		<papyrus.url>http://download.eclipse.org/modeling/mdt/papyrus/updates/releases/neon/</papyrus.url>
 		<dice-simulation.url>http://dice-project.github.io/DICE-Simulation/updates</dice-simulation.url>
+		<deib-polimi.mvn>https://github.com/deib-polimi/deib-polimi-mvn-repo/raw/master</deib-polimi.mvn>
 	</properties>
 
 	<repositories>
+		<repository>
+			<id>deib-polimi-releases</id>
+			<url>${deib-polimi.mvn}/releases</url>
+		</repository>
+		<repository>
+			<id>deib-polimi-snapshots</id>
+			<url>${deib-polimi.mvn}/snapshots</url>
+		</repository>
 		<repository>
 			<id>eclipse-updates</id>
 			<layout>p2</layout>
