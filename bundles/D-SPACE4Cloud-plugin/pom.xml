@@ -16,7 +16,7 @@
         <SPACE4Cloud-shared.version>0.3.1-SNAPSHOT</SPACE4Cloud-shared.version>
         <json-simple.version>1.1.1</json-simple.version>
         <httpmime.version>4.5.2</httpmime.version>
-        <jackson-datatype-jdk8.version>2.8.5</jackson-datatype-jdk8.version>
+        <jackson.version>2.8.5</jackson.version>
     </properties>
 
     <dependencies>
@@ -31,9 +31,24 @@
             <version>${httpmime.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jdk8</artifactId>
-            <version>${jackson-datatype-jdk8.version}</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>it.polimi.diceH2020</groupId>
@@ -79,9 +94,24 @@
                             <version>${httpmime.version}</version>
                         </artifactItem>
                         <artifactItem>
+                            <groupId>com.fasterxml.jackson.core</groupId>
+                            <artifactId>jackson-core</artifactId>
+                            <version>${jackson.version}</version>
+                        </artifactItem>
+                        <artifactItem>
+                            <groupId>com.fasterxml.jackson.core</groupId>
+                            <artifactId>jackson-databind</artifactId>
+                            <version>${jackson.version}</version>
+                        </artifactItem>
+                        <artifactItem>
+                            <groupId>com.fasterxml.jackson.core</groupId>
+                            <artifactId>jackson-annotations</artifactId>
+                            <version>${jackson.version}</version>
+                        </artifactItem>
+                        <artifactItem>
                             <groupId>com.fasterxml.jackson.datatype</groupId>
                             <artifactId>jackson-datatype-jdk8</artifactId>
-                            <version>${jackson-datatype-jdk8.version}</version>
+                            <version>${jackson.version}</version>
                         </artifactItem>
                         <artifactItem>
                             <groupId>it.polimi.diceH2020</groupId>
