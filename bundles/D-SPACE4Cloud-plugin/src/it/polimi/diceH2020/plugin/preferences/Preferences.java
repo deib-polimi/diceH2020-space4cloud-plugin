@@ -11,8 +11,6 @@ public class Preferences {
 	protected static final String JMT_PARSER = "JmtParser";
 	protected static final String SIMULATOR = "Simulator";
 
-	// The following string are public becuase you have to compare these strings
-	// to the value of the simulator in order to know which simulator is used
 	public static final String DAG_SIM = "dagSim";
 	public static final String GSPN = "GSPN";
 	public static final String JMT = "JMT";
