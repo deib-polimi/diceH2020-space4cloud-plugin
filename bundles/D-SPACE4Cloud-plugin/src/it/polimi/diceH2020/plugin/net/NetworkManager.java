@@ -55,9 +55,6 @@ import it.polimi.diceH2020.plugin.preferences.Preferences;
 public class NetworkManager {
 
 	private static NetworkManager instance;
-	private static String rootEndpoint = Preferences.getFrontEndUrl();
-	private static String vmConfigsEndpoint = Preferences.getBackEndUrl() + "vm-types";
-	private static String uploadRest = rootEndpoint + "/files/upload";
 
 	public static NetworkManager getInstance() {
 		if (instance != null) {
@@ -65,6 +62,14 @@ public class NetworkManager {
 		}
 		instance = new NetworkManager();
 		return instance;
+	}
+
+	private String retrieveUploadEndpoint() {
+		return Preferences.getFrontEndUrl() + "/files/upload";
+	}
+
+	private String retrieveVMConfigsEndpoint() {
+		return Preferences.getBackEndUrl() + "/vm-types";
 	}
 
 	private NetworkManager() {
@@ -80,7 +85,7 @@ public class NetworkManager {
 	 */
 	public JSONArray fetchVmConfigs() {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-		HttpGet httpget = new HttpGet(vmConfigsEndpoint);
+		HttpGet httpget = new HttpGet(retrieveVMConfigsEndpoint());
 		CloseableHttpResponse response;
 		String body;
 		JSONParser parser;
@@ -117,7 +122,7 @@ public class NetworkManager {
 	public void sendModel(List<File> files, String scenario) throws UnsupportedEncodingException {
 		HttpClient httpclient = HttpClients.createDefault();
 		HttpResponse response;
-		HttpPost post = new HttpPost(uploadRest);
+		HttpPost post = new HttpPost(retrieveUploadEndpoint());
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 		builder.addPart("scenario", new StringBody(scenario, ContentType.DEFAULT_TEXT));
 
