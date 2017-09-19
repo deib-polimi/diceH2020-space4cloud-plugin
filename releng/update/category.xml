@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature id="it.polimi.diceH2020.D-SPACE4Cloud-plugin.features.feature" version="0.2.2">
+   <feature id="it.polimi.diceH2020.D-SPACE4Cloud-plugin.features.feature" version="0.2.3.qualifier">
       <category name="DSPACE.diceH2020"/>
    </feature>
 
