@@ -6,6 +6,7 @@ Bundle-Version: 0.2.2.qualifier
 Bundle-Activator: it.polimi.diceH2020.plugin.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
+ org.eclipse.core.resources;bundle-version="3.11.1",
  org.apache.httpcomponents.httpcore,
  org.apache.httpcomponents.httpclient,
  org.apache.commons.httpclient,

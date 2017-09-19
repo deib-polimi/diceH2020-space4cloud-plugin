@@ -14,7 +14,7 @@
             category="org.dice.ui.preferences"
             class="it.polimi.diceH2020.plugin.preferences.PreferencesPage"
             id="it.polimi.diceH2020.plugin.preferences"
-            name="D-SPACE4Cloud Plugin">
+            name="Optimization Tools">
       </page>
    </extension>
    <extension
