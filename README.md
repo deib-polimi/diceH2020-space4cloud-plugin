@@ -8,6 +8,8 @@ The code in this repository is licensed under the terms of the
 
 If you want just to use this plugin, in Eclipse go to `Help -> Install New Software...` and use http://dice-project.github.io/DICE-Optimisation-Plugin/updates as the URL for the update site.
 
+IMPORTANT: the plugin will not work inside a standard Eclipse installation, you have to run it inside the [DICE IDE](https://github.com/dice-project/DICE-Platform).
+
 ## Contributing
 If you want to edit the code of this plugin, you should install the following other eclipse plugin:
 
