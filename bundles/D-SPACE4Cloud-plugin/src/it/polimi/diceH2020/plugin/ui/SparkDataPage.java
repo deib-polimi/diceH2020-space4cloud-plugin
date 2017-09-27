@@ -71,14 +71,14 @@ public class SparkDataPage extends WizardPage {
         Label l1 = new Label(container, SWT.None);
         l1.setText("Set Think Time");
         this.thinkTextField = new Text(container, SWT.BORDER);
-        thinkTextField.setEditable(false);
+        thinkTextField.setEnabled(false);
         thinkTextField.setText("0");
         hadoopParUD.put("think", "1");
         conf.setThinkTime(1);
 
 
         Label l2 = new Label(container, SWT.None);
-        l2.setText("Set deadline");
+        l2.setText("Set deadline [ms]");
         this.hadoopDTextField = new Text(container, SWT.BORDER);
         hadoopDTextField.setEditable(true);
         hadoopDTextField.addModifyListener(new ModifyListener() {
@@ -100,7 +100,7 @@ public class SparkDataPage extends WizardPage {
         l3.setText("Set minimum level of concurrency");
         hlowTextField = new Text(container, SWT.BORDER);
 
-        hlowTextField.setEditable(false);
+        hlowTextField.setEnabled(false);
         hlowTextField.setText("1");
         hadoopParUD.put("hlow", "1");
         conf.setHlow(1);
@@ -109,7 +109,7 @@ public class SparkDataPage extends WizardPage {
         l4.setText("Set maximum level of concurrency");
         hupTextField = new Text(container, SWT.BORDER);
 
-        hupTextField.setEditable(false);
+        hupTextField.setEnabled(false);
         hupTextField.setText("1");
         hadoopParUD.put("hup", "1");
         conf.setHup(1);

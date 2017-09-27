@@ -108,8 +108,18 @@ public class ChoicePage extends WizardPage {
 				Configuration.getCurrent().setTechnology(getTechnology());
 				if (getTechnology().equalsIgnoreCase("Storm")) {
 					pri.setEnabled(false);
-				} else {
+				} 
+				else {
 					pri.setEnabled(true);
+				}
+				
+				if (getTechnology().equalsIgnoreCase("Spark")){
+					t1.setText("1");
+					t1.setEnabled(false);
+				} 
+				else {
+					t1.setEnabled(true);
+					t1.setEditable(true);
 				}
 				getWizard().getContainer().updateButtons();
 			}

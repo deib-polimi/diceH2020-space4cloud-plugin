@@ -71,7 +71,6 @@ public class HadoopDataPage extends WizardPage {
 		Label l1 = new Label(container, SWT.None);
 		l1.setText("Set Think Time");
 		this.thinkTextField = new Text(container, SWT.BORDER);
-		
 			thinkTextField.setEditable(true);
 			thinkTextField.addModifyListener(new ModifyListener() {
 				@Override
@@ -88,7 +87,7 @@ public class HadoopDataPage extends WizardPage {
 			});
 
 		Label l2 = new Label(container, SWT.None);
-		l2.setText("Set deadline");
+		l2.setText("Set deadline [ms]");
 		this.hadoopDTextField = new Text(container, SWT.BORDER);
 		
 		hadoopDTextField.setEditable(true);

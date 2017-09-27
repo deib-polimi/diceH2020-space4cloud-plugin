@@ -64,11 +64,11 @@ public class DSpaceWizard extends Wizard {
 	public void addPages() {
 		choice = new ChoicePage("Service type", "Choose service type");
 		classp = new ClassPage("Class page", "Select page parameters and alternatives");
-		fpage = new FinalPage("Goodbye", ".");
+		fpage = new FinalPage("Finish", ".");
 		folPage = new SelectFolderPage("Select folder");
 		hPage = new HadoopDataPage("Set Hadoop parameters");
-		stPage = new StormDataPage("Set Storm parameter");
-		spPage = new SparkDataPage("Set Spark parameter");
+		stPage = new StormDataPage("Set Storm parameters");
+		spPage = new SparkDataPage("Set Spark parameters");
 		prConfigPage = new PrivateConfigPage("Set cluster parameters");
 
 		addPage(choice);
