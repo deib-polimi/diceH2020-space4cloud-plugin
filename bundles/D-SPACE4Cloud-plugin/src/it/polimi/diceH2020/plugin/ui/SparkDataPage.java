@@ -69,7 +69,7 @@ public class SparkDataPage extends WizardPage {
         container.setLayout(layout);
 
         Label l1 = new Label(container, SWT.None);
-        l1.setText("Set Think Time");
+        l1.setText("Set Think Time [ms]");
         this.thinkTextField = new Text(container, SWT.BORDER);
         thinkTextField.setEnabled(false);
         thinkTextField.setText("0");
