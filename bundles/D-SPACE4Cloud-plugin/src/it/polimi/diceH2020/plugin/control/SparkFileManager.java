@@ -42,7 +42,7 @@ import it.polimi.diceH2020.plugin.preferences.Preferences;
 public class SparkFileManager {
 
     /**
-     * I substitute the placeholder in the word after id in the file
+     * This fuctions finds id in the specified input file and substitutes the NEXT work with placeholder
      *
      * @param id
      * @param placeholder
@@ -217,3 +217,5 @@ public class SparkFileManager {
         }
     }
 }
+
+

@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
@@ -75,7 +77,7 @@ public class NetworkManager {
 	private NetworkManager() {
 		System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
 		System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
-		System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http.wire", "DEBUG");
+		// System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http.wire", "DEBUG");
 	}
 
 	/**
@@ -136,8 +138,12 @@ public class NetworkManager {
 			String json = EntityUtils.toString(response.getEntity());
 			HttpPost repost = new HttpPost(this.getLink(json));
 			response = httpclient.execute(repost);
-			String js = EntityUtils.toString(response.getEntity());
-			parseJson(js);
+			String response_text = EntityUtils.toString(response.getEntity());
+			parseResponseForResultLinks(response_text);
+			for (File file : files) {
+				System.out.println(file.getName() + " successfully sent.");
+			}
+			
 			System.out.println("Code : " + response.getStatusLine().getStatusCode());
 
 			if (response.getStatusLine().getStatusCode() != 200) {
@@ -156,42 +162,17 @@ public class NetworkManager {
 		return s;
 	}
 
-	private void parseJson(String string) {
-		JSONParser parser = new JSONParser();
-
-		try {
-			JSONObject json = (JSONObject) parser.parse(string);
-			JSONObject lin = (JSONObject) json.get("_links");
-			JSONObject sub = (JSONObject) lin.get("solution");
-			String link = (String) sub.get("href");
-			File f = new File(Preferences.getSavingDir() + "results");
-
-			if (!f.exists()) {
-				try {
-					PrintWriter writer = new PrintWriter(Preferences.getSavingDir() + "results", "UTF-8");
-					writer.println(Configuration.getCurrent().getID());
-					writer.println(link);
-					writer.close();
-				} catch (IOException e) {
-					// do something
-				}
-			} else {
-				try (FileWriter fw = new FileWriter(Preferences.getSavingDir() + "results", true);
-						BufferedWriter bw = new BufferedWriter(fw);
-						PrintWriter out = new PrintWriter(bw)) {
-					out.println(Configuration.getCurrent().getID());
-					// more code
-					out.println(link);
-					// more code
-				} catch (IOException e) {
-					// exception handling left as an exercise for the reader
-				}
-			}
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	
+	private void parseResponseForResultLinks(String response){
+		
+		Pattern pattern = Pattern.compile("\\{\"href\":\"(.*?)\"\\}");
+        Matcher matcher = pattern.matcher(response);
+        while (matcher.find()) {
+            String link = matcher.group(1);
+            System.out.println("Resuls will be available at: " + link);
+        }
 	}
+	
 
 	private String getLink(String string) {
 		JSONParser parser = new JSONParser();

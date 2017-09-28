@@ -90,8 +90,7 @@ public class DICEWrap {
 		System.out.println(conf.getID());
 
 		if (!conf.isComplete()) {
-			System.out.println("Incomplete, aborting"); // TODO check completion
-														// for real
+			System.out.println("Incomplete, aborting"); // TODO check completion for real
 			return;
 		}
 
@@ -119,7 +118,12 @@ public class DICEWrap {
 						buildHadoopAnalyzableModel(c.getAltDtsm().get(alt));
 						generatePNML(String.valueOf(c.getId()), alt);
 						
-						if (Preferences.getSimulator().equals(Preferences.GSPN)){
+						if (Preferences.getSimulator().equals(Preferences.DAG_SIM)){
+							System.err.println("Dag Sim not supported yet");	
+							return;
+						}
+						
+						else if (Preferences.getSimulator().equals(Preferences.GSPN)){
 							genGSPN();
 							FileManager.editFiles(c.getId(), alt, extractHadoopId());
 						} 
@@ -154,9 +158,7 @@ public class DICEWrap {
 						}
 						else if (Preferences.getSimulator().equals(Preferences.GSPN)){
 							genGSPN();
-							SparkFileManager.editFiles(c.getId(), alt, extractSparkIds());
-							Thread.sleep(5000);
-							
+							SparkFileManager.editFiles(c.getId(), alt, extractSparkIds());							
 						}
 						else if (Preferences.getSimulator().equals(Preferences.JMT)){
 							genJSIM(c.getId(), alt, extractSparkIds().getNumberOfConcurrentUsers());

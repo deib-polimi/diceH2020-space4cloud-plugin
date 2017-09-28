@@ -21,9 +21,9 @@ public class SparkIds {
 	public static final String USERS = "Users";
 	public static final String NUMBER_OF_CONCURRENT_USERS = "NumberOfConcurrentUsers";
 
-	String devices2resources; // must be replaced with @@CORES@@
-	String users; // must be replaced with @@CORES@@
-	String numberOfConcurrentUsers; // last transaction id 
+	String devices2resources; 
+	String users; 
+	String numberOfConcurrentUsers; 
 
 	public SparkIds(String devices2resources, String users, String numberOfConcurrentUsers) {
 		this.devices2resources = devices2resources;
