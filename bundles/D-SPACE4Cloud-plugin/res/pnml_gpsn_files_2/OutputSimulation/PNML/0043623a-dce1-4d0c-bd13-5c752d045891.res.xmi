@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="ASCII"?>
-<simresult:SimulationResult xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:simresult="http://es.unizar.disco/simulation/simresult/1.0">
-  <invocation href="0043623a-dce1-4d0c-bd13-5c752d045891.inv.xmi#0043623a-dce1-4d0c-bd13-5c752d045891"/>
-  <measures value="90.7282980245428600" unit="percentage">
-    <definition href="d5049330-fd7a-438c-8aac-9447c4db258f.def.xmi#//@declaredMeasures.0"/>
-  </measures>
-</simresult:SimulationResult>
