@@ -39,7 +39,7 @@ public class Configuration implements Serializable {
 	private int numClasses;
 	private boolean isPrivate = false;
 	private String technology;
-	private boolean hasLTC; //Long Term Contract already existing
+	private boolean hasLTC; 
 	private String ID;
 	private int thinkTime;
 	private int hlow;
@@ -227,5 +227,17 @@ public class Configuration implements Serializable {
 	public static void setConfiguration(Configuration conf) {
 		currentConf=conf;
 		
+	}
+	
+	public static boolean isHadoop(){
+		return currentConf.getTechnology().contains("Hadoop");
+	}
+	
+	public static boolean isSpark(){
+		return currentConf.getTechnology().contains("Spark");
+	}
+	
+	public static boolean isStorm(){
+		return currentConf.getTechnology().contains("Storm");
 	}
 }

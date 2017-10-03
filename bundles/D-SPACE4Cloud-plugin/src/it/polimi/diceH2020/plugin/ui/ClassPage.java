@@ -18,7 +18,14 @@ limitations under the License.
 
 package it.polimi.diceH2020.plugin.ui;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JFileChooser;
 
@@ -59,6 +66,7 @@ public class ClassPage extends WizardPage {
 	private String mlPath = "";
 	private Button button;
 	private Label mlNameFile;
+	protected static String thinkTime; 
 
 	protected ClassPage(String title, String description) {
 		super("Browse Files");
@@ -110,10 +118,13 @@ public class ClassPage extends WizardPage {
 					// JUST ONE UML FILE
 					chooser.setMultiSelectionEnabled(false); 
 																
-
 					final int choice = chooser.showOpenDialog(null);
 					if (choice == JFileChooser.APPROVE_OPTION) {
 						altDtsm.put(selectedAlternative, chooser.getSelectedFile().getPath());
+					
+						if (Configuration.isSpark() || Configuration.isHadoop())
+							thinkTime = getThinkTimeFromModel(chooser.getSelectedFile());
+						
 						chosenAlternatives.add(selectedAlternative);
 						availableAlternatives.remove(selectedIdx);
 					}
@@ -213,7 +224,7 @@ public class ClassPage extends WizardPage {
 		browse.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				JFileChooser chooser = new JFileChooser();
-				chooser.setMultiSelectionEnabled(false); // JUST ONE UML FILE
+				chooser.setMultiSelectionEnabled(false); 
 
 				int choice = chooser.showOpenDialog(null);
 
@@ -221,7 +232,6 @@ public class ClassPage extends WizardPage {
 					return;
 
 				ddsmPath = chooser.getSelectedFile().getPath();
-
 				fileName.setText(chooser.getSelectedFile().getName());
 				// setPageComplete(true);
 				container.layout();
@@ -230,15 +240,14 @@ public class ClassPage extends WizardPage {
 		});
 
 		populateAlternatives();
-
 		setPageComplete(false);
 		setControl(container);
 	}
-
+	
 	@Override
 	public boolean canFlipToNextPage() {
 		if (Configuration.getCurrent().getTechnology().contains("Hadoop Map-reduce")
-				|| Configuration.getCurrent().getTechnology().contains("Spark")) {
+			|| Configuration.getCurrent().getTechnology().contains("Spark")) {
 			if (!ddsmPath.equals("") && chosenAlternatives.getItemCount() > 0 && !mlPath.equals("")) {
 				return true;
 			} else {
@@ -270,6 +279,42 @@ public class ClassPage extends WizardPage {
 			availableAlternatives.setItems(JsonDatabase.getInstance().getVmConfigs());
 		}
 	}
+	
+	private static String getThinkTimeFromModel(File inputModel){
+		String think;
+		try {
+			
+			Path path = Paths.get(inputModel.getAbsolutePath());
+	        String content = new String(Files.readAllBytes(path));
+	        Pattern pattern = null;
+        
+	        if (Configuration.isHadoop())    		
+	        	pattern = Pattern.compile("hadoopExtDelay=\\[([0-9]+)\\]");
+	        
+	        if (Configuration.isSpark())
+	        	pattern = Pattern.compile("sparkExtDelay=\"\\(expr=([0-9]+),");
+	        
+	        
+	        Matcher matcher = pattern.matcher(content);
+	        if (matcher.find()) {
+	            think = matcher.group(1);
+	            System.out.println("Found Think Time: " + think);
+	            return think;
+	        }
+	        else {
+	        	// TODO Throw exception wrong model
+	        	System.out.println("Cannot found think time in file: " + inputModel.getName());
+	        	return "";
+	        }
+        
+		}
+	    catch (IOException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+	    }
+        
+		return "";
+	}
 
 	public String getDDSMPath() {
 		return ddsmPath;
@@ -298,8 +343,7 @@ public class ClassPage extends WizardPage {
 	}
 
 	public void udpate() {
-		if (Configuration.getCurrent().getTechnology().contains("Hadoop Map-reduce")
-				|| Configuration.getCurrent().getTechnology().contains("Spark")) {
+		if (Configuration.isSpark() || Configuration.isHadoop()) {
 			if (Premium.isPremium()) {
 				mlProfile.setVisible(true);
 			}

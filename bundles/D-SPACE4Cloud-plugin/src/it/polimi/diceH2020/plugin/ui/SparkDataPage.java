@@ -54,13 +54,28 @@ public class SparkDataPage extends WizardPage {
     }
 
     private void resetParameters() {
-        thinkTime = -1;
+        //thinkTime = -1;
         hlow = -1;
         hup = -1;
         penalty = -1;
         hadoopD = -1;
     }
 
+    public void updateThinkTextField(){
+		thinkTextField.setText(ClassPage.thinkTime);
+		if (ClassPage.thinkTime.equals("0")){
+			hadoopParUD.put("think", "1'");
+			conf.setThinkTime(1);
+		}
+		else {
+			hadoopParUD.put("think", ClassPage.thinkTime);
+			conf.setThinkTime(Integer.parseInt(ClassPage.thinkTime));
+		}
+		
+		
+		return;
+	}
+    
     @Override
     public void createControl(Composite arg0) {
         container = new Composite(arg0, SWT.NONE);
@@ -72,9 +87,6 @@ public class SparkDataPage extends WizardPage {
         l1.setText("Set Think Time [ms]");
         this.thinkTextField = new Text(container, SWT.BORDER);
         thinkTextField.setEnabled(false);
-        thinkTextField.setText("0");
-        hadoopParUD.put("think", "1");
-        conf.setThinkTime(1);
 
 
         Label l2 = new Label(container, SWT.None);
@@ -154,7 +166,7 @@ public class SparkDataPage extends WizardPage {
     public void reset() {
         this.hadoopParUD.clear();
         resetParameters();
-        thinkTextField.setText("");
+        updateThinkTextField();
         hlowTextField.setText("");
         hupTextField.setText("");
         penaltyTextField.setText("");

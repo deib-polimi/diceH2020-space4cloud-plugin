@@ -126,6 +126,7 @@ public class DSpaceWizard extends Wizard {
 
 		if (currentPage == spPage) {
 			c.setHadoopParUD(spPage.getHadoopParUD());
+	
 			if (n == classes) {
 				finish = true;
 				Configuration.getCurrent().dump();
@@ -167,9 +168,11 @@ public class DSpaceWizard extends Wizard {
 
 			if (Configuration.getCurrent().getTechnology().contains("Hadoop Map-reduce")) {
 				c.setMlPath(classp.getMlPath());
+				hPage.updateThinkTextField();
 				return hPage;
 			} else if (Configuration.getCurrent().getTechnology().contains("Spark")) {
 				c.setMlPath(classp.getMlPath());
+				spPage.updateThinkTextField();
 				return spPage;
 			} else {
 				return stPage;

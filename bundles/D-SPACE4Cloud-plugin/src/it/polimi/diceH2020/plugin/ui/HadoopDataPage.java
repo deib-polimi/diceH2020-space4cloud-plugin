@@ -31,7 +31,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import it.polimi.diceH2020.plugin.control.Configuration;
-import it.polimi.diceH2020.plugin.preferences.Preferences;
 
 public class HadoopDataPage extends WizardPage {
 	private Composite container;
@@ -49,7 +48,7 @@ public class HadoopDataPage extends WizardPage {
 	protected HadoopDataPage(String pageName) {
 		super("Select data for hadoop Technology");
 		hadoopParUD = new HashMap<String, String>();
-		setTitle(pageName);
+		setTitle(pageName);		
 		resetParameters();
 	}
 
@@ -60,9 +59,24 @@ public class HadoopDataPage extends WizardPage {
 		penalty = -1;
 		hadoopD = -1;
 	}
+	
+	public void updateThinkTextField(){
+		thinkTextField.setText(ClassPage.thinkTime);
+		
+		if (ClassPage.thinkTime.equals("0")){
+			hadoopParUD.put("think", "1'");
+			conf.setThinkTime(1);
+		}
+		else {
+			hadoopParUD.put("think", ClassPage.thinkTime);
+			conf.setThinkTime(Integer.parseInt(ClassPage.thinkTime));
+		}
+		return;
+	}
 
 	@Override
 	public void createControl(Composite arg0) {
+		
 		container = new Composite(arg0, SWT.NONE);
 		layout = new GridLayout();
 		layout.numColumns = 1;
@@ -71,21 +85,8 @@ public class HadoopDataPage extends WizardPage {
 		Label l1 = new Label(container, SWT.None);
 		l1.setText("Set Think Time [ms]");
 		this.thinkTextField = new Text(container, SWT.BORDER);
-			thinkTextField.setEditable(true);
-			thinkTextField.addModifyListener(new ModifyListener() {
-				@Override
-				public void modifyText(ModifyEvent arg0) {
-					try {
-						thinkTime = Integer.parseInt(thinkTextField.getText());
-						hadoopParUD.put("think", thinkTextField.getText());
-						conf.setThinkTime(thinkTime);
-					} catch (NumberFormatException e) {
-	
-					}
-					getWizard().getContainer().updateButtons();
-				}
-			});
-
+		thinkTextField.setEnabled(false);
+			
 		Label l2 = new Label(container, SWT.None);
 		l2.setText("Set deadline [ms]");
 		this.hadoopDTextField = new Text(container, SWT.BORDER);
@@ -99,6 +100,7 @@ public class HadoopDataPage extends WizardPage {
 					hadoopD = Double.parseDouble(hadoopDTextField.getText());
 					hadoopParUD.put("d", hadoopDTextField.getText());
 					conf.setHadoopD(hadoopD);
+
 				} catch (NumberFormatException e) {
 
 				}
@@ -188,7 +190,7 @@ public class HadoopDataPage extends WizardPage {
 	public void reset() {
 		this.hadoopParUD.clear();
 		resetParameters();
-		thinkTextField.setText("");
+		updateThinkTextField();
 		hlowTextField.setText("");
 		hupTextField.setText("");
 		penaltyTextField.setText("");
