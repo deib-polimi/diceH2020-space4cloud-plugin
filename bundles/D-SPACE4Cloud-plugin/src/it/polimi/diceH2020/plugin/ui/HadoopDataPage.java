@@ -53,7 +53,7 @@ public class HadoopDataPage extends WizardPage {
 	}
 
 	private void resetParameters() {
-		thinkTime = -1;
+		//thinkTime = -1;
 		hlow = -1;
 		hup = -1;
 		penalty = -1;

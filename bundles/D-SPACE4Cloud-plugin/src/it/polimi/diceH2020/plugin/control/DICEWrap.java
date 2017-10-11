@@ -104,6 +104,7 @@ public class DICEWrap {
 						generatePNML(String.valueOf(c.getId()), alt);
 						genGSPN();
 						FileManager.editFiles(c.getId(), alt, extractStormId());
+						FileManager.createStatFile(c.getId(), alt, extractHadoopId());
 					} catch (IOException e) {
 						System.out.println(e.getMessage());
 					}
@@ -129,7 +130,7 @@ public class DICEWrap {
 						} 
 						else if (Preferences.getSimulator().equals(Preferences.JMT)){
 							genJSIM(c.getId(), alt, extractHadoopId());
-							SparkFileManager.editJSIMG(c.getId(), alt, extractHadoopId());		
+							FileManager.editJsimgHadoop(c.getId(), alt, extractHadoopId());		
 						}
 						
 						else {
@@ -137,7 +138,7 @@ public class DICEWrap {
 							return;
 						}
 										
-						SparkFileManager.createStatFile(c.getId(), alt, extractHadoopId());
+						FileManager.createStatFile(c.getId(), alt, extractHadoopId());
 						extractParametersFromHadoopModel(c, alt);
 					} catch (Exception e) {
 						System.out.println(e.getMessage());

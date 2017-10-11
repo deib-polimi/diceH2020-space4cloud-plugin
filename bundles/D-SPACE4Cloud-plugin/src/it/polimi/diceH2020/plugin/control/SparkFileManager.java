@@ -142,24 +142,8 @@ public class SparkFileManager {
         putPlaceHolderXML(sparkIds.getDevices2resources(), "@@CORES@@", jsimgFile);
     }
 
-    public static void editJSIMG(int cdid, String alt, String idToReplace) {
-        String savingDir = Preferences.getSavingDir();
-        Configuration conf = Configuration.getCurrent();
 
-        String filename;
-        if (Configuration.getCurrent().getIsPrivate()) {
-            filename = savingDir + conf.getID() + "J" + cdid + "inHouse" + alt;
-        } else {
-            filename = savingDir + conf.getID() + "J" + cdid + alt.replaceAll("-", "");
-        }
-
-        System.out.println(String.format("Putting placeholders over %s.jsimg", filename));
-
-        File jsimgFile = new File(filename + ".jsimg");
-        putPlaceHolderXML(idToReplace, "@@CORES@@", jsimgFile);
-    }
-
-    private static void putPlaceHolderXML(String id, String placeholder, File file){
+    static void putPlaceHolderXML(String id, String placeholder, File file){
 
         try {
 
@@ -175,7 +159,6 @@ public class SparkFileManager {
             Node attr = node.getAttributes().getNamedItem("population");
             attr.setNodeValue(placeholder);
 
-            // Write changes to a file
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             transformer.transform(new DOMSource(doc), new StreamResult(file));
 

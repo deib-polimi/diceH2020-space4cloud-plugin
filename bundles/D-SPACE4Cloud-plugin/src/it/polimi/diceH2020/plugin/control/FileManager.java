@@ -21,6 +21,7 @@ package it.polimi.diceH2020.plugin.control;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -130,6 +131,25 @@ public class FileManager {
 		SparkFileManager.moveFile(defFile, outputFilePath, "def");
 
 	}
+	
+	public static void editJsimgHadoop(int cdid, String alt, String idToReplace) {
+        String savingDir = Preferences.getSavingDir();
+        Configuration conf = Configuration.getCurrent();
+
+        String filename;
+        if (Configuration.getCurrent().getIsPrivate()) {
+            filename = savingDir + conf.getID() + "J" + cdid + "inHouse" + alt;
+        } else {
+            filename = savingDir + conf.getID() + "J" + cdid + alt.replaceAll("-", "");
+        }
+
+        System.out.println(String.format("Putting placeholders over %s.jsimg", filename));
+        System.out.println(idToReplace);
+
+        File jsimgFile = new File(filename + ".jsimg");
+        SparkFileManager.putPlaceHolderXML(idToReplace, "@@CORES@@", jsimgFile);
+    }
+	
 
 	/**
 	 * Builds the JSON representation of the current Configuration and
@@ -293,6 +313,7 @@ public class FileManager {
 		}
 		data.setMapClassParameters(new ClassParametersMap(classdesc1));
 	}
+	
 
 	private static void setEtaR(InstanceDataMultiProvider data, Configuration conf) {
 		// Set PublicCloudParameters
@@ -503,5 +524,27 @@ public class FileManager {
 
 		return true;
 	}
+	
+	public static void createStatFile(int cdid, String alt, String LastTransitionId){
+
+        Configuration conf = Configuration.getCurrent();
+        String filename;
+
+        if (conf.getIsPrivate()) {
+            filename = Preferences.getSavingDir() + conf.getID() + "J" + cdid + "inHouse" + alt;
+        } else {
+            filename = Preferences.getSavingDir() + conf.getID() + "J" + cdid + alt.replaceAll("-", "");
+        }
+
+        File statFile = new File(filename + ".stat");
+
+        try (PrintWriter out = new PrintWriter(statFile)){
+            out.println(LastTransitionId);
+            out.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
 }

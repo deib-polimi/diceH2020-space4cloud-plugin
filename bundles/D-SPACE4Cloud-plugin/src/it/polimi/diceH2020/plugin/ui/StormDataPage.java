@@ -48,12 +48,12 @@ public class StormDataPage extends WizardPage{
 		container.setLayout(layout);
 
 		Label l1 = new Label(container, SWT.None);
-		l1.setText("Set Utilization threshhold (in %)");
+		l1.setText("Utilization threshold (in %)");
 
 		this.stormUTextField = new Text(container, SWT.BORDER);
 
 		errLabel=new Label(container,SWT.None);
-		errLabel.setText("Not acceptable value for utilization");
+		errLabel.setText("Unacceptable value");
 		errLabel.setVisible(false);
 
 		stormUTextField.setEditable(true);
