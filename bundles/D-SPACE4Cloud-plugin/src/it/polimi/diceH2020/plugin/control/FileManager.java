@@ -105,8 +105,10 @@ public class FileManager {
 		for (File f : files) {
 			if (f.getName().endsWith(".net")) {
 				netFile = f;
+				SparkFileManager.copyFile(netFile, netFile, "orig");
 			} else if (f.getName().endsWith(".def")) {
 				defFile = f;
+				SparkFileManager.copyFile(defFile, defFile, "orig");
 			}
 		}
 		

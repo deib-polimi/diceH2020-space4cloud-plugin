@@ -178,6 +178,16 @@ public class SparkFileManager {
         }
     }
 
+    public static void copyFile(File InputFile, File outputFilePath, String extension) {
+        Path input = Paths.get(InputFile.getAbsolutePath());
+        Path output = Paths.get(outputFilePath.getAbsolutePath() + "." + extension);
+        try {
+            Files.copy(input, output, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void createStatFile(int cdid, String alt, String LastTransitionId){
 
         Configuration conf = Configuration.getCurrent();
