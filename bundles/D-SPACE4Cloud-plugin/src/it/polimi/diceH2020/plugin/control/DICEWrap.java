@@ -104,7 +104,7 @@ public class DICEWrap {
 						generatePNML(String.valueOf(c.getId()), alt);
 						genGSPN();
 						FileManager.editFiles(c.getId(), alt, extractStormId());
-						FileManager.createStatFile(c.getId(), alt, extractHadoopId());
+						FileManager.createStatFile(c.getId(), alt, extractStormId());
 					} catch (IOException e) {
 						System.out.println(e.getMessage());
 					}
