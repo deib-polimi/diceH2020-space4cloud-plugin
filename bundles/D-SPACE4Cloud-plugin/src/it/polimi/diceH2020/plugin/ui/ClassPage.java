@@ -181,7 +181,7 @@ public class ClassPage extends WizardPage {
 		new Label(container, SWT.NONE);
 
 		errorLabel = new Label(container, SWT.NONE);
-		errorLabel.setText("Error: Unable to get vm configurations from the webservice");
+		errorLabel.setText("Error: Unable to get vm configurations from the webservice.\nPlease check for current configuration in Windows > Preferences > DICE > Optimization");
 		errorLabel.setVisible(false);
 		fileName.setLayoutData(new GridData(SWT.BEGINNING, SWT.END, false, false));
 
@@ -246,7 +246,7 @@ public class ClassPage extends WizardPage {
 	
 	@Override
 	public boolean canFlipToNextPage() {
-		if (Configuration.getCurrent().getTechnology().contains("Hadoop Map-reduce")
+		if (Configuration.getCurrent().getTechnology().contains("Hadoop/MapReduce")
 			|| Configuration.getCurrent().getTechnology().contains("Spark")) {
 			if (!ddsmPath.equals("") && chosenAlternatives.getItemCount() > 0 && !mlPath.equals("")) {
 				return true;

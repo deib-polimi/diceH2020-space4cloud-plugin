@@ -187,7 +187,9 @@ public class ChoicePage extends WizardPage {
 		rTextComposite.setLayout(layoutRow_4);
 
 		Label rTextLabel = new Label(rTextComposite, SWT.NONE);
-		rTextLabel.setText("# reserved");
+		rTextLabel.setText("Reserved instances: ");
+		rTextLabel.setToolTipText("Enter your username over here, that other thing is a label.");
+
 		rTextField = new Text(rTextComposite, SWT.BORDER);
 		rTextField.setEditable(true);
 
@@ -218,10 +220,10 @@ public class ChoicePage extends WizardPage {
 		errSR.setVisible(false);
 
 		existingLTC = new Button(ltcComposite, SWT.RADIO);
-		existingLTC.setText("Existing LTC");
+		existingLTC.setText("Existing Long Term Contract");
 
 		nExistingLTC = new Button(ltcComposite, SWT.RADIO);
-		nExistingLTC.setText("Non existing LTC");
+		nExistingLTC.setText("No Long Term Contract");
 
 		pri.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
