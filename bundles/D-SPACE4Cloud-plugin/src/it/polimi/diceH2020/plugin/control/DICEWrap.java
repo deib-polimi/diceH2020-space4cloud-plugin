@@ -425,7 +425,9 @@ public class DICEWrap {
 	
 
 	public void setScenario() {
-		if (!Configuration.getCurrent().getIsPrivate()) {
+		if(Configuration.getCurrent().getTechnology().equals("Storm")) {
+			this.scenario = "StormPublicAvgWorkLoad";
+		} else if (!Configuration.getCurrent().getIsPrivate()) {
 			if (Configuration.getCurrent().getHasLtc()) {
 				this.scenario = "PublicPeakWorkload";
 			} else {
