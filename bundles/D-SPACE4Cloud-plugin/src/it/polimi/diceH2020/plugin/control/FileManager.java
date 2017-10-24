@@ -303,7 +303,7 @@ public class FileManager {
 		} else {
 			for (ClassDesc c : conf.getClasses()) {
 				ClassParameters clpm = ClassParametersGenerator.build(7);
-				clpm.setD(c.getStormU());
+				clpm.setU(c.getStormU());
 				clpm.setPenalty(6.0);
 				clpm.setThink(10000.0);
 				clpm.setHlow(1);
