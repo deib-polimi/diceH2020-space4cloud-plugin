@@ -308,8 +308,8 @@ public class FileManager {
 				clpm.setThink(10000.0);
 				clpm.setHlow(1);
 				clpm.setHup(1);
-				clpm.setM(6.0);
-				clpm.setV(0.0);
+				clpm.setM(0.0);
+				clpm.setV(1.0);
 				classdesc1.put(String.valueOf(c.getId()), clpm);
 			}
 		}
