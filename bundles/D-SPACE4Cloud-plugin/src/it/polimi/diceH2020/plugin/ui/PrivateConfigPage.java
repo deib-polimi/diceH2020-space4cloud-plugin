@@ -235,7 +235,7 @@ public class PrivateConfigPage extends WizardPage {
 					}
 
 					if (!name.isEmpty() && canCreate) {
-						PrivateConfiguration.getCurrent().addVmConfig(new VmClass(name, cores, cost, mem));
+						PrivateConfiguration.getCurrent().addVmConfig(new VmClass(name, cores, mem, cost));
 						vmConfigsList.add(name);
 					} else {
 						JOptionPane.showConfirmDialog(null, "Some of the parameters are wrong.. VM not created");
@@ -414,7 +414,7 @@ public class PrivateConfigPage extends WizardPage {
 				this.memForNode = Double.parseDouble(m.getTextContent());
 				this.memNodeText.setText(m.getTextContent());
 
-				Node v = par.getElementsByTagName("v").item(0);
+				Node v = par.getElementsByTagName("e").item(0);
 				PrivateConfiguration.getCurrent().setPriM(Double.parseDouble(v.getTextContent()));
 				this.costNode = Double.parseDouble(v.getTextContent());
 				this.costNodeText.setText(v.getTextContent());
@@ -424,7 +424,7 @@ public class PrivateConfigPage extends WizardPage {
 				this.numNodes = Integer.parseInt(n.getTextContent());
 				this.nNodesText.setText(n.getTextContent());
 
-				Node e = par.getElementsByTagName("e").item(0);
+				Node e = par.getElementsByTagName("v").item(0);
 				PrivateConfiguration.getCurrent().setPriM(Double.parseDouble(e.getTextContent()));
 				this.cpuForNode = Double.parseDouble(e.getTextContent());
 				this.cpuText.setText(e.getTextContent());
