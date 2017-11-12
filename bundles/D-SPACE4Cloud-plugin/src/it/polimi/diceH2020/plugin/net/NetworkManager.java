@@ -67,7 +67,10 @@ public class NetworkManager {
 	}
 
 	private String retrieveUploadEndpoint() {
-		return Preferences.getFrontEndUrl() + "/files/upload";
+		if (Preferences.getSimulator().equals(Preferences.DAG_SIM))
+			return Preferences.getDagSolverUrl() + "/files/upload";
+		else 
+			return Preferences.getFrontEndUrl() + "/files/upload";
 	}
 
 	private String retrieveVMConfigsEndpoint() {

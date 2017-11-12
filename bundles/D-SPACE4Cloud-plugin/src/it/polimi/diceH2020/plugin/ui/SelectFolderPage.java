@@ -84,7 +84,7 @@ public class SelectFolderPage extends WizardPage{
 			}
 		}
 
-		folder.setText("The chosen folder does not contain a json file");
+		folder.setText("The choosen folder does not contain a json file");
 		this.browse.setText("Select another folder...");
 	}
 }

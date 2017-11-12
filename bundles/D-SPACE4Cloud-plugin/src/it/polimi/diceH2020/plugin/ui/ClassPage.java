@@ -115,16 +115,21 @@ public class ClassPage extends WizardPage {
 
 					// Open file browser
 					JFileChooser chooser = new JFileChooser();
-					// JUST ONE UML FILE
+					
+					if (Preferences.getSimulator().equals(Preferences.DAG_SIM)){
+						chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+					    chooser.setAcceptAllFileFilterUsed(false);
+					}
+				    
 					chooser.setMultiSelectionEnabled(false); 
 																
 					final int choice = chooser.showOpenDialog(null);
 					if (choice == JFileChooser.APPROVE_OPTION) {
 						altDtsm.put(selectedAlternative, chooser.getSelectedFile().getPath());
-					
-						if (Configuration.isSpark() || Configuration.isHadoop())
-							thinkTime = getThinkTimeFromModel(chooser.getSelectedFile());
 						
+						if ((!Preferences.getSimulator().equals(Preferences.DAG_SIM) && Configuration.isSpark()) || Configuration.isHadoop())
+							thinkTime = getThinkTimeFromModel(chooser.getSelectedFile());
+													
 						chosenAlternatives.add(selectedAlternative);
 						availableAlternatives.remove(selectedIdx);
 					}
@@ -293,7 +298,6 @@ public class ClassPage extends WizardPage {
 	        
 	        if (Configuration.isSpark())
 	        	pattern = Pattern.compile("sparkExtDelay=\"\\(expr=([0-9]+),");
-	        
 	        
 	        Matcher matcher = pattern.matcher(content);
 	        if (matcher.find()) {

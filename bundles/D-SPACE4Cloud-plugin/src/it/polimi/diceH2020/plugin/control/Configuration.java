@@ -37,9 +37,12 @@ public class Configuration implements Serializable {
 
 	private ArrayList<ClassDesc> classes;
 	private int numClasses;
+	
+	// Scenario 
 	private boolean isPrivate = false;
 	private String technology;
 	private boolean hasLTC; 
+	
 	private String ID;
 	private int thinkTime;
 	private int hlow;

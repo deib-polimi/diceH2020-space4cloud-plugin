@@ -148,34 +148,41 @@ public class DICEWrap {
 			
 		case "Spark":
 			for (ClassDesc c : conf.getClasses()) {
-				for (String alt : c.getAltDtsm().keySet())
-					try {
-						buildSparkAnalyzableModel(c.getAltDtsm().get(alt));
-						generatePNML(String.valueOf(c.getId()), alt);
-						
-						if (Preferences.getSimulator().equals(Preferences.DAG_SIM)){
-							System.err.println("Dag Sim not supported yet");	
-							return;
-						}
-						else if (Preferences.getSimulator().equals(Preferences.GSPN)){
-							genGSPN();
-							SparkFileManager.editFiles(c.getId(), alt, extractSparkIds());							
-						}
-						else if (Preferences.getSimulator().equals(Preferences.JMT)){
-							genJSIM(c.getId(), alt, extractSparkIds().getNumberOfConcurrentUsers());
-							SparkFileManager.editJSIMG(c.getId(), alt, extractSparkIds());
-						}
-						else {
-							System.err.println("Unknown simulator: " + Preferences.getSimulator());
-							return;
-						}
-						
-						SparkFileManager.createStatFile(c.getId(), alt, extractSparkIds().getNumberOfConcurrentUsers());
-						extractParametersFromHadoopModel(c, alt);
-					} catch (Exception e) {
-						System.err.println("SPARK EXCEPTION");
-						e.printStackTrace();
+				for (String alt : c.getAltDtsm().keySet()){
+					
+					if (Preferences.getSimulator().equals(Preferences.DAG_SIM)){
+						System.out.println("Dag Sim");
+						// Do something with dagSim
+						// Move every file in the folder to my preferences directory so they can be sent 
 					}
+					
+					else {
+					
+						try {
+							buildSparkAnalyzableModel(c.getAltDtsm().get(alt));
+							generatePNML(String.valueOf(c.getId()), alt);
+						
+							if (Preferences.getSimulator().equals(Preferences.GSPN)){
+								genGSPN();
+								SparkFileManager.editFiles(c.getId(), alt, extractSparkIds());							
+							}
+							else if (Preferences.getSimulator().equals(Preferences.JMT)){
+								genJSIM(c.getId(), alt, extractSparkIds().getNumberOfConcurrentUsers());
+								SparkFileManager.editJSIMG(c.getId(), alt, extractSparkIds());
+							}
+							else {
+								System.err.println("Unknown simulator: " + Preferences.getSimulator());
+								return;
+							}
+							
+							SparkFileManager.createStatFile(c.getId(), alt, extractSparkIds().getNumberOfConcurrentUsers());
+							extractParametersFromHadoopModel(c, alt);
+						} catch (Exception e) {
+							System.err.println("SPARK EXCEPTION");
+							e.printStackTrace();
+						}
+					}
+				}
 			}
 			break;
 			
@@ -434,14 +441,6 @@ public class DICEWrap {
 		} else {
 			this.scenario = "PrivateAdmissionControl";
 		}
-	}
-
-	public static void trySparkFork1() {
-		tryMe("ConfFork1.txt");
-	}
-
-	public static void trySparkFork2() {
-		tryMe("ConfFork2.txt");
 	}
 
 	public static void tryMe(String configFile) {

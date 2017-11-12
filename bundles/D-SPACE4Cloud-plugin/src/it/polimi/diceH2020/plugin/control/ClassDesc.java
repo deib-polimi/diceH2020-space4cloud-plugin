@@ -42,8 +42,8 @@ public class ClassDesc implements Serializable {
 	private double stormU;
 
 	// Hadoop-only parameters
-	private Map<String, Map<String, String>> altDtsmHadoop; // Parameters from DTSM files
-	private Map<String, String> hadoopParUD; // User defined parameters
+	private Map<String, Map<String, String>> altDtsmHadoop; 	// Parameters from DTSM files
+	private Map<String, String> hadoopParUD; 					// User defined parameters
 	private String mlPath;
 
 	public ClassDesc(int id) {

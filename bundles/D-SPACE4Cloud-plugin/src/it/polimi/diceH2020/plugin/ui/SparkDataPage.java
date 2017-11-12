@@ -37,8 +37,8 @@ public class SparkDataPage extends WizardPage {
     private Composite container;
     private GridLayout layout;
     private int thinkTime;
-    private int hlow;
-    private int hup;
+    private int hlow; 
+    private int hup;	 
     private float penalty;
     private Map<String, String> hadoopParUD;
     Label l5;
@@ -54,9 +54,11 @@ public class SparkDataPage extends WizardPage {
     }
 
     private void resetParameters() {
-        //thinkTime = -1;
-        hlow = -1;
-        hup = -1;
+    	if (Preferences.getSimulator().equals(Preferences.DAG_SIM)){
+    		thinkTime = -1;
+    	}
+        hlow = 1;
+        hup = 1;
         penalty = -1;
         hadoopD = -1;
     }
@@ -64,15 +66,13 @@ public class SparkDataPage extends WizardPage {
     public void updateThinkTextField(){
 		thinkTextField.setText(ClassPage.thinkTime);
 		if (ClassPage.thinkTime.equals("0")){
-			hadoopParUD.put("think", "1'");
+			hadoopParUD.put("think", "1");
 			conf.setThinkTime(1);
 		}
 		else {
 			hadoopParUD.put("think", ClassPage.thinkTime);
 			conf.setThinkTime(Integer.parseInt(ClassPage.thinkTime));
 		}
-		
-		
 		return;
 	}
     
@@ -86,9 +86,28 @@ public class SparkDataPage extends WizardPage {
         Label l1 = new Label(container, SWT.None);
         l1.setText("Set Think Time [ms]");
         this.thinkTextField = new Text(container, SWT.BORDER);
-        thinkTextField.setEnabled(false);
+        if (Preferences.getSimulator().equals(Preferences.DAG_SIM)){
+        	thinkTextField.setEnabled(true);
+        	thinkTextField.setEditable(true);
+        	thinkTextField.addModifyListener(new ModifyListener() {
 
+                @Override
+                public void modifyText(ModifyEvent arg0) {
+                    try {
+                    	thinkTime = Integer.parseInt(thinkTextField.getText());
+                        hadoopParUD.put("think", thinkTextField.getText());
+                        conf.setThinkTime(thinkTime);
+                    } catch (NumberFormatException e) {
 
+                    }
+                    getWizard().getContainer().updateButtons();
+                }
+            });
+        }
+        else {
+        	thinkTextField.setEnabled(false);
+        }
+        
         Label l2 = new Label(container, SWT.None);
         l2.setText("Set deadline [ms]");
         this.hadoopDTextField = new Text(container, SWT.BORDER);

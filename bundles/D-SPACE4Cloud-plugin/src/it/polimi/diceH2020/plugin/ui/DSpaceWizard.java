@@ -25,6 +25,7 @@ import it.polimi.diceH2020.plugin.control.ClassDesc;
 import it.polimi.diceH2020.plugin.control.Configuration;
 import it.polimi.diceH2020.plugin.control.FileHandler;
 import it.polimi.diceH2020.plugin.control.PrivateConfiguration;
+import it.polimi.diceH2020.plugin.preferences.Preferences;
 
 /**
  * Class needed by Eclipse to manage wizards. The core of this class is
@@ -172,7 +173,9 @@ public class DSpaceWizard extends Wizard {
 				return hPage;
 			} else if (Configuration.getCurrent().getTechnology().contains("Spark")) {
 				c.setMlPath(classp.getMlPath());
-				spPage.updateThinkTextField();
+				if (!Preferences.getSimulator().equals(Preferences.DAG_SIM)){
+					spPage.updateThinkTextField();
+				}
 				return spPage;
 			} else {
 				return stPage;
