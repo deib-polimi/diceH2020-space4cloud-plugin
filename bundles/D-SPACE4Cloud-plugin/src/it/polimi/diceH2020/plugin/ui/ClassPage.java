@@ -127,7 +127,7 @@ public class ClassPage extends WizardPage {
 					if (choice == JFileChooser.APPROVE_OPTION) {
 						altDtsm.put(selectedAlternative, chooser.getSelectedFile().getPath());
 						
-						if ((!Preferences.getSimulator().equals(Preferences.DAG_SIM) && Configuration.isSpark()) || Configuration.isHadoop())
+						if ((!Preferences.simulatorIsDAGSIM() && Configuration.getCurrent().isSpark()) || Configuration.getCurrent().isHadoop())
 							thinkTime = getThinkTimeFromModel(chooser.getSelectedFile());
 													
 						chosenAlternatives.add(selectedAlternative);
@@ -251,8 +251,8 @@ public class ClassPage extends WizardPage {
 	
 	@Override
 	public boolean canFlipToNextPage() {
-		if (Configuration.getCurrent().getTechnology().contains("Hadoop/MapReduce")
-			|| Configuration.getCurrent().getTechnology().contains("Spark")) {
+		if (Configuration.getCurrent().isHadoop() || Configuration.getCurrent().isSpark()) {
+
 			if (!ddsmPath.equals("") && chosenAlternatives.getItemCount() > 0 && !mlPath.equals("")) {
 				return true;
 			} else {
@@ -287,16 +287,17 @@ public class ClassPage extends WizardPage {
 	
 	private static String getThinkTimeFromModel(File inputModel){
 		String think;
+		Configuration currentConfig = Configuration.getCurrent();
 		try {
 			
 			Path path = Paths.get(inputModel.getAbsolutePath());
 	        String content = new String(Files.readAllBytes(path));
 	        Pattern pattern = null;
         
-	        if (Configuration.isHadoop())    		
+	        if (currentConfig.isHadoop())    		
 	        	pattern = Pattern.compile("hadoopExtDelay=\\[([0-9]+)\\]");
 	        
-	        if (Configuration.isSpark())
+	        if (currentConfig.isSpark())
 	        	pattern = Pattern.compile("sparkExtDelay=\"\\(expr=([0-9]+),");
 	        
 	        Matcher matcher = pattern.matcher(content);
@@ -347,7 +348,7 @@ public class ClassPage extends WizardPage {
 	}
 
 	public void udpate() {
-		if (Configuration.isSpark() || Configuration.isHadoop()) {
+		if (Configuration.getCurrent().isSpark() || Configuration.getCurrent().isHadoop()) {
 			if (Premium.isPremium()) {
 				mlProfile.setVisible(true);
 			}

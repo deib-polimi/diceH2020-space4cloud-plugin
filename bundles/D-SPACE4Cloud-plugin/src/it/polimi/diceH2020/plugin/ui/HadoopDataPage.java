@@ -175,7 +175,7 @@ public class HadoopDataPage extends WizardPage {
 	@Override
 	public boolean canFlipToNextPage() {
 		if (hadoopD != -1 && thinkTime != -1 && hlow != -1 && hup != -1){
-			if (Configuration.getCurrent().getIsPrivate() && penalty == -1) {
+			if (Configuration.getCurrent().isPrivate() && penalty == -1) {
 				return false;
 			}
 			return true;
@@ -195,7 +195,7 @@ public class HadoopDataPage extends WizardPage {
 		hupTextField.setText("");
 		penaltyTextField.setText("");
 		hadoopDTextField.setText("");
-		if (Configuration.getCurrent().getIsPrivate()) {
+		if (Configuration.getCurrent().isPrivate()) {
 			privateCase();
 		} else {
 			publicCase();

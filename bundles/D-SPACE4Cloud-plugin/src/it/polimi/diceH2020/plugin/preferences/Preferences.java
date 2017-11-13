@@ -28,10 +28,10 @@ public class Preferences {
 	protected static final String JMT_PARSER = "JmtParser";
 	protected static final String SIMULATOR = "Simulator";
 	
-	
 	public static final String DAG_SIM = "dagSim";
 	public static final String GSPN = "GSPN";
 	public static final String JMT = "JMT";
+	
 
 	public static String getFrontEndAddress() {
 		return Activator.getDefault().getPreferenceStore().getString(FRONT_END_ADDRESS);
@@ -88,4 +88,18 @@ public class Preferences {
 	public static String getSimulator() {
 		return Activator.getDefault().getPreferenceStore().getString(SIMULATOR);
 	}
+	
+	public static boolean simulatorIsGSPN(){
+		return Preferences.getSimulator().equals(Preferences.GSPN);
+	}
+	
+	public static boolean simulatorIsJMT(){
+		return Preferences.getSimulator().equals(Preferences.JMT);
+	}
+	
+	public static boolean simulatorIsDAGSIM(){
+		return Preferences.getSimulator().equals(Preferences.DAG_SIM);
+	}
+	
+	
 }

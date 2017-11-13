@@ -170,7 +170,7 @@ public class SparkDataPage extends WizardPage {
     @Override
     public boolean canFlipToNextPage() {
         if (hadoopD != -1 ){
-            if (Configuration.getCurrent().getIsPrivate() && penalty == -1) {
+            if (Configuration.getCurrent().isPrivate() && penalty == -1) {
                 return false;
             }
             return true;
@@ -190,7 +190,7 @@ public class SparkDataPage extends WizardPage {
         hupTextField.setText("");
         penaltyTextField.setText("");
         hadoopDTextField.setText("");
-        if (Configuration.getCurrent().getIsPrivate()) {
+        if (Configuration.getCurrent().isPrivate()) {
             privateCase();
         } else {
             publicCase();

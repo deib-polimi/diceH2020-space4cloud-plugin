@@ -32,6 +32,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.ToolTip;
+import org.eclipse.swt.widgets.Group;
+import it.polimi.diceH2020.SPACE4Cloud.shared.settings.CloudType;
+import it.polimi.diceH2020.SPACE4Cloud.shared.settings.Technology;
+
 
 import it.polimi.diceH2020.plugin.control.Configuration;
 import it.polimi.diceH2020.plugin.net.NetworkManager;
@@ -44,11 +49,10 @@ import utils.Premium;
  * @author kom
  *
  */
-public class ChoicePage extends WizardPage {
+public class InitialPage extends WizardPage {
 	private Composite container;
 	private GridLayout layout;
-	private Button pri;
-	private Button pub;
+	private Button privateBtn, publicBtn;
 	private int classes = 0;
 	private int alternatives;
 	private Text t1, h1, h2, h3;
@@ -57,11 +61,16 @@ public class ChoicePage extends WizardPage {
 	private Label l2;
 	private GridData g1, g3, g5, g6, f1, f2, f3;
 	private Button existingLTC, nExistingLTC;
-	private Text rTextField, SpsrTextField;
+	private Text reservedInstancesText, spotRatioText;
 	private Composite ltcCompositeText;
 	private Label errSR;
+	
+	// Scenario
+	private CloudType cloudType;
+	private boolean hasLTC;
+	private boolean hasAdmissionControl;     // TODO Create the radio button for this 
 
-	protected ChoicePage(String title, String description) {
+	protected InitialPage(String title, String description) {
 		super("Choose service type");
 		setTitle(title);
 		setDescription(description);
@@ -71,9 +80,10 @@ public class ChoicePage extends WizardPage {
 	public void createControl(Composite parent) {
 		container = new Composite(parent, SWT.NONE);
 		layout = new GridLayout();
-		container.setLayout(layout);
 		layout.numColumns = 2;
 		layout.makeColumnsEqualWidth = true;
+		container.setLayout(layout);
+		        
 
 		g1 = new GridData();
 		g1.horizontalAlignment = GridData.HORIZONTAL_ALIGN_BEGINNING;
@@ -81,6 +91,7 @@ public class ChoicePage extends WizardPage {
 
 		l1 = new Label(container, SWT.NONE);
 		l1.setText("Number of classes:");
+		
 
 		new GridData(SWT.CENTER, SWT.BEGINNING, true, true);
 		l2 = new Label(container, SWT.NONE);
@@ -101,19 +112,22 @@ public class ChoicePage extends WizardPage {
 
 		new GridData(SWT.CENTER, SWT.BEGINNING, true, true);
 		t2 = new List(container, SWT.BORDER);
-		t2.setItems(NetworkManager.getInstance().getTechnologies());
-
+		t2.add("Storm");
+		t2.add("Spark");
+		t2.add("Hadoop/MapReduce");
+		
 		t2.addSelectionListener(new SelectionAdapter() {
+			
 			public void widgetSelected(SelectionEvent e) {
-				Configuration.getCurrent().setTechnology(getTechnology());
-				if (getTechnology().equalsIgnoreCase("Storm")) {
-					pri.setEnabled(false);
+
+				if (getTechnology() == Technology.STORM) {
+					privateBtn.setEnabled(false);
 				} 
 				else {
-					pri.setEnabled(true);
+					privateBtn.setEnabled(true);
 				}
 				
-				if (getTechnology().equalsIgnoreCase("Spark")){
+				if (getTechnology() == Technology.SPARK){
 					t1.setText("1");
 					t1.setEnabled(false);
 				} 
@@ -141,7 +155,24 @@ public class ChoicePage extends WizardPage {
 
 		g5 = new GridData();
 		g5.horizontalAlignment = GridData.HORIZONTAL_ALIGN_END;
-		pri = new Button(container, SWT.RADIO);
+		
+//		Group cloudTypeGroup = new Group(container, SWT.NONE);
+//		cloudTypeGroup.setLayout(new RowLayout(SWT.VERTICAL));
+//		
+//		 
+//		Label label = new Label(cloudTypeGroup, SWT.NONE);
+//        label.setText("Cloud Type: ");
+//        
+//		Button buttonMale = new Button(cloudTypeGroup, SWT.RADIO);
+//		buttonMale.setText("Public");
+//		 
+//		Button buttonFemale = new Button(cloudTypeGroup, SWT.RADIO);
+//		buttonFemale.setText("Private");
+		
+		
+		privateBtn = new Button(container, SWT.RADIO);
+		privateBtn.setVisible(true);
+		privateBtn.setText("Private");
 
 		f3 = new GridData();
 		f3.horizontalAlignment = GridData.HORIZONTAL_ALIGN_BEGINNING;
@@ -152,12 +183,9 @@ public class ChoicePage extends WizardPage {
 
 		g6 = new GridData();
 		g6.horizontalAlignment = GridData.HORIZONTAL_ALIGN_BEGINNING;
-		pub = new Button(container, SWT.RADIO);
-
-		pri.setVisible(true);
-		pub.setVisible(true);
-		pri.setText("Private");
-		pub.setText("Public");
+		publicBtn = new Button(container, SWT.RADIO);
+		publicBtn.setVisible(true);
+		publicBtn.setText("Public");
 
 		Composite ltcUberComposite = new Composite(container, SWT.NONE);
 		RowLayout layoutRow_uber = new RowLayout();
@@ -188,10 +216,9 @@ public class ChoicePage extends WizardPage {
 
 		Label rTextLabel = new Label(rTextComposite, SWT.NONE);
 		rTextLabel.setText("Reserved instances: ");
-		rTextLabel.setToolTipText("Enter your username over here, that other thing is a label.");
 
-		rTextField = new Text(rTextComposite, SWT.BORDER);
-		rTextField.setEditable(true);
+		reservedInstancesText = new Text(rTextComposite, SWT.BORDER);
+		reservedInstancesText.setEditable(true);
 
 		Composite tTextComposite = new Composite(ltcCompositeText, SWT.NONE);
 		RowLayout layoutRow_3 = new RowLayout();
@@ -201,11 +228,11 @@ public class ChoicePage extends WizardPage {
 
 		Label tTextLabel = new Label(tTextComposite, SWT.NONE);
 		tTextLabel.setText("Spot ratio");
-		SpsrTextField = new Text(tTextComposite, SWT.BORDER);
-		SpsrTextField.setEditable(true);
+		spotRatioText = new Text(tTextComposite, SWT.BORDER);
+		spotRatioText.setEditable(true);
 		if (!Premium.isPremium()) {
 			tTextLabel.setVisible(false);
-			SpsrTextField.setVisible(false);
+			spotRatioText.setVisible(false);
 		}
 
 		Composite err = new Composite(ltcCompositeText, SWT.NONE);
@@ -225,25 +252,24 @@ public class ChoicePage extends WizardPage {
 		nExistingLTC = new Button(ltcComposite, SWT.RADIO);
 		nExistingLTC.setText("No Long Term Contract");
 
-		pri.addSelectionListener(new SelectionAdapter() {
+		privateBtn.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
+				cloudType = CloudType.PRIVATE;
 				getWizard().getContainer().updateButtons();
-				System.out.println("Choice: PRIVATE");
 				ltcCompositeText.setVisible(false);
 				ltcComposite.setVisible(false);
-				Configuration.getCurrent().setPrivate(true);
+				
 			}
 		});
 
-		pub.addSelectionListener(new SelectionAdapter() {
+		publicBtn.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
+				cloudType = CloudType.PUBLIC;
 				getWizard().getContainer().updateButtons();
 				ltcComposite.setVisible(true);
 				if (existingLTC.getSelection()) {
 					ltcCompositeText.setVisible(true);
 				}
-				System.out.println("Choice: PUBLIC");
-				Configuration.getCurrent().setPrivate(false);
 			}
 		});
 
@@ -251,11 +277,11 @@ public class ChoicePage extends WizardPage {
 			public void widgetSelected(SelectionEvent e) {
 				ltcCompositeText.setVisible(true);
 				getWizard().getContainer().updateButtons();
-				Configuration.getCurrent().setLTC(true);
+				hasLTC = true;
 			}
 		});
 
-		rTextField.addModifyListener(new ModifyListener() {
+		reservedInstancesText.addModifyListener(new ModifyListener() {
 
 			@Override
 			public void modifyText(ModifyEvent arg0) {
@@ -264,12 +290,12 @@ public class ChoicePage extends WizardPage {
 		});
 
 		if (Premium.isPremium()) {
-			SpsrTextField.addModifyListener(new ModifyListener() {
+			spotRatioText.addModifyListener(new ModifyListener() {
 
 				@Override
 				public void modifyText(ModifyEvent arg0) {
 					try {
-						if (Float.parseFloat(SpsrTextField.getText()) <= 1) {
+						if (Float.parseFloat(spotRatioText.getText()) <= 1) {
 							errSR.setVisible(false);
 						} else {
 							errSR.setVisible(true);
@@ -287,7 +313,7 @@ public class ChoicePage extends WizardPage {
 			public void widgetSelected(SelectionEvent e) {
 				ltcCompositeText.setVisible(false);
 				getWizard().getContainer().updateButtons();
-				Configuration.getCurrent().setLTC(false);
+				hasLTC = false;
 			}
 		});
 
@@ -297,12 +323,12 @@ public class ChoicePage extends WizardPage {
 
 	private boolean areLtcFieldsValid() {
 		if (ltcCompositeText.getVisible()) {
-			if (rTextField.getText().equals("")) {
+			if (reservedInstancesText.getText().equals("")) {
 				return false;
 			}
 			try {
 				if (Premium.isPremium()
-						&& (SpsrTextField.getText().equals("") || Float.parseFloat(SpsrTextField.getText()) > 1)) {
+						&& (spotRatioText.getText().equals("") || Float.parseFloat(spotRatioText.getText()) > 1)) {
 					return false;
 				}
 			} catch (NumberFormatException e) {
@@ -317,20 +343,57 @@ public class ChoicePage extends WizardPage {
 		classes = Integer.parseInt(t1.getText());
 		return classes;
 	}
-
+	
 	public int getAlternatives() {
 		return alternatives;
 	}
+	
+	
+	public Technology getTechnology() {
+		String selection = t2.getSelection()[0];
+		
+		if (selection.equals("Storm"))
+			return Technology.STORM;
+		
+		else if (selection.equals("Spark"))
+			return Technology.SPARK;
+		
+		else 
+			return Technology.HADOOP;
+		
+	}
 
-	public String getTechnology() {
-		return t2.getSelection()[0];
+	
+	public CloudType getCloudType(){
+		return cloudType;
+	}
+	
+	public boolean hasLTC(){
+		return hasLTC;
+	}
+	
+	public boolean hasAdmissionControl(){
+		return hasAdmissionControl;
+	}
+	
+	public int getReservedIstances() {
+		return Integer.parseInt(reservedInstancesText.getText());
+	}
+
+	public float getSpotRatio() {
+		if (spotRatioText.getText().isEmpty()) {
+			return 0;
+		} else {
+			return Float.parseFloat(spotRatioText.getText());
+		}
+
 	}
 
 	@Override
 	public boolean canFlipToNextPage() {
-		if (areLtcFieldsValid() && t2.getSelectionCount() > 0 && (pri.getSelection() || pub.getSelection())
+		if (areLtcFieldsValid() && t2.getSelectionCount() > 0 && (privateBtn.getSelection() || publicBtn.getSelection())
 				&& getClasses() != 0) {
-			if (getTechnology().equalsIgnoreCase("Storm") && pri.getSelection()) {
+			if (getTechnology() == Technology.STORM && privateBtn.getSelection()) {
 				return false;
 			}
 			return true;
@@ -338,16 +401,4 @@ public class ChoicePage extends WizardPage {
 		return false;
 	}
 
-	public int getR() {
-		return Integer.parseInt(rTextField.getText());
-	}
-
-	public float getSpsr() {
-		if (SpsrTextField.getText().isEmpty()) {
-			return 0;
-		} else {
-			return Float.parseFloat(SpsrTextField.getText());
-		}
-
-	}
 }

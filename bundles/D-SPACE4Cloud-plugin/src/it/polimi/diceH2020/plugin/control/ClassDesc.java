@@ -71,8 +71,7 @@ public class ClassDesc implements Serializable {
 	}
 
 	public Map<String, Map<String, String>> getAltDtsmHadoop() {
-		if (!Configuration.getCurrent().getTechnology().equals("Hadoop Map-reduce")
-				&& !Configuration.getCurrent().getTechnology().equals("Spark")) {
+		if (Configuration.getCurrent().isStorm()){
 			return null;
 		}
 		return altDtsmHadoop;
@@ -95,8 +94,7 @@ public class ClassDesc implements Serializable {
 	}
 
 	public Map<String, String> getHadoopParUD() {
-		if (Configuration.getCurrent().getTechnology().equals("Hadoop Map-reduce")
-				|| Configuration.getCurrent().getTechnology().equals("Spark")) {
+		if (Configuration.getCurrent().isHadoop() || Configuration.getCurrent().isSpark()) {
 			return hadoopParUD;
 		}
 		return null;

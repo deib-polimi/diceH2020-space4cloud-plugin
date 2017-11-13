@@ -161,7 +161,7 @@ public class NetworkManager {
 	}
 
 	public String[] getTechnologies() {
-		String s[] = { "Storm", "Spark", "Hadoop Map-reduce" };
+		String s[] = {"Storm", "Spark", "Hadoop/MapReduce"};
 		return s;
 	}
 

@@ -26,6 +26,7 @@ import it.polimi.diceH2020.plugin.control.Configuration;
 import it.polimi.diceH2020.plugin.control.FileHandler;
 import it.polimi.diceH2020.plugin.control.PrivateConfiguration;
 import it.polimi.diceH2020.plugin.preferences.Preferences;
+import it.polimi.diceH2020.SPACE4Cloud.shared.settings.*;
 
 /**
  * Class needed by Eclipse to manage wizards. The core of this class is
@@ -36,7 +37,7 @@ import it.polimi.diceH2020.plugin.preferences.Preferences;
  */
 public class DSpaceWizard extends Wizard {
 	private FileHandler fileHandler;
-	private ChoicePage choice;
+	private InitialPage initialPage;
 	private ClassPage classp;
 	private FinalPage fpage;
 	private HadoopDataPage hPage;
@@ -63,7 +64,7 @@ public class DSpaceWizard extends Wizard {
 
 	@Override
 	public void addPages() {
-		choice = new ChoicePage("Service type", "Choose service type");
+		initialPage = new InitialPage("Service type", "Choose service type");
 		classp = new ClassPage("Class page", "Select page parameters and alternatives");
 		fpage = new FinalPage("Finish", ".");
 		folPage = new SelectFolderPage("Select folder");
@@ -72,7 +73,7 @@ public class DSpaceWizard extends Wizard {
 		spPage = new SparkDataPage("Set Spark parameters");
 		prConfigPage = new PrivateConfigPage("Set cluster parameters");
 
-		addPage(choice);
+		addPage(initialPage);
 		addPage(prConfigPage);
 		addPage(folPage);
 		addPage(stPage);
@@ -84,16 +85,38 @@ public class DSpaceWizard extends Wizard {
 
 	@Override
 	public IWizardPage getNextPage(IWizardPage currentPage) {
-		if (currentPage == choice) {
-			classes = choice.getClasses();
-			Configuration.getCurrent().setNumClasses(classes);
-
-			if (Configuration.getCurrent().getHasLtc()) {
-				Configuration.getCurrent().setR(choice.getR());
-				Configuration.getCurrent().setSpsr(choice.getSpsr());
+		
+		Configuration currentConfig = Configuration.getCurrent();	
+		
+		/*
+		 *  Initial Page
+		 */
+		
+		if (currentPage == initialPage) {
+			
+			// Parse input from InitialPage 
+			boolean ltc = initialPage.hasLTC();
+			boolean admissionControl = initialPage.hasAdmissionControl();
+			Technology technology = initialPage.getTechnology();
+			CloudType cloudType = initialPage.getCloudType();
+			
+			int reservedInstances = -1;
+			float spotRatio = -1;
+			classes = initialPage.getClasses();
+			
+			if (initialPage.hasLTC()) {
+				reservedInstances = initialPage.getReservedIstances();
+				spotRatio = initialPage.getSpotRatio();
 			}
-
-			if (Configuration.getCurrent().getIsPrivate()) {
+			
+			
+			// Set Scenario and Configuration Parameters
+			currentConfig.setScenario(technology, cloudType, ltc, admissionControl);
+			currentConfig.setNumClasses(classes);
+			currentConfig.setReservedInstances(reservedInstances);
+			currentConfig.setSpotRatio(spotRatio);
+			
+			if (cloudType == CloudType.PRIVATE) {
 				spPage.privateCase();
 				hPage.privateCase();
 				return prConfigPage;
@@ -106,74 +129,88 @@ public class DSpaceWizard extends Wizard {
 			classp.setNumClasses(classes);
 			return classp;
 		}
+		
+		/*
+		 *  Hadoop Page
+		 */
 
 		if (currentPage == hPage) {
 			c.setHadoopParUD(hPage.getHadoopParUD());
 
 			if (n == classes) {
 				finish = true;
-				Configuration.getCurrent().dump();
 				return fpage;
 			}
 
 			classp.reset();
 			hPage.reset();
 
-			if (Configuration.getCurrent().getIsPrivate())
+			if (currentConfig.isPrivate())
 				classp.privateCase();
 
 			return classp;
 		}
 
+		/*
+		 *  Spark Page
+		 */
+		
 		if (currentPage == spPage) {
 			c.setHadoopParUD(spPage.getHadoopParUD());
 	
 			if (n == classes) {
 				finish = true;
-				Configuration.getCurrent().dump();
 				return fpage;
 			}
 			classp.reset();
 			spPage.reset();
 
-			if (Configuration.getCurrent().getIsPrivate())
+			if (currentConfig.isPrivate())
 				classp.privateCase();
 			return classp;
 		}
-
+		
+		/*
+		 *  Storm Page
+		 */
+		
 		if (currentPage == stPage) {
 			c.setStormU(stPage.getStormU());
 
 			if (n == classes) {
 				finish = true;
-				Configuration.getCurrent().dump();
 				return fpage;
 			}
 
 			classp.reset();
 			stPage.reset();
 
-			if (Configuration.getCurrent().getIsPrivate())
+			if (currentConfig.isPrivate())
 				classp.privateCase();
 
 			return classp;
 		}
-
+		
+		/*
+		 *  Class Page
+		 */
+		
 		if (currentPage == classp) {
 			c = new ClassDesc(++n);
 			System.out.println("N: " + n + " classes: " + classes);
 			c.setDdsmPath(classp.getDDSMPath());
 			c.setAltDtsm(classp.getAltDtsm());
 
-			Configuration.getCurrent().getClasses().add(c);
+			currentConfig.getClasses().add(c);
 
-			if (Configuration.getCurrent().getTechnology().contains("Hadoop Map-reduce")) {
+			if (currentConfig.isHadoop()){
 				c.setMlPath(classp.getMlPath());
 				hPage.updateThinkTextField();
 				return hPage;
-			} else if (Configuration.getCurrent().getTechnology().contains("Spark")) {
+			} 
+			else if (currentConfig.isSpark()){
 				c.setMlPath(classp.getMlPath());
-				if (!Preferences.getSimulator().equals(Preferences.DAG_SIM)){
+				if ( Preferences.simulatorIsGSPN() || Preferences.simulatorIsJMT() ){
 					spPage.updateThinkTextField();
 				}
 				return spPage;
@@ -181,7 +218,11 @@ public class DSpaceWizard extends Wizard {
 				return stPage;
 			}
 		}
-
+		
+		/*
+		 *  Select Folder Page
+		 */
+		
 		if (currentPage == this.folPage) {
 			fileHandler.setFolder(folPage.getSelectedFolder());
 			fileHandler.setScenario(false, false);
@@ -189,7 +230,11 @@ public class DSpaceWizard extends Wizard {
 			finish = true;
 			return fpage;
 		}
-
+		
+		/*
+		 *  Private Config Page
+		 */
+		
 		if (currentPage == this.prConfigPage) {
 			PrivateConfiguration.getCurrent().setPriE(prConfigPage.getCostNode());
 			PrivateConfiguration.getCurrent().setPriM(prConfigPage.getMemForNode());

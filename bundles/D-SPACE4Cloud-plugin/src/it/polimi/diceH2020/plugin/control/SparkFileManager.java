@@ -89,16 +89,16 @@ public class SparkFileManager {
 
     public static void editFiles(int cdid, String alt, SparkIds sparkIds) {
         String savingDir = Preferences.getSavingDir();
-        Configuration conf = Configuration.getCurrent();
+        Configuration currentConfig = Configuration.getCurrent();
 
         File folder = new File(savingDir + "tmp/");
         File files[] = folder.listFiles();
         String outputFilePath;
 
-        if (Configuration.getCurrent().getIsPrivate()) {
-            outputFilePath = savingDir + conf.getID() + "J" + cdid + "inHouse" + alt;
+        if (currentConfig.isPrivate()) {
+            outputFilePath = savingDir + currentConfig.getID() + "J" + cdid + "inHouse" + alt;
         } else {
-            outputFilePath = savingDir + conf.getID() + "J" + cdid + alt.replaceAll("-", "");
+            outputFilePath = savingDir + currentConfig.getID() + "J" + cdid + alt.replaceAll("-", "");
         }
         File netFile = null;
         File defFile = null;
@@ -115,6 +115,7 @@ public class SparkFileManager {
         System.out.println("devices2resourcesId: " + sparkIds.getDevices2resources());
         System.out.println("Last Transaction Id: " + sparkIds.getNumberOfConcurrentUsers());
 
+        // [LOG]
         System.out.println("Putting placeholders over net file");
 
         putPlaceHolder(sparkIds.getDevices2resources(), "@@CORES@@", netFile);
@@ -126,18 +127,14 @@ public class SparkFileManager {
     }
 
     public static void editJSIMG(int cdid, String alt, SparkIds sparkIds) {
-        Configuration conf = Configuration.getCurrent();
+        Configuration currentConfig = Configuration.getCurrent();
 
-        String filename;
-        if (conf.getIsPrivate()) {
-            filename = Preferences.getSavingDir() + conf.getID() + "J" + cdid + "inHouse" + alt;
-        } else {
-            filename = Preferences.getSavingDir() + conf.getID() + "J" + cdid + alt.replaceAll("-", "");
-        }
-
+        String filename = currentConfig.getFilename(cdid, alt);
+        File jsimgFile = new File(filename + ".jsimg");
+        
+        // [LOG]
         System.out.println(String.format("Putting placeholders over %s.jsimg", filename));
 
-        File jsimgFile = new File(filename + ".jsimg");
         putPlaceHolderXML(sparkIds.getUsers(), "@@CORES@@", jsimgFile);
         putPlaceHolderXML(sparkIds.getDevices2resources(), "@@CORES@@", jsimgFile);
     }
@@ -190,15 +187,8 @@ public class SparkFileManager {
 
     public static void createStatFile(int cdid, String alt, String LastTransitionId){
 
-        Configuration conf = Configuration.getCurrent();
-        String filename;
-
-        if (conf.getIsPrivate()) {
-            filename = Preferences.getSavingDir() + conf.getID() + "J" + cdid + "inHouse" + alt;
-        } else {
-            filename = Preferences.getSavingDir() + conf.getID() + "J" + cdid + alt.replaceAll("-", "");
-        }
-
+        Configuration currentConfig = Configuration.getCurrent();
+        String filename = currentConfig.getFilename(cdid, alt);
         File statFile = new File(filename + ".stat");
 
         try (PrintWriter out = new PrintWriter(statFile)){
