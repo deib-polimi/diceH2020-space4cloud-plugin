@@ -69,7 +69,6 @@ public class DICEWrap {
 	private static DICEWrap diceWrap;
 	private ModelResult result;
 	private Configuration currentConfig;
-	private String scenario;
 	private String initialMarking;
 
 	public DICEWrap() {
@@ -127,7 +126,7 @@ public class DICEWrap {
 						buildHadoopAnalyzableModel(c.getAltDtsm().get(alt));
 						generatePNML(String.valueOf(c.getId()), alt);
 						
-						if (Preferences.getSimulator().equals(Preferences.DAG_SIM)){
+						if (Preferences.simulatorIsDAGSIM() ){
 							System.err.println("Dag Sim not supported yet");	
 							return;
 						}
@@ -139,11 +138,6 @@ public class DICEWrap {
 						else if (Preferences.getSimulator().equals(Preferences.JMT)){
 							genJSIM(c.getId(), alt, extractHadoopId());
 							FileManager.editJsimgHadoop(c.getId(), alt, extractHadoopId());		
-						}
-						
-						else {
-							System.err.println("Unknown simulator: " + Preferences.getSimulator());
-							return;
 						}
 										
 						FileManager.createStatFile(c.getId(), alt, extractHadoopId());
@@ -163,7 +157,7 @@ public class DICEWrap {
 			for (ClassDesc c : currentConfig.getClasses()) {
 				for (String alt : c.getAltDtsm().keySet()){
 					
-					if (Preferences.getSimulator().equals(Preferences.DAG_SIM)){
+					if (Preferences.simulatorIsDAGSIM()){
 						System.out.println("Dag Sim");
 						// Do something with dagSim
 						// Move every file in the folder to my preferences directory so they can be sent 
@@ -175,17 +169,15 @@ public class DICEWrap {
 							buildSparkAnalyzableModel(c.getAltDtsm().get(alt));
 							generatePNML(String.valueOf(c.getId()), alt);
 						
-							if (Preferences.getSimulator().equals(Preferences.GSPN)){
+							if (Preferences.simulatorIsGSPN()){
 								genGSPN();
 								SparkFileManager.editFiles(c.getId(), alt, extractSparkIds());							
 							}
-							else if (Preferences.getSimulator().equals(Preferences.JMT)){
+							
+							else if (Preferences.simulatorIsJMT()){
+								System.out.println("JMT!");
 								genJSIM(c.getId(), alt, extractSparkIds().getNumberOfConcurrentUsers());
 								SparkFileManager.editJSIMG(c.getId(), alt, extractSparkIds());
-							}
-							else {
-								System.err.println("Unknown simulator: " + Preferences.getSimulator());
-								return;
 							}
 							
 							SparkFileManager.createStatFile(c.getId(), alt, extractSparkIds().getNumberOfConcurrentUsers());
@@ -199,14 +191,14 @@ public class DICEWrap {
 			}	
 		}
 		
-
 		FileManager.generateInputJson();
 		FileManager.generateOutputJson();
 		if (!Configuration.getCurrent().canSend()) {
 			return;
 		}
 		try {
-			NetworkManager.getInstance().sendModel(FileManager.selectFiles(), scenario);
+			
+			NetworkManager.getInstance().sendModel(FileManager.selectFiles(), currentConfig.getScenario());
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -217,10 +209,9 @@ public class DICEWrap {
 	 * Extracts parameters from Hadoop model and appends them to the internal
 	 * class structure
 	 * 
-	 * @param c
-	 *            Current class
-	 * @param alt
-	 *            Current alternative to expand
+	 * @param c: Current Class
+	 * @param alt: Current alternative to expand
+	 *            
 	 */
 	private void extractParametersFromHadoopModel(ClassDesc c, String alt) {
 		String srcFile = c.getAltDtsm().get(alt);

@@ -225,8 +225,8 @@ public class DSpaceWizard extends Wizard {
 		
 		if (currentPage == this.folPage) {
 			fileHandler.setFolder(folPage.getSelectedFolder());
-			fileHandler.setScenario(false, false);
-			fileHandler.sendFile();
+			//fileHandler.setScenario(false, false);
+			//fileHandler.sendFile();
 			finish = true;
 			return fpage;
 		}

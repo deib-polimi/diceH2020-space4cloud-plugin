@@ -93,6 +93,10 @@ public class Configuration implements Serializable {
 		return currentConfig.scenario.getCloudType() == CloudType.PUBLIC;
 	}
 	
+	public Scenario getScenario(){
+		return scenario;
+	}
+	
 	public boolean isPrivate(){
 		return currentConfig.scenario.getCloudType() == CloudType.PRIVATE;
 	}

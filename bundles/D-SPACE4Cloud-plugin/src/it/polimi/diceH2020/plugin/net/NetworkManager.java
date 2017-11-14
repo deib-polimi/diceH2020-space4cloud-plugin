@@ -48,6 +48,7 @@ import org.json.simple.parser.ParseException;
 
 import it.polimi.diceH2020.plugin.control.Configuration;
 import it.polimi.diceH2020.plugin.preferences.Preferences;
+import it.polimi.diceH2020.SPACE4Cloud.shared.settings.*;
 
 /**
  * Manages interaction with the backend
@@ -120,16 +121,15 @@ public class NetworkManager {
 	 * 
 	 * @param files
 	 *            The model files
-	 * @param scenario
 	 *            The scenario parameter
 	 * @throws UnsupportedEncodingException
 	 */
-	public void sendModel(List<File> files, String scenario) throws UnsupportedEncodingException {
+	public void sendModel(List<File> files, Scenario scenario) throws UnsupportedEncodingException {
 		HttpClient httpclient = HttpClients.createDefault();
 		HttpResponse response;
 		HttpPost post = new HttpPost(retrieveUploadEndpoint());
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-		builder.addPart("scenario", new StringBody(scenario, ContentType.DEFAULT_TEXT));
+		builder.addPart("scenario", new StringBody(scenario.getStringRepresentation(), ContentType.DEFAULT_TEXT));
 
 		for (File file : files) {
 			builder.addPart("file[]", new FileBody(file));
