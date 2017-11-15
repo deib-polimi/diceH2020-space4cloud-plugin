@@ -91,6 +91,7 @@ public class FileManager {
 	 * @param hadoopId
 	 *            String be replaced
 	 */
+	
 	public static void editFiles(int cdid, String alt, String hadoopId) {
 		String savingDir = Preferences.getSavingDir();
 		Configuration currentConfig = Configuration.getCurrent();

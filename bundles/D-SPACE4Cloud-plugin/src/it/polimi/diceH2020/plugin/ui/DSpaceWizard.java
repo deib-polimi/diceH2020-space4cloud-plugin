@@ -105,13 +105,21 @@ public class DSpaceWizard extends Wizard {
 			classes = initialPage.getClasses();
 			
 			if (initialPage.hasLTC()) {
-				reservedInstances = initialPage.getReservedIstances();
+				reservedInstances = initialPage.getReservedInstances();
 				spotRatio = initialPage.getSpotRatio();
 			}
 			
+			try {
+				if (cloudType == CloudType.PUBLIC)
+					currentConfig.setScenario(technology, cloudType, ltc, null);
+				else 
+					currentConfig.setScenario(technology, cloudType, null, admissionControl);
+			} catch (RuntimeException e) {
+				initialPage.setErrorMessage("There was an error during the creation of the scenario, please try again.");
+				return initialPage;
+			}
 			
-			// Set Scenario and Configuration Parameters
-			currentConfig.setScenario(technology, cloudType, ltc, admissionControl);
+			// Configuration Parameters
 			currentConfig.setNumClasses(classes);
 			currentConfig.setReservedInstances(reservedInstances);
 			currentConfig.setSpotRatio(spotRatio);
@@ -119,7 +127,7 @@ public class DSpaceWizard extends Wizard {
 			if (cloudType == CloudType.PRIVATE) {
 				spPage.privateCase();
 				hPage.privateCase();
-				return prConfigPage;
+				return prConfigPage;	
 			} else {
 				spPage.publicCase();
 				hPage.publicCase();
@@ -224,6 +232,7 @@ public class DSpaceWizard extends Wizard {
 		 */
 		
 		if (currentPage == this.folPage) {
+			System.out.println("HERE!!!");
 			fileHandler.setFolder(folPage.getSelectedFolder());
 			//fileHandler.setScenario(false, false);
 			//fileHandler.sendFile();
@@ -236,7 +245,6 @@ public class DSpaceWizard extends Wizard {
 		 */
 		
 		if (currentPage == this.prConfigPage) {
-			PrivateConfiguration.getCurrent().setPriE(prConfigPage.getCostNode());
 			PrivateConfiguration.getCurrent().setPriM(prConfigPage.getMemForNode());
 			PrivateConfiguration.getCurrent().setPriN(prConfigPage.getNumNodes());
 			PrivateConfiguration.getCurrent().setPriV(prConfigPage.getCpuNode());

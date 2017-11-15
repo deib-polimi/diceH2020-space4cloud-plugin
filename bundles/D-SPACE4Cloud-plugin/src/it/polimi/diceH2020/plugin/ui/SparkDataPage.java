@@ -149,7 +149,8 @@ public class SparkDataPage extends WizardPage {
         l5 = new Label(container, SWT.None);
         l5.setText("Set job penalty cost");
         penaltyTextField = new Text(container, SWT.BORDER);
-        penaltyTextField.setEditable(true);
+        
+		penaltyTextField.setEditable(true);
         penaltyTextField.addModifyListener(new ModifyListener() {
 
                 @Override
@@ -197,10 +198,14 @@ public class SparkDataPage extends WizardPage {
         }
     }
 
-    public void privateCase() {
-        l5.setVisible(true);
-        penaltyTextField.setVisible(true);
-    }
+	public void privateCase() {
+		l5.setVisible(true);
+		penaltyTextField.setVisible(true);
+		if (Configuration.getCurrent().getScenario().getAdmissionControl() == false){
+			penaltyTextField.setEditable(false);
+			penaltyTextField.setEnabled(false);
+		}
+	}
 
     public void publicCase() {
         l5.setVisible(false);
