@@ -152,7 +152,7 @@ public class HadoopDataPage extends WizardPage {
 			});
 
 		l5 = new Label(container, SWT.None);
-		l5.setText("Set job penalty cost");
+		l5.setText("Set job penalty cost [$/job]");
 		penaltyTextField = new Text(container, SWT.BORDER);
 		
 		penaltyTextField.setEditable(true);

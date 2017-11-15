@@ -99,12 +99,14 @@ public class PrivateConfigPage extends WizardPage {
 
 		Label memLabel = new Label(container, SWT.NONE);
 		memLabel.setText("Set memory per node [Gb]");
-
+		
+		new Label(container, SWT.NONE); 						// Padding
 		memNodeText = new Text(container, SWT.BORDER);
-		//costNodeText = new Text(container, SWT.BORDER);
-
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
+		
+		new Label(container, SWT.NONE); 						// Padding
+		new Label(container, SWT.NONE); 						// Padding
+		new Label(container, SWT.NONE); 						// Padding
+		
 
 		vmConfigsList = new List(container, SWT.BORDER);
 		vmConfigsList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
