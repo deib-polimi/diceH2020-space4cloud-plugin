@@ -157,10 +157,19 @@ public class DICEWrap {
 			for (ClassDesc c : currentConfig.getClasses()) {
 				for (String alt : c.getAltDtsm().keySet()){
 					
+					// DagSim
 					if (Preferences.simulatorIsDAGSIM()){
-						System.out.println("Dag Sim");
-						// Do something with dagSim
-						// Move every file in the folder to my preferences directory so they can be sent 
+						File logFolder = new File(c.getAltDtsm().get(alt));
+						SparkFileManager.copyDagLogs(logFolder, c.getId(), alt);
+						// FileManager.generateInputJson(); 	fails
+						
+						try {
+							NetworkManager.getInstance().sendModel(FileManager.selectFiles(), currentConfig.getScenario());
+						} catch (UnsupportedEncodingException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						return;
 					}
 					
 					else {
@@ -197,7 +206,6 @@ public class DICEWrap {
 			return;
 		}
 		try {
-			
 			NetworkManager.getInstance().sendModel(FileManager.selectFiles(), currentConfig.getScenario());
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block

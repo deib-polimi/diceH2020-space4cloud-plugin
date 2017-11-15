@@ -242,7 +242,7 @@ public class FileManager {
 				String split[] = alt.split("-");
 
 				JobProfile jp;
-				if (currentConfig.isHadoop() || currentConfig.isSpark()) {
+				if (currentConfig.isHadoop() || (currentConfig.isSpark() && !Preferences.simulatorIsDAGSIM())) {
 					jp = JobProfileGenerator.build(c.getAltDtsmHadoop().get(alt).keySet().size() - 1);
 
 					for (String par : c.getAltDtsmHadoop().get(alt).keySet()) {

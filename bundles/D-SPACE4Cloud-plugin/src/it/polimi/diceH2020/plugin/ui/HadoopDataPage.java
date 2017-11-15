@@ -175,13 +175,26 @@ public class HadoopDataPage extends WizardPage {
 
 	@Override
 	public boolean canFlipToNextPage() {
+		
 		if (hadoopD != -1 && thinkTime != -1 && hlow != -1 && hup != -1){
-			if (Configuration.getCurrent().isPrivate() && penalty == -1) {
-				return false;
+			
+			if (Configuration.getCurrent().isPrivate()){
+				
+				if (Configuration.getCurrent().getScenario().getAdmissionControl() && penalty == -1) 
+					return false;
+				
+				if (!Configuration.getCurrent().getScenario().getAdmissionControl() && hlow != hup){
+					setErrorMessage("Minimum and maximum level of concurrency must coincide");
+					return false;
+				}
+				
+				setErrorMessage("");
+				return true;
 			}
-			return true;
-		}
-		return false;
+			else
+				return true;					// Public
+		}		
+		return false;							// Incomplete Fields
 	}
 
 	public Map<String, String> getHadoopParUD() {

@@ -98,7 +98,7 @@ public class PrivateConfigPage extends WizardPage {
 		cpuText = new Text(container, SWT.BORDER);
 
 		Label memLabel = new Label(container, SWT.NONE);
-		memLabel.setText("Set memory per node [Gb]");
+		memLabel.setText("Set memory per node [GB]");
 		
 		new Label(container, SWT.NONE); 						// Padding
 		memNodeText = new Text(container, SWT.BORDER);
@@ -190,7 +190,7 @@ public class PrivateConfigPage extends WizardPage {
 				myPanel.add(nameField, c);
 				myPanel.add(new JLabel("Num Cores :"), c);
 				myPanel.add(coreField);
-				myPanel.add(new JLabel("Memory [Gb]:"), c);
+				myPanel.add(new JLabel("Memory [GB]:"), c);
 				myPanel.add(memField);
 				myPanel.add(new JLabel("Cost [$/h]:"), c);
 				myPanel.add(costField);

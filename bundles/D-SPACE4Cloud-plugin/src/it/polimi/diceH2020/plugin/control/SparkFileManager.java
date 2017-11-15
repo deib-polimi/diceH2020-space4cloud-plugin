@@ -33,6 +33,8 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
+
+import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -183,6 +185,30 @@ public class SparkFileManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    public static boolean copyDagLogs(File logFolder, int cdid, String alt){
+    	
+    	if (!logFolder.isDirectory())
+    		return false;
+    	
+    	for (File file : logFolder.listFiles()) {
+    	    if (file.isFile()) {
+    	        String logName = file.getName();
+    	        String filePrefix = Configuration.getCurrent().getFilename(cdid, alt);
+    	        file.renameTo(new File(filePrefix.concat(logName)));
+    	    }
+    	}
+    	
+    	File destFolder = new File(Preferences.getSavingDir());
+    	
+    	try {
+    	    FileUtils.copyDirectory(logFolder, destFolder, true);
+    	} catch (IOException e) {
+    	    e.printStackTrace();
+    	}
+    	
+    	return true;
     }
 
     public static void createStatFile(int cdid, String alt, String LastTransitionId){
