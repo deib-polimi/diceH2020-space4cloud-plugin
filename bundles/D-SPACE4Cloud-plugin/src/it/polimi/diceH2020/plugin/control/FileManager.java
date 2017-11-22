@@ -176,6 +176,7 @@ public class FileManager {
 			// Set MapVMConfigurations
 			data.setMapVMConfigurations(null);
 			data.setPrivateCloudParameters(null);
+			
 			if (currentConfig.hasLTC()) {
 				setEtaR(data, currentConfig);
 			} else {
@@ -195,7 +196,7 @@ public class FileManager {
 
 		try {
 			mapper.writerWithDefaultPrettyPrinter()
-				   .writeValue(new File(Preferences.getSavingDir() + currentConfig.getID() + ".json"), data);
+				  .writeValue(new File(Preferences.getSavingDir() + currentConfig.getID() + ".json"), data);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -327,7 +328,7 @@ public class FileManager {
 				String split[] = alt.split("-");
 
 				PublicCloudParameters params = PublicCloudParametersGenerator.build(2);
-				params.setR(currentConfig.getReservedInstances());
+				params.setR(0);
 				params.setEta(currentConfig.getSpotRatio());
 
 				Map<String, PublicCloudParameters> size = new HashMap<String, PublicCloudParameters>();

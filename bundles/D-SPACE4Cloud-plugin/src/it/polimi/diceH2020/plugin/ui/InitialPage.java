@@ -18,36 +18,26 @@ limitations under the License.
 
 package it.polimi.diceH2020.plugin.ui;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
-import org.eclipse.swt.widgets.ToolTip;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Group;
-import javax.swing.JButton;
 import it.polimi.diceH2020.SPACE4Cloud.shared.settings.CloudType;
 import it.polimi.diceH2020.SPACE4Cloud.shared.settings.Technology;
 
 import it.polimi.diceH2020.plugin.control.Configuration;
 import it.polimi.diceH2020.plugin.net.NetworkManager;
 import it.polimi.diceH2020.plugin.preferences.Preferences;
-import utils.Premium;
-
 /**
  * Initial page. The user can: -choose among private/public solution -select
  * computation technology -tune some general parameters (e.g. number of classes)
@@ -59,69 +49,26 @@ public class InitialPage extends WizardPage {
 	
 	// Layout
 	private Composite container;
-	private Composite ltcComposite, optionsComposite, cloudTypeComposite, ltcOptionsComposite, admissionComposite;
 	private GridLayout layout;
-	private Button privateBtn, publicBtn;
-	private Button existingLTC, notExistingLTC;
-	private Button admissionControl, notAdmissionControl;
-	private Text classesText, reservedInstancesText, spotRatioText;
+	private Button privateBtn, publicBtn, spotPricingBtn, admissionControlBtn;
+	private Composite spotComposite, spotRatioComposite, optionsComposite, cloudTypeComposite, admissionComposite;
+	private Text classesText, spotRatioText;
+	private Label classesLabel, technologyLabel;
 	private List technologyList;
-	private Label l1, l2;
 
 	// Scenario
 	private int classes = -1;
-	private int alternatives;
-	private CloudType cloudType = CloudType.PUBLIC;
-	private Technology technology = null;
-	private boolean hasAdmissionControl = false; 
-	private boolean hasLTC = false;
 	private float spotRatio = -1;
-	private int reservedInstances = -1;
+	private CloudType cloudType = CloudType.PUBLIC;
+	private Technology technology;
+	private boolean admissionControl = false; 
+	private boolean spotPricing = false;
+
 	
 	protected InitialPage(String title, String description) {
 		super("Choose service type");
 		setTitle(title);
 		setDescription(description);
-	}
-
-	public int getClasses() {
-		return classes;
-	}
-
-	public void setClasses(int classes) {
-		this.classes = classes;
-	}
-
-	public Technology getTechnology() {
-		return technology;
-	}
-
-	public int getAlternatives() {
-		return alternatives;
-	}
-
-	public void setAlternatives(int alternatives) {
-		this.alternatives = alternatives;
-	}
-
-	public CloudType getCloudType() {
-		return cloudType;
-	}
-
-	public boolean hasAdmissionControl() {
-		return hasAdmissionControl;
-	}
-
-	public boolean hasLTC() {
-		return hasLTC;
-	}
-
-	public float getSpotRatio() {
-		return spotRatio;
-	}
-
-	public int getReservedInstances() {
-		return reservedInstances;
 	}
 
 	@Override
@@ -137,11 +84,11 @@ public class InitialPage extends WizardPage {
 		layout.makeColumnsEqualWidth = true;
 		container.setLayout(layout);
 		
-		l1 = new Label(container, SWT.NONE);
-		l1.setText("Number of classes:");
+		classesLabel = new Label(container, SWT.NONE);
+		classesLabel.setText("Number of classes:");
 
-		l2 = new Label(container, SWT.NONE);
-		l2.setText("Select technology:");
+		technologyLabel = new Label(container, SWT.NONE);
+		technologyLabel.setText("Select technology:");
 
 		classesText = new Text(container, SWT.BORDER);
 		classesText.setEditable(true);
@@ -181,70 +128,49 @@ public class InitialPage extends WizardPage {
 		privateBtn.setVisible(true);
 		privateBtn.setText("Private");
 		
-		if (Preferences.simulatorIsDAGSIM())
-			privateBtn.setEnabled(false);
-
+		
 		publicBtn = new Button(cloudTypeComposite, SWT.RADIO);
 		publicBtn.setVisible(true);
 		publicBtn.setText("Public");
 		publicBtn.setSelection(true);
 
+		
 		optionsComposite = new Composite(container, SWT.NONE);
 		GridLayout optionsGrid = new GridLayout();
-		optionsGrid.numColumns = 2;
-		optionsGrid.verticalSpacing = 10;
+		optionsGrid.numColumns = 1;
+		optionsGrid.verticalSpacing = 20;
+		optionsGrid.marginTop = 30;
 		optionsComposite.setLayout(optionsGrid);
 
-		// Column 1 - LTC
-		ltcComposite = new Composite(optionsComposite, SWT.NONE);
+		
+		spotComposite = new Composite(optionsComposite, SWT.NONE);
 		RowLayout ltcRow = new RowLayout(SWT.VERTICAL);
-		ltcRow.spacing = 10;
-		ltcComposite.setLayout(ltcRow);
-
-		existingLTC = new Button(ltcComposite, SWT.RADIO);
-		existingLTC.setText("Long Term Contract");
-
-		notExistingLTC = new Button(ltcComposite, SWT.RADIO);
-		notExistingLTC.setText("No Long Term Contract");
-		notExistingLTC.setSelection(true);
-
-		// Column 2 - LTC Options
-		ltcOptionsComposite = new Composite(optionsComposite, SWT.NONE);
-		GridLayout ltcOptionsGrid = new GridLayout();
-		ltcOptionsGrid.numColumns = 2;
-		ltcOptionsGrid.makeColumnsEqualWidth = true;
-		ltcOptionsGrid.verticalSpacing = 10;
-		ltcOptionsGrid.marginTop = 35;
-		ltcOptionsGrid.marginLeft = 55;
-		ltcOptionsComposite.setLayout(ltcOptionsGrid);
-		ltcOptionsComposite.setVisible(false);
-
-		Label ltcOptionsLabel = new Label(ltcOptionsComposite, SWT.NONE);
-		ltcOptionsLabel.setText("Reserved \ninstances:");
-
-		reservedInstancesText = new Text(ltcOptionsComposite, SWT.BORDER);
-		reservedInstancesText.setEditable(true);
-		reservedInstancesText.setToolTipText("Reserved instances in LTC");
-
-		Label tTextLabel = new Label(ltcOptionsComposite, SWT.NONE);
-		tTextLabel.setText("Spot ratio");
-		spotRatioText = new Text(ltcOptionsComposite, SWT.BORDER);
+		spotComposite.setLayout(ltcRow);
+		spotPricingBtn = new Button(spotComposite, SWT.CHECK);
+		spotPricingBtn.setText("Spot Pricing");
+		
+	
+		spotRatioComposite = new Composite(spotComposite, SWT.NONE);
+		RowLayout spotRatioRow = new RowLayout(SWT.HORIZONTAL);
+		spotRatioRow.spacing = 20;
+		spotRatioRow.marginTop = 30;
+		spotRatioComposite.setLayout(spotRatioRow);
+		spotRatioComposite.setVisible(false);
+		
+		Label spotRatioLabel = new Label(spotRatioComposite, SWT.NONE);
+		spotRatioLabel.setText("Spot ratio");
+		spotRatioText = new Text(spotRatioComposite, SWT.BORDER);
 		spotRatioText.setEditable(true);
 		spotRatioText.setToolTipText("Ratio between spot instances with respect \nto total number of VMs in the cluster");
-
-		// Column 1 - Admission Control
+		
+		
 		admissionComposite = new Composite(optionsComposite, SWT.NONE);
 		RowLayout admissionRow = new RowLayout(SWT.VERTICAL);
-		admissionRow.spacing = 10;
 		admissionComposite.setLayout(admissionRow);
 		admissionComposite.setVisible(false);
-
-		admissionControl = new Button(admissionComposite, SWT.RADIO);
-		admissionControl.setText("Admission Control");
-
-		notAdmissionControl = new Button(admissionComposite, SWT.RADIO);
-		notAdmissionControl.setText("No Admission Control");
-		notAdmissionControl.setSelection(true);
+		admissionControlBtn = new Button(admissionComposite, SWT.CHECK);
+		admissionControlBtn.setText("Admission Control");
+		
 
 		/*
 		 *  Listeners
@@ -297,22 +223,18 @@ public class InitialPage extends WizardPage {
 					
 					technology = Technology.STORM;
 					cloudType = CloudType.PUBLIC;
-					hasAdmissionControl = false;
 					disablePrivateCase();
 				}
 				
 				if (selection.equals("Spark")){
 					technology = Technology.SPARK;
+					privateBtn.setEnabled(true);
+					
 					if (Preferences.simulatorIsJMT() || Preferences.simulatorIsGSPN()){
-						privateBtn.setEnabled(true);
-						classesText.setText("1");
-						classesText.setEnabled(false);
-						classes = 1;
+					classes = 1;
+					classesText.setText("1");
+					classesText.setEnabled(false);
 					}
-				} else {
-					disablePrivateCase();
-					classesText.setEnabled(true);
-					classesText.setEditable(true);
 				}
 				
 				if (selection.contains("Hadoop")){
@@ -329,16 +251,18 @@ public class InitialPage extends WizardPage {
 			}
 		});
 
-		// Cloud Type Listeners 
 		privateBtn.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				
-				ltcComposite.setVisible(false);
-				ltcOptionsComposite.setVisible(false);
+				spotComposite.setVisible(false);
+				spotRatioComposite.setVisible(false);
 				admissionComposite.setVisible(true);
 				
-				hasLTC = false;
 				cloudType = CloudType.PRIVATE;
+				spotPricing = false;
+				
+				resetPublicCase();
+												
 				getWizard().getContainer().updateButtons();
 
 			}
@@ -347,74 +271,35 @@ public class InitialPage extends WizardPage {
 		publicBtn.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 
-				ltcComposite.setVisible(true);
+				spotComposite.setVisible(true);
+				spotPricingBtn.setSelection(false);
+				spotRatioComposite.setVisible(false);
 				admissionComposite.setVisible(false);
 				
-				hasAdmissionControl = false;
 				cloudType = CloudType.PUBLIC;
-				getWizard().getContainer().updateButtons();
-			}
-		});
-
-		// LTC Listeners
-		existingLTC.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				hasLTC = true;
-				if (publicBtn.getSelection()) {
-					ltcOptionsComposite.setVisible(true);					
-				}
-				else 
-					ltcOptionsComposite.setVisible(false);
+				admissionControl = false;
+				admissionControlBtn.setSelection(false);
+				
 				
 				getWizard().getContainer().updateButtons();
 			}
 		});
+		
+		spotPricingBtn.addSelectionListener(new SelectionAdapter()
+		{
+		    @Override
+		    public void widgetSelected(SelectionEvent e)
+		    {
+		    	spotPricing = spotPricingBtn.getSelection();
+		    	spotRatioComposite.setVisible(spotPricingBtn.getSelection());
+		    	
+		    	if (!spotPricing) {
+		    		spotRatioText.setText("");
+		    	}
+		    	getWizard().getContainer().updateButtons();
+		    }
+		});
 
-		notExistingLTC.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				ltcOptionsComposite.setVisible(false);	
-				hasLTC = false;
-				getWizard().getContainer().updateButtons();				
-			}
-		});
-		
-		// LTC Options Listeners
-		reservedInstancesText.addListener (SWT.Verify, e -> {
-			String string = e.text;
-			char [] chars = new char [string.length ()];
-			string.getChars (0, chars.length, chars, 0);
-			for (int i=0; i<chars.length; i++) {
-				if (!('0' <= chars [i] && chars [i] <= '9')) {
-					e.doit = false;
-					return;
-				}
-			}
-		});
-		
-		reservedInstancesText.addModifyListener(new ModifyListener() {
-			
-			 @Override
-			 public void modifyText(ModifyEvent arg0) {
-				 try {
-					 int instances = Integer.parseInt(reservedInstancesText.getText());
-					 if (instances < 0) {
-						 setErrorMessage("Instances should be a positive value");
-						 reservedInstances = -1;
-						 reservedInstancesText.setFocus();
-						 
-					 }
-					 else
-						reservedInstances = instances;
-					 setErrorMessage(null);	
-				 }
-				 catch (NumberFormatException e) {
-					 setErrorMessage("Instances should be a positive integer");
-					 reservedInstancesText.setFocus();
-				 }
-				 getWizard().getContainer().updateButtons();
-			 }
-		});
-		
 		spotRatioText.addListener (SWT.Verify, e -> {
 			String string = e.text;
 			char [] chars = new char [string.length ()];
@@ -426,21 +311,22 @@ public class InitialPage extends WizardPage {
 				}
 			}
 		});
-
+		
 		spotRatioText.addModifyListener(new ModifyListener() {
-			
 			 @Override
 			 public void modifyText(ModifyEvent arg0) {
 				 try {
 					 float ratio = Float.parseFloat(spotRatioText.getText());
-					 if (ratio > 1 || ratio < 0) {
+					 if (ratio >= 0 && ratio <= 1.0 ){
+						 spotRatio = ratio;
+						 setErrorMessage(null);
+					 }
+					 else {
 						 setErrorMessage("Spot Ratio must be a ratio. Please enter a value between 0 and 1");
 						 spotRatioText.setFocus();
 						 spotRatio = -1;
+						 
 					 }
-					 else
-						spotRatio = ratio;
-						setErrorMessage(null);	
 				 }
 				 catch (NumberFormatException e) {
 					 setErrorMessage("Spot Ratio must be a ratio. Please enter a value between 0 and 1");
@@ -451,44 +337,47 @@ public class InitialPage extends WizardPage {
 			 }
 		});
 		
-		// Admission Control Listeners
-		admissionControl.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				hasAdmissionControl = true;
-				getWizard().getContainer().updateButtons();
-			}
-		});
-
-		notAdmissionControl.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				hasAdmissionControl = false;
-				setErrorMessage(null);
-				getWizard().getContainer().updateButtons();
-			}
+		admissionControlBtn.addSelectionListener(new SelectionAdapter()
+		{
+		    @Override
+		    public void widgetSelected(SelectionEvent e)
+		    {
+		    	admissionControl = admissionControlBtn.getSelection();
+		    }
 		});
 		
 		setControl(container);
 		setPageComplete(false);
 	}
 
+	private void resetPublicCase() {
+		spotPricingBtn.setSelection(false);
+		spotPricing = false; 
+		spotRatioText.setText("");
+		spotRatio = -1;
+		spotRatioComposite.setVisible(false);
+		setErrorMessage(null);
+	}
+	
 	private void disablePrivateCase() {
 		privateBtn.setSelection(false);
 		privateBtn.setEnabled(false);
-		publicBtn.setSelection(true);
-		ltcComposite.setVisible(true);
+		publicBtn.setSelection(true);		
 		admissionComposite.setVisible(false);
-		admissionControl.setSelection(false);
-		notAdmissionControl.setSelection(true);
-		hasAdmissionControl = false;
-		setErrorMessage(null);
+		admissionControlBtn.setSelection(false);
+		admissionControl = false;
+		
+		spotComposite.setVisible(true);
+		resetPublicCase();
+		
 		return;
 	}
 	@Override
 	public boolean canFlipToNextPage() {
 		if (technology != null && classes > 0 && (privateBtn.getSelection() || publicBtn.getSelection())){
-			
+						
 			if (cloudType == CloudType.PRIVATE){
-				if (hasAdmissionControl)
+				if (admissionControl)
 					if (getClasses() > 1)
 						return true;
 					else {
@@ -499,8 +388,8 @@ public class InitialPage extends WizardPage {
 			}
 			else {
 				// CloudType.PUBLIC
-				if (hasLTC){
-					if (spotRatio >= 0 && spotRatio <= 1 && reservedInstances > 0)
+				if (spotPricing){
+					if (spotRatio >= 0 && spotRatio <= 1)
 						return true;
 				}
 				else 
@@ -509,4 +398,34 @@ public class InitialPage extends WizardPage {
 		}
 		return false;
 	}
+	
+	public int getClasses() {
+		return classes;
+	}
+
+	public void setClasses(int classes) {
+		this.classes = classes;
+	}
+
+	public Technology getTechnology() {
+		return technology;
+	}
+
+	public CloudType getCloudType() {
+		return cloudType;
+	}
+
+	public boolean getSpotPricing() {
+		return spotPricing;
+	}
+
+	public boolean getAdmissionControl() {
+		return admissionControl;
+	}
+
+	public float getSpotRatio() {
+		return spotRatio;
+	}
+
+	
 }

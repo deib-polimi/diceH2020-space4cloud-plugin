@@ -37,8 +37,9 @@ public class Configuration implements Serializable {
 
 	private static Configuration currentConfig;
 
-	private ArrayList<ClassDesc> classes;
 	private int numClasses;
+	
+	private ArrayList<ClassDesc> classes;
 	
 	private Scenario scenario;
 	
@@ -52,8 +53,7 @@ public class Configuration implements Serializable {
 	private int population;
 	private double stormU;
 	private  boolean canSend;
-	
-	private int reservedInstances = -1;
+
 	private float spotRatio = -1;
 
 	public Configuration(){
@@ -69,6 +69,10 @@ public class Configuration implements Serializable {
 		return currentConfig;
 	}
 
+	public String getID(){
+		return ID;
+	}
+	
 	private String generateName() {
 		return String.valueOf(ThreadLocalRandom.current().nextInt(1000, 9998 + 1));
 	}
@@ -105,6 +109,10 @@ public class Configuration implements Serializable {
 		return currentConfig.scenario.getLongTermCommitment();
 	}
 	
+	public boolean hasAdmissionControl(){
+		return currentConfig.scenario.getAdmissionControl();
+	}
+	
 	public String getFilename(int cdid, String alt){
 		String filename = "";
 		
@@ -116,10 +124,6 @@ public class Configuration implements Serializable {
 		return filename;
 	}
 	
-	public String getID(){
-		return ID;
-	}
-
 	public int getNumClasses() {
 		return numClasses;
 	}
@@ -140,20 +144,13 @@ public class Configuration implements Serializable {
 		return(numClasses == classes.size() && numClasses > 0);
 	}
 
-	public int getReservedInstances() {
-		return reservedInstances;
-	}
-
-	public void setReservedInstances(int r) {
-		this.reservedInstances = r;
-	}
-
-	public float getSpotRatio() {
+	
+	public float getSpotRatio(){
 		return spotRatio;
 	}
-
-	public void setSpotRatio(float ratio) {
-		this.spotRatio = ratio;
+	
+	public void setSpotRatio(float r){
+		this.spotRatio = r;
 	}
 
 	public void reset(){

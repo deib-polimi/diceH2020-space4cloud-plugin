@@ -60,10 +60,7 @@ import it.polimi.diceH2020.plugin.preferences.Preferences;
 public class PrivateConfigPage extends WizardPage {
 	private Composite container;
 	private GridLayout layout;
-	private Button addConfig;
-	private Button removeConfig;
-	private Button saveConfig;
-	private Button loadConfig;
+	private Button addConfig, removeConfig, saveConfig, loadConfig;
 	private Text nNodesText, cpuText, memNodeText;
 	private List vmConfigsList;
 	private int numNodes;

@@ -33,200 +33,259 @@ import org.eclipse.swt.widgets.Text;
 import it.polimi.diceH2020.plugin.control.Configuration;
 
 public class HadoopDataPage extends WizardPage {
+	
 	private Composite container;
 	private GridLayout layout;
-	private int thinkTime;
-	private int hlow;
-	private int hup;
-	private float penalty;
-	Label l5;
-	private Map<String, String> hadoopParUD;
-	private double hadoopD;
-	private Text thinkTextField, hlowTextField, hupTextField, hadoopDTextField, penaltyTextField;
-	private Configuration conf = Configuration.getCurrent();
+	private Text thinkText, hlowText, hupText, deadlineText, jobPenaltyText;
+	private Label jobPenaltyLabel, thinkLabel, deadlineLabel, hupLabel, hlowLabel;
+	
+	private Map<String, String> parameters;
+	private int thinkTime, hlow, hup, deadline;
+	private float jobPenalty;
+	private Configuration currentConf;
 
 	protected HadoopDataPage(String pageName) {
 		super("Select data for hadoop Technology");
-		hadoopParUD = new HashMap<String, String>();
-		setTitle(pageName);		
+		currentConf = Configuration.getCurrent();
+		parameters = new HashMap<String, String>();
+		setTitle(pageName);
 		resetParameters();
-	}
-
-	private void resetParameters() {
-		//thinkTime = -1;
-		hlow = -1;
-		hup = -1;
-		penalty = -1;
-		hadoopD = -1;
-	}
-	
-	public void updateThinkTextField(){
-		thinkTextField.setText(ClassPage.thinkTime);
-		
-		if (ClassPage.thinkTime.equals("0")){
-			hadoopParUD.put("think", "1'");
-			conf.setThinkTime(1);
-		}
-		else {
-			hadoopParUD.put("think", ClassPage.thinkTime);
-			conf.setThinkTime(Integer.parseInt(ClassPage.thinkTime));
-		}
-		return;
 	}
 
 	@Override
 	public void createControl(Composite arg0) {
-		
+
 		container = new Composite(arg0, SWT.NONE);
 		layout = new GridLayout();
 		layout.numColumns = 1;
 		container.setLayout(layout);
 
-		Label l1 = new Label(container, SWT.None);
-		l1.setText("Set Think Time [ms]");
-		this.thinkTextField = new Text(container, SWT.BORDER);
-		thinkTextField.setEnabled(false);
-			
-		Label l2 = new Label(container, SWT.None);
-		l2.setText("Set deadline [ms]");
-		this.hadoopDTextField = new Text(container, SWT.BORDER);
+		thinkLabel = new Label(container, SWT.None);
+		thinkLabel.setText("Set Think Time [ms]");
+		thinkText = new Text(container, SWT.BORDER);
+		thinkText.setEnabled(false);
+
+		deadlineLabel = new Label(container, SWT.None);
+		deadlineLabel.setText("Set deadline [ms]");
+		deadlineText = new Text(container, SWT.BORDER);
+		deadlineText.setEditable(true);
+
+		hlowLabel = new Label(container, SWT.None);
+		hlowLabel.setText("Set minimum level of concurrency");
+		hlowText = new Text(container, SWT.BORDER);
+		hlowText.setEditable(true);
+
+		hupLabel = new Label(container, SWT.None);
+		hupLabel.setText("Set maximum level of concurrency");
+		hupText = new Text(container, SWT.BORDER);
+		hupText.setEditable(true);
+
+		jobPenaltyLabel = new Label(container, SWT.None);
+		jobPenaltyLabel.setText("Set job penalty cost [$/job]");
+		jobPenaltyText = new Text(container, SWT.BORDER);
+		jobPenaltyText.setEditable(true);
+
 		
-		hadoopDTextField.setEditable(true);
-		hadoopDTextField.addModifyListener(new ModifyListener() {
+		/*
+		 * Listeners
+		 */
+		
+        deadlineText.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent arg0) {
+            	if (!deadlineText.getText().isEmpty())
+            		deadline = Integer.parseInt(deadlineText.getText()); 
+            	getWizard().getContainer().updateButtons();
+            }
+        });
+        
+        hlowText.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent arg0) {
+            	if (!hlowText.getText().isEmpty())
+            		hlow = Integer.parseInt(hlowText.getText());
+            	getWizard().getContainer().updateButtons();
+            }
+        });
+        
+        hupText.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent arg0) {
+            	if (!hupText.getText().isEmpty())
+            		hup = Integer.parseInt(hupText.getText());
+            	getWizard().getContainer().updateButtons();
+            }
+        });
+		
+		jobPenaltyText.addModifyListener(new ModifyListener() {
 
 			@Override
 			public void modifyText(ModifyEvent arg0) {
 				try {
-					hadoopD = Double.parseDouble(hadoopDTextField.getText());
-					hadoopParUD.put("d", hadoopDTextField.getText());
-					conf.setHadoopD(hadoopD);
-
+        			if (!jobPenaltyText.getText().isEmpty()){
+        				jobPenalty = Float.parseFloat(jobPenaltyText.getText());
+        				setErrorMessage(null);
+        			}
+					
 				} catch (NumberFormatException e) {
-
+					setErrorMessage("Incorrect value for Job Penalty");
+					jobPenaltyText.setFocus();
 				}
 				getWizard().getContainer().updateButtons();
 			}
 		});
-
-		Label l3 = new Label(container, SWT.None);
-		l3.setText("Set minimum level of concurrency");
-		hlowTextField = new Text(container, SWT.BORDER);
 		
-
-			hlowTextField.setEditable(true);
-			hlowTextField.addModifyListener(new ModifyListener() {
-	
-				@Override
-				public void modifyText(ModifyEvent arg0) {
-					try {
-						hlow = Integer.parseInt(hlowTextField.getText());
-						hadoopParUD.put("hlow", hlowTextField.getText());
-						conf.setHlow(hlow);
-						
-					} catch (NumberFormatException e) {
-	
-					}
-					getWizard().getContainer().updateButtons();
+        deadlineText.addListener (SWT.Verify, e -> {
+			String string = e.text;
+			char [] chars = new char [string.length ()];
+			string.getChars (0, chars.length, chars, 0);
+			for (int i=0; i<chars.length; i++) {
+				if (!(('0' <= chars [i] && chars [i] <= '9'))) {
+					e.doit = false;
+					return;
 				}
-			});
-
-
-		Label l4 = new Label(container, SWT.None);
-		l4.setText("Set maximum level of concurrency");
-		hupTextField = new Text(container, SWT.BORDER);
-		
-		
-			hupTextField.setEditable(true);
-			hupTextField.addModifyListener(new ModifyListener() {
-	
-				@Override
-				public void modifyText(ModifyEvent arg0) {
-					try {
-						hup = Integer.parseInt(hupTextField.getText());
-						hadoopParUD.put("hup", hupTextField.getText());
-						conf.setHup(hup);
-					} catch (NumberFormatException e) {
-					}
-					getWizard().getContainer().updateButtons();
-				}
-			});
-
-		l5 = new Label(container, SWT.None);
-		l5.setText("Set job penalty cost [$/job]");
-		penaltyTextField = new Text(container, SWT.BORDER);
-		
-		penaltyTextField.setEditable(true);
-		penaltyTextField.addModifyListener(new ModifyListener() {
-
-			@Override
-			public void modifyText(ModifyEvent arg0) {
-				try {
-					penalty = Float.parseFloat(penaltyTextField.getText());
-					hadoopParUD.put("penalty", penaltyTextField.getText());
-				} catch (NumberFormatException e) {
-				}
-				getWizard().getContainer().updateButtons();
 			}
 		});
-
+        
+        hupText.addListener (SWT.Verify, e -> {
+			String string = e.text;
+			char [] chars = new char [string.length ()];
+			string.getChars (0, chars.length, chars, 0);
+			for (int i=0; i<chars.length; i++) {
+				if (!(('0' <= chars [i] && chars [i] <= '9'))) {
+					e.doit = false;
+					return;
+				}
+			}
+		});
+        
+        hlowText.addListener (SWT.Verify, e -> {
+			String string = e.text;
+			char [] chars = new char [string.length ()];
+			string.getChars (0, chars.length, chars, 0);
+			for (int i=0; i<chars.length; i++) {
+				if (!(('0' <= chars [i] && chars [i] <= '9'))) {
+					e.doit = false;
+					return;
+				}
+			}
+		});
+        
+        jobPenaltyText.addListener (SWT.Verify, e -> {
+			String string = e.text;
+			char [] chars = new char [string.length ()];
+			string.getChars (0, chars.length, chars, 0);
+			for (int i=0; i<chars.length; i++) {
+				if (!(('0' <= chars [i] && chars [i] <= '9') || chars[i] == '.')) {
+					e.doit = false;
+					return;
+				}
+			}
+		});
+		
 		setControl(container);
 		setPageComplete(false);
+	
 	}
 
 	@Override
 	public boolean canFlipToNextPage() {
-		
-		if (hadoopD != -1 && thinkTime != -1 && hlow != -1 && hup != -1){
-			
-			if (Configuration.getCurrent().isPrivate()){
-				
-				if (Configuration.getCurrent().getScenario().getAdmissionControl() && penalty == -1) 
+
+    	if (deadline > 0 && thinkTime > 0 && hup > 0 && hlow > 0 && hlow <= hup){
+
+			if (Configuration.getCurrent().isPrivate()) {
+
+				if (Configuration.getCurrent().hasAdmissionControl() && jobPenalty == -1)
 					return false;
-				
-				if (!Configuration.getCurrent().getScenario().getAdmissionControl() && hlow != hup){
+
+				if (!Configuration.getCurrent().hasAdmissionControl() && hlow != hup) {
 					setErrorMessage("Minimum and maximum level of concurrency must coincide");
 					return false;
 				}
-				
+
 				setErrorMessage("");
+				setParameters();
 				return true;
+			} 
+			else {
+				// Public
+				setParameters();
+				return true; 
 			}
-			else
-				return true;					// Public
-		}		
-		return false;							// Incomplete Fields
+		}
+    
+		return false; 
 	}
 
-	public Map<String, String> getHadoopParUD() {
-		return hadoopParUD;
+	public Map<String, String> getParameters() {
+		return parameters;
 	}
-
+	
+	public void setParameters(){
+		
+		parameters.put("d", Integer.toString(deadline));
+		parameters.put("hlow", Integer.toString(hlow));
+		parameters.put("hup", Integer.toString(hup));
+		parameters.put("think", Integer.toString(thinkTime));
+		
+		if (currentConf.isPrivate())
+			parameters.put("penalty", Float.toString(jobPenalty));
+	}
+	
 	public void reset() {
-		this.hadoopParUD.clear();
+		
+		hlowText.setText("");
+		hupText.setText("");
+		jobPenaltyText.setText("");
+		deadlineText.setText("");
+		
+		parameters.clear();
 		resetParameters();
-		updateThinkTextField();
-		hlowTextField.setText("");
-		hupTextField.setText("");
-		penaltyTextField.setText("");
-		hadoopDTextField.setText("");
+		
 		if (Configuration.getCurrent().isPrivate()) {
 			privateCase();
 		} else {
 			publicCase();
 		}
 	}
+	
+	private void resetParameters() {
+		hlow = -1;
+		hup = -1;
+		jobPenalty = -1;
+		deadline = -1;
+	}
 
+    public void setThinkTime(String thinkTimeInput){
+    	
+    	thinkText.setText(thinkTimeInput);
+		thinkText.setEnabled(false);
+		thinkText.setEditable(false);
+		
+		if (thinkTimeInput.equals("0")){
+			thinkTime = 1;		 
+		}
+		else {
+			System.out.println(thinkTimeInput);
+			thinkTime = Integer.parseInt(thinkTimeInput);
+		}	
+		return;
+	}
+    
 	public void privateCase() {
-		l5.setVisible(true);
-		penaltyTextField.setVisible(true);
-		if (Configuration.getCurrent().getScenario().getAdmissionControl() == false){
-			penaltyTextField.setEditable(false);
-			penaltyTextField.setEnabled(false);
+		jobPenaltyLabel.setVisible(true);
+		jobPenaltyText.setVisible(true);
+		if (Configuration.getCurrent().getScenario().getAdmissionControl() == false) {
+			jobPenaltyText.setEditable(false);
+			jobPenaltyText.setEnabled(false);
 		}
 	}
 
 	public void publicCase() {
-		l5.setVisible(false);
-		penaltyTextField.setVisible(false);
+		jobPenaltyLabel.setVisible(false);
+		jobPenaltyText.setVisible(false);
 	}
 }
