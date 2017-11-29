@@ -153,10 +153,9 @@ public class FileManager {
         SparkFileManager.putPlaceHolderXML(idToReplace, "@@CORES@@", jsimgFile);
     }
 	
-
 	/**
-	 * Builds the JSON representation of the current Configuration and
-	 * eventually dumps it on a file.
+	 * Builds the JSON representation of the current Configuration
+	 * and save it on a file.
 	 */
 	public static void generateInputJson() {
 		Configuration currentConfig = Configuration.getCurrent();
@@ -183,7 +182,7 @@ public class FileManager {
 				data.setMapPublicCloudParameters(null);
 			}
 		}
-
+		
 		setMachineLearningProfile(data, currentConfig);
 
 		if (!Configuration.getCurrent().canSend()) {
@@ -317,7 +316,6 @@ public class FileManager {
 		data.setMapClassParameters(new ClassParametersMap(classdesc1));
 	}
 	
-
 	private static void setEtaR(InstanceDataMultiProvider data, Configuration currentConfig) {
 		// Set PublicCloudParameters
 		Map<String, Map<String, Map<String, PublicCloudParameters>>> classdesc2 = new HashMap<String, Map<String, Map<String, PublicCloudParameters>>>();
@@ -346,9 +344,11 @@ public class FileManager {
 	}
 
 	private static void setMachineLearningProfile(InstanceDataMultiProvider data, Configuration currentConfig) {
-		if (currentConfig.isHadoop() || currentConfig.isSpark()) {
+		
+		if ((currentConfig.isHadoop() || currentConfig.isSpark()) && !Preferences.simulatorIsDAGSIM()) {
 			Configuration.getCurrent().setCanSend(setMachineLearningHadoop(data));
-		} else {
+		} 
+		else {
 			// Set mapJobMLProfile - MACHINE LEARNING
 			Map<String, JobMLProfile> jmlMap = new HashMap<String, JobMLProfile>();
 			List<String> par = new ArrayList<String>();
@@ -357,7 +357,11 @@ public class FileManager {
 
 			for (ClassDesc cd : currentConfig.getClasses()) {
 				JobMLProfile jmlProfile = JobMLProfileGenerator.build(par);
-				jmlMap.put(String.valueOf(cd.getId()), jmlProfile);
+				
+				if ((cd.getMlPath() == null || cd.getMlPath().isEmpty()))
+					jmlMap.put(String.valueOf(cd.getId()), null);
+				else
+					jmlMap.put(String.valueOf(cd.getId()), jmlProfile);		
 			}
 
 			JobMLProfilesMap jML = JobMLProfilesMapGenerator.build();
@@ -463,14 +467,19 @@ public class FileManager {
 
 		try {
 			for (ClassDesc cd : Configuration.getCurrent().getClasses()) {
+				
+				if (cd.getMlPath() == null || cd.getMlPath().isEmpty()){
+					jmlMap.put(String.valueOf(cd.getId()), null);
+					continue;
+				}
+				
 				Map<String, SVRFeature> map = new HashMap<String, SVRFeature>();
 
 				Object obj = parser.parse(new FileReader(cd.getMlPath()));
 				JSONObject jsonObject = (JSONObject) obj;
 				JSONObject parameter = (JSONObject) jsonObject.get("mlFeatures");
 
-				Map<String, String> toCheck = cd.getAltDtsmHadoop()
-						.get(cd.getAltDtsmHadoop().keySet().iterator().next());
+				Map<String, String> toCheck = cd.getAltDtsmHadoop().get(cd.getAltDtsmHadoop().keySet().iterator().next());
 				for (String st : toCheck.keySet()) {
 					if (!st.equals("file")) {
 						if (!parameter.containsKey(st)) {

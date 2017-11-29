@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 
-import it.polimi.diceH2020.plugin.control.Configuration;
 import it.polimi.diceH2020.plugin.control.PrivateConfiguration;
 import it.polimi.diceH2020.plugin.control.VmClass;
 import it.polimi.diceH2020.plugin.preferences.Preferences;
@@ -47,13 +46,12 @@ import utils.JsonDatabase;
  */
 public class ClassPage extends WizardPage {
 	
-	private static final String DEFAULT_ML_PROFILE_PATH = Preferences.getSavingDir() + "ml_model.txt";
 	
 	private Composite container;
 	private GridLayout layout;
 	
 	private List availableAlternatives, chosenAlternatives;
-	private Label fileName, errorLabel, mlNameFile;
+	private Label fileName, errorLabel, mlNameFile, classesLabel;
 	private Button mlProfile, button;
 	
 	private HashMap<String, String> altDtsm;						// MAP OF: VM | InputModel
@@ -79,7 +77,16 @@ public class ClassPage extends WizardPage {
 		layout = new GridLayout();
 		container.setLayout(layout);
 		layout.numColumns = 4;
-
+		layout.verticalSpacing = 15;
+		
+		classesLabel = new Label(container, SWT.NONE);
+		classesLabel.setText("");
+		classesLabel.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
+		
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		
 		Label l = new Label(container, SWT.NONE);
 		l.setText("Choose a vm configuration");
 		l.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
@@ -245,18 +252,10 @@ public class ClassPage extends WizardPage {
 	
 	@Override
 	public boolean canFlipToNextPage() {
-		if (Configuration.getCurrent().isHadoop() || Configuration.getCurrent().isSpark()) {
-
-			if (!ddsmPath.equals("") && chosenAlternatives.getItemCount() > 0 && !mlPath.equals("")) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		if (!ddsmPath.equals("") && chosenAlternatives.getItemCount() > 0) {
+		if (!ddsmPath.equals("") && chosenAlternatives.getItemCount() > 0) 
 			return true;
-		}
-		return false;
+		else
+			return false;
 	}
 
 	private void populateAlternatives() {
@@ -287,29 +286,28 @@ public class ClassPage extends WizardPage {
 		chosenAlternatives.removeAll();
 		populateAlternatives();
 		fileName.setText("");
-		ddsmPath = "";
+		mlNameFile.setText("");
 		getWizard().getContainer().updateButtons();
 		container.layout();
 		altDtsm = new HashMap<String, String>();
 		mlPath = "";
+		ddsmPath = "";
 	}
 
 	public String[] getSelectedAlternatives() {
 		return chosenAlternatives.getItems();
 	}
 
-	public void setNumClasses(int numClasses) {
-	}
-
 	public String getMlPath() {
-		if(mlPath.isEmpty()){
-			return DEFAULT_ML_PROFILE_PATH;
-		}
 		return mlPath;
 	}
 	
 	public String getDDSMPath(){
 		return ddsmPath;
+	}
+	
+	public void setClasses(int current, int total){
+		classesLabel.setText(String.format("Current class: %d / %d", current, total));
 	}
 
 	public void privateCase() {

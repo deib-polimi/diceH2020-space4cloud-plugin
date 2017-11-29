@@ -38,7 +38,6 @@ public class Configuration implements Serializable {
 	private static Configuration currentConfig;
 
 	private int numClasses;
-	
 	private ArrayList<ClassDesc> classes;
 	
 	private Scenario scenario;
