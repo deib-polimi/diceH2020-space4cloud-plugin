@@ -129,7 +129,7 @@ public class NetworkManager {
 		HttpResponse response;
 		HttpPost post = new HttpPost(retrieveUploadEndpoint());
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-		builder.addPart("scenario", new StringBody(scenario.getStringRepresentation(), ContentType.DEFAULT_TEXT));
+		builder.addPart("scenario", new StringBody(scenario.getStringRepresentation(), ContentType.TEXT_PLAIN));
 
 		for (File file : files) {
 			builder.addPart("file[]", new FileBody(file));

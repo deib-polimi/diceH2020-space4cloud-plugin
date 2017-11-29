@@ -37,7 +37,7 @@ public class ClassDesc implements Serializable {
 	private final int id;
 	
 	private Map<String, String> altDtsm;
-	private Map<String, Map<String, String>> altDtsmHadoop; 	// Parameters from DTSM files
+	private Map<String, Map<String, String>> altDtsmHadoop; 
 	private String ddsmPath;
 	private String mlPath;
 
@@ -72,7 +72,7 @@ public class ClassDesc implements Serializable {
 	}
 
 	public Map<String, Map<String, String>> getAltDtsmHadoop() {
-		if (Configuration.getCurrent().isHadoop() || Configuration.getCurrent().isSpark()){
+		if (!Configuration.getCurrent().isHadoop() && !Configuration.getCurrent().isSpark()) {
 			return null;
 		}
 		return altDtsmHadoop;
@@ -86,6 +86,7 @@ public class ClassDesc implements Serializable {
 	 * @param exp
 	 *            Map of Hadoop parameters
 	 */
+	
 	public void expandAltDtsmHadoop(String alt, Map<String, String> exp) {
 		if (altDtsmHadoop == null) {
 			altDtsmHadoop = new HashMap<String, Map<String, String>>();
@@ -93,7 +94,6 @@ public class ClassDesc implements Serializable {
 		exp.put("file", altDtsm.get(alt));
 		altDtsmHadoop.put(alt, exp);
 	}
-
 	public Map<String, String> getHadoopParUD() {
 		if (Configuration.getCurrent().isHadoop() || Configuration.getCurrent().isSpark()){
 			return hadoopParUD;

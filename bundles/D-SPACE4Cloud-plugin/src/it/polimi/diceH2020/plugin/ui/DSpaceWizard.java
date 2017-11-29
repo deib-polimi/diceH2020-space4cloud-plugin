@@ -18,10 +18,8 @@ limitations under the License.
 
 package it.polimi.diceH2020.plugin.ui;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,7 +29,6 @@ import org.eclipse.jface.wizard.Wizard;
 
 import it.polimi.diceH2020.plugin.control.ClassDesc;
 import it.polimi.diceH2020.plugin.control.Configuration;
-import it.polimi.diceH2020.plugin.control.FileHandler;
 import it.polimi.diceH2020.plugin.control.PrivateConfiguration;
 import it.polimi.diceH2020.plugin.preferences.Preferences;
 import it.polimi.diceH2020.SPACE4Cloud.shared.settings.*;
@@ -44,7 +41,6 @@ import it.polimi.diceH2020.SPACE4Cloud.shared.settings.*;
  *
  */
 public class DSpaceWizard extends Wizard {
-	private FileHandler fileHandler;
 	
 	private InitialPage initialPage;
 	private ClassPage classPage;
@@ -55,7 +51,7 @@ public class DSpaceWizard extends Wizard {
 	private FinalPage finalPage;
 	
 	private int numClasses;			
-	private int currentClass = 1;
+	private int currentClass;
 	private ClassDesc classDescription;
 	
 	private boolean wizardCompleted = false;
@@ -63,7 +59,6 @@ public class DSpaceWizard extends Wizard {
 	public DSpaceWizard() {
 		super();
 		setNeedsProgressMonitor(true);
-		this.fileHandler = new FileHandler();
 	}
 
 	@Override
@@ -109,7 +104,9 @@ public class DSpaceWizard extends Wizard {
 			CloudType cloudType = initialPage.getCloudType();
 			
 			numClasses = initialPage.getClasses();
-			currentClass = 0;
+			currentClass = 1;
+			
+			classPage.setClasses(currentClass, numClasses);
 			
 			currentConfig.setNumClasses(numClasses);
 			
@@ -119,6 +116,7 @@ public class DSpaceWizard extends Wizard {
 			}
 			
 			try {
+				
 				if (cloudType == CloudType.PUBLIC)
 					currentConfig.setScenario(technology, cloudType, spotPricing, null);
 				else 
@@ -128,7 +126,7 @@ public class DSpaceWizard extends Wizard {
 				initialPage.setErrorMessage("There was an error during the creation of the scenario, please try again.");
 				return initialPage;
 			}
-					
+			
 			if (cloudType == CloudType.PRIVATE) {
 				sparkDataPage.privateCase();
 				hadoopDataPage.privateCase();
@@ -149,33 +147,51 @@ public class DSpaceWizard extends Wizard {
 		if (currentPage == classPage) {
 						
 			classDescription = new ClassDesc(currentClass);
-			currentClass ++;
+			currentClass++;
+			classPage.setClasses(currentClass, numClasses);
 			
 			classDescription.setDdsmPath(classPage.getDDSMPath());
 			classDescription.setAltDtsm(classPage.getAltDtsm());
+			if (!classPage.getMlPath().isEmpty())
+				classDescription.setMlPath(classPage.getMlPath());
+			
+			
 			
 			if (currentConfig.isHadoop()){
 				
-				// Get Think Time from the the first entry 
 				String firstEntry = classPage.getAltDtsm().values().iterator().next();
 				String thinkTime = getThinkTimeFromModel(firstEntry);
-				classDescription.setMlPath(classPage.getMlPath());
-				hadoopDataPage.setThinkTime(thinkTime);
 				
+				if (thinkTime.isEmpty()){
+					classPage.setErrorMessage("Unable to read think time from input model");
+					return classPage;
+				}
+				
+				hadoopDataPage.setThinkTime(thinkTime);
 				currentConfig.getClasses().add(classDescription);
 				return hadoopDataPage;
 			} 
-			else if (currentConfig.isSpark()){
-				classDescription.setMlPath(classPage.getMlPath());
+			
+			if (currentConfig.isSpark()){
 				
 				if ( Preferences.simulatorIsGSPN() || Preferences.simulatorIsJMT() ){
 					String firstEntry = classPage.getAltDtsm().values().iterator().next();
 					String thinkTime = getThinkTimeFromModel(firstEntry);
-					sparkDataPage.setThinkTime(thinkTime);
+					
+					if (thinkTime.isEmpty()){
+						classPage.setErrorMessage("Unable to read think time from input model");
+						return classPage;
+					}
+					else 
+						sparkDataPage.setThinkTime(thinkTime);
 				}
-				return sparkDataPage;
 				
-			} else {
+				currentConfig.getClasses().add(classDescription);
+				return sparkDataPage;
+			} 
+			
+			if (currentConfig.isStorm()){
+				currentConfig.getClasses().add(classDescription);
 				return stormDataPage;
 			}
 		}
@@ -189,14 +205,11 @@ public class DSpaceWizard extends Wizard {
 			// Read Parameters from page
 			classDescription.setHadoopParUD(hadoopDataPage.getParameters());
 			
-			
-			// Check if I've done all classes
-			if (currentClass == numClasses) {
+			if (currentClass > numClasses) {
 				wizardCompleted = true;
 				return finalPage;
 			}
 			
-			// Otherwise create new ClassParameter
 			classPage.reset();
 			hadoopDataPage.reset();
 
@@ -213,10 +226,11 @@ public class DSpaceWizard extends Wizard {
 		if (currentPage == sparkDataPage) {
 			classDescription.setHadoopParUD(sparkDataPage.getParameters());
 	
-			if (currentClass == numClasses) {
+			if (currentClass > numClasses) {
 				wizardCompleted = true;
 				return finalPage;
 			}
+			
 			classPage.reset();
 			sparkDataPage.reset();
 
@@ -232,7 +246,7 @@ public class DSpaceWizard extends Wizard {
 		if (currentPage == stormDataPage) {
 			classDescription.setStormU(stormDataPage.getStormU());
 
-			if (currentClass == numClasses) {
+			if (currentClass > numClasses) {
 				wizardCompleted = true;
 				return finalPage;
 			}
@@ -294,10 +308,8 @@ public class DSpaceWizard extends Wizard {
         
 		}
 	    catch (IOException e) {
-	        // TODO Auto-generated catch block
 	        e.printStackTrace();
+	        return "";
 	    }
-        
-		return "";
 	}
 }

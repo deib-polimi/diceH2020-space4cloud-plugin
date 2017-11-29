@@ -55,6 +55,8 @@ public class InitialPage extends WizardPage {
 	private Text classesText, spotRatioText;
 	private Label classesLabel, technologyLabel;
 	private List technologyList;
+	
+	private Label debugLabel;
 
 	// Scenario
 	private int classes = -1;
@@ -80,9 +82,9 @@ public class InitialPage extends WizardPage {
 		
 		container = new Composite(parent, SWT.NONE);
 		layout = new GridLayout();
+		container.setLayout(layout);
 		layout.numColumns = 2;
 		layout.makeColumnsEqualWidth = true;
-		container.setLayout(layout);
 		
 		classesLabel = new Label(container, SWT.NONE);
 		classesLabel.setText("Number of classes:");
@@ -171,6 +173,7 @@ public class InitialPage extends WizardPage {
 		admissionControlBtn = new Button(admissionComposite, SWT.CHECK);
 		admissionControlBtn.setText("Admission Control");
 		
+		
 
 		/*
 		 *  Listeners
@@ -188,8 +191,16 @@ public class InitialPage extends WizardPage {
 						 classesText.setFocus();
 					 }
 					 else{
-						 setErrorMessage(null);	
-						 classes = value;
+						 
+						 if (classes == 1 && cloudType == CloudType.PRIVATE && admissionControl){
+							 setErrorMessage("When using Admission Control the number classes should be greater than 1");
+							 classes = -1;
+							 classesText.setFocus();							 
+						 }
+						 else {
+							 classes = value;
+							 setErrorMessage(null);
+						 }
 					 }
 						 
 				 }
@@ -217,6 +228,7 @@ public class InitialPage extends WizardPage {
 		technologyList.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 			    
+
 				String selection = technologyList.getSelection()[0];
 				
 				if (selection.equals("Storm")){
@@ -224,13 +236,16 @@ public class InitialPage extends WizardPage {
 					technology = Technology.STORM;
 					cloudType = CloudType.PUBLIC;
 					disablePrivateCase();
+					classesText.setEnabled(true);
 				}
 				
 				if (selection.equals("Spark")){
 					technology = Technology.SPARK;
 					privateBtn.setEnabled(true);
 					
-					if (Preferences.simulatorIsJMT() || Preferences.simulatorIsGSPN()){
+					if ((Preferences.simulatorIsJMT() || Preferences.simulatorIsGSPN()) && 
+							(Preferences.simulatorIsDAGSIM() && cloudType == CloudType.PUBLIC)){
+						
 					classes = 1;
 					classesText.setText("1");
 					classesText.setEnabled(false);
@@ -239,6 +254,7 @@ public class InitialPage extends WizardPage {
 				
 				if (selection.contains("Hadoop")){
 					technology = Technology.HADOOP;
+					classesText.setEnabled(true);
 					if (Preferences.simulatorIsGSPN()){
 						privateBtn.setEnabled(true);
 					}
@@ -246,7 +262,6 @@ public class InitialPage extends WizardPage {
 						disablePrivateCase();
 					}
 				}
-				
 				getWizard().getContainer().updateButtons();
 			}
 		});
@@ -261,8 +276,11 @@ public class InitialPage extends WizardPage {
 				cloudType = CloudType.PRIVATE;
 				spotPricing = false;
 				
-				resetPublicCase();
-												
+				if (Preferences.simulatorIsDAGSIM() && cloudType == CloudType.PUBLIC){
+					classesText.setEnabled(true);
+				}
+				
+				resetPublicCase();			
 				getWizard().getContainer().updateButtons();
 
 			}
@@ -279,7 +297,6 @@ public class InitialPage extends WizardPage {
 				cloudType = CloudType.PUBLIC;
 				admissionControl = false;
 				admissionControlBtn.setSelection(false);
-				
 				
 				getWizard().getContainer().updateButtons();
 			}
@@ -343,6 +360,13 @@ public class InitialPage extends WizardPage {
 		    public void widgetSelected(SelectionEvent e)
 		    {
 		    	admissionControl = admissionControlBtn.getSelection();
+		    	if (cloudType == CloudType.PRIVATE && admissionControl && classes == 1){
+					setErrorMessage("When using Admission Control the number classes should be greater than 1");
+		    	}
+		    	else {
+		    		setErrorMessage(null);
+		    	}
+				getWizard().getContainer().updateButtons();
 		    }
 		});
 		
@@ -350,6 +374,7 @@ public class InitialPage extends WizardPage {
 		setPageComplete(false);
 	}
 
+	
 	private void resetPublicCase() {
 		spotPricingBtn.setSelection(false);
 		spotPricing = false; 
@@ -366,7 +391,6 @@ public class InitialPage extends WizardPage {
 		admissionComposite.setVisible(false);
 		admissionControlBtn.setSelection(false);
 		admissionControl = false;
-		
 		spotComposite.setVisible(true);
 		resetPublicCase();
 		
@@ -374,29 +398,25 @@ public class InitialPage extends WizardPage {
 	}
 	@Override
 	public boolean canFlipToNextPage() {
-		if (technology != null && classes > 0 && (privateBtn.getSelection() || publicBtn.getSelection())){
-						
-			if (cloudType == CloudType.PRIVATE){
-				if (admissionControl)
-					if (getClasses() > 1)
-						return true;
-					else {
-						setErrorMessage("When using Admission Control the number classes should be greater than 1");
-						return false;
-					}
-				return true;		// PRIVATE + NO ADMISSION CONTROL
-			}
-			else {
-				// CloudType.PUBLIC
-				if (spotPricing){
-					if (spotRatio >= 0 && spotRatio <= 1)
-						return true;
-				}
-				else 
-					return true;	// PUBLIC + NO LTC			
-			}
+		if (cloudType == CloudType.PRIVATE && admissionControl && classes == 1){
+			setErrorMessage("When using Admission Control the number classes should be greater than 1");
+			return false;
 		}
-		return false;
+
+		else {
+			
+			if (!spotPricing)
+				setErrorMessage(null);
+			
+			if (spotPricing && (spotRatio > 1 || spotRatio < 0))
+				return false;
+			
+			if (technology != null && classes > 0 && (privateBtn.getSelection() || publicBtn.getSelection())){
+				return true;
+			}
+			else
+				return false;
+		}
 	}
 	
 	public int getClasses() {

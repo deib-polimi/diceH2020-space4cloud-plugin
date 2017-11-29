@@ -18,19 +18,16 @@ limitations under the License.
 
 package it.polimi.diceH2020.plugin.control;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Map;
 import java.io.FileWriter;
 
-import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.BasicMonitor;
 import org.eclipse.emf.common.util.EList;
@@ -55,8 +52,6 @@ import fr.lip6.move.pnml.ptnet.Place;
 import fr.lip6.move.pnml.ptnet.Transition;
 import it.polimi.diceH2020.plugin.net.NetworkManager;
 import it.polimi.diceH2020.plugin.preferences.Preferences;
-import it.polimi.diceH2020.SPACE4Cloud.shared.settings.*;
-import utils.WriterReader;
 
 /**
  * Manages models transformations and analysis using DICE-plugin APIs and
@@ -93,7 +88,7 @@ public class DICEWrap {
 			System.out.println("Incomplete, aborting");
 			return;
 		}
-
+		
 		/*
 		 * STORM 
 		 */
@@ -161,15 +156,6 @@ public class DICEWrap {
 					if (Preferences.simulatorIsDAGSIM()){
 						File logFolder = new File(c.getAltDtsm().get(alt));
 						SparkFileManager.copyDagLogs(logFolder, c.getId(), alt);
-						// FileManager.generateInputJson(); 	fails
-						
-						try {
-							NetworkManager.getInstance().sendModel(FileManager.selectFiles(), currentConfig.getScenario());
-						} catch (UnsupportedEncodingException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						return;
 					}
 					
 					else {
@@ -178,13 +164,14 @@ public class DICEWrap {
 							buildSparkAnalyzableModel(c.getAltDtsm().get(alt));
 							generatePNML(String.valueOf(c.getId()), alt);
 						
+							// GSPN
 							if (Preferences.simulatorIsGSPN()){
 								genGSPN();
 								SparkFileManager.editFiles(c.getId(), alt, extractSparkIds());							
 							}
 							
+							// JMT
 							else if (Preferences.simulatorIsJMT()){
-								System.out.println("JMT!");
 								genJSIM(c.getId(), alt, extractSparkIds().getNumberOfConcurrentUsers());
 								SparkFileManager.editJSIMG(c.getId(), alt, extractSparkIds());
 							}
@@ -222,12 +209,11 @@ public class DICEWrap {
 	 *            
 	 */
 	private void extractParametersFromHadoopModel(ClassDesc c, String alt) {
-		String srcFile = c.getAltDtsm().get(alt);
+		String srcFile = c.getAltDtsm().get(alt);		
 		Map<String, String> par = FileManager.parseDOMXmlFile(srcFile);
 		c.expandAltDtsmHadoop(alt, par);
 	}
 
-	// TODO: may be useless
 	public void extractStormInitialMarking() {
 		for (Trace i : result.getTraceSet().getTraces()) {
 			if (i.getFromDomainElement() instanceof Device && i.getToAnalyzableElement() instanceof Place) {
@@ -418,7 +404,7 @@ public class DICEWrap {
 						 Preferences.getJmTPath(), Preferences.getJmTPath(), pnmlPath, outputPath, indexPath);
 		
 		System.out.println("Calling PNML_Pre_Processor");
-		System.out.println(command);
+		//System.out.println(command);
 		
 		Process proc;
 
