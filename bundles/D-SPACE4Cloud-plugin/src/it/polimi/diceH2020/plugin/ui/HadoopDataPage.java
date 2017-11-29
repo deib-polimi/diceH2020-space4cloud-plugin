@@ -269,7 +269,6 @@ public class HadoopDataPage extends WizardPage {
 			thinkTime = 1;		 
 		}
 		else {
-			System.out.println(thinkTimeInput);
 			thinkTime = Integer.parseInt(thinkTimeInput);
 		}	
 		return;
@@ -278,7 +277,7 @@ public class HadoopDataPage extends WizardPage {
 	public void privateCase() {
 		jobPenaltyLabel.setVisible(true);
 		jobPenaltyText.setVisible(true);
-		if (Configuration.getCurrent().getScenario().getAdmissionControl() == false) {
+		if (Configuration.getCurrent().hasAdmissionControl() == false) {
 			jobPenaltyText.setEditable(false);
 			jobPenaltyText.setEnabled(false);
 		}

@@ -145,7 +145,6 @@ public class SparkFileManager {
     static void putPlaceHolderXML(String id, String placeholder, File file){
 
         try {
-
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(file);

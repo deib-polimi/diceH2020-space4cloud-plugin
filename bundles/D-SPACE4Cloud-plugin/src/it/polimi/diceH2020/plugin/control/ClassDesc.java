@@ -72,7 +72,7 @@ public class ClassDesc implements Serializable {
 	}
 
 	public Map<String, Map<String, String>> getAltDtsmHadoop() {
-		if (!Configuration.getCurrent().isHadoop() && !Configuration.getCurrent().isSpark()) {
+		if (Configuration.getCurrent().isStorm()) {
 			return null;
 		}
 		return altDtsmHadoop;

@@ -34,9 +34,6 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 import it.polimi.diceH2020.SPACE4Cloud.shared.settings.CloudType;
 import it.polimi.diceH2020.SPACE4Cloud.shared.settings.Technology;
-
-import it.polimi.diceH2020.plugin.control.Configuration;
-import it.polimi.diceH2020.plugin.net.NetworkManager;
 import it.polimi.diceH2020.plugin.preferences.Preferences;
 /**
  * Initial page. The user can: -choose among private/public solution -select
@@ -55,8 +52,6 @@ public class InitialPage extends WizardPage {
 	private Text classesText, spotRatioText;
 	private Label classesLabel, technologyLabel;
 	private List technologyList;
-	
-	private Label debugLabel;
 
 	// Scenario
 	private int classes = -1;
@@ -82,9 +77,10 @@ public class InitialPage extends WizardPage {
 		
 		container = new Composite(parent, SWT.NONE);
 		layout = new GridLayout();
-		container.setLayout(layout);
 		layout.numColumns = 2;
+		layout.horizontalSpacing = 177;
 		layout.makeColumnsEqualWidth = true;
+		container.setLayout(layout);
 		
 		classesLabel = new Label(container, SWT.NONE);
 		classesLabel.setText("Number of classes:");
@@ -103,7 +99,8 @@ public class InitialPage extends WizardPage {
 		technologyList.add("Spark");
 		
 		if (Preferences.simulatorIsJMT()){
-			technologyList.add("Storm");
+			// technologyList.add("Storm");
+			technologyList.add("Hadoop/MapReduce");
 		}
 		
 		if (Preferences.simulatorIsGSPN()){
@@ -174,7 +171,6 @@ public class InitialPage extends WizardPage {
 		admissionControlBtn.setText("Admission Control");
 		
 		
-
 		/*
 		 *  Listeners
 		 */
@@ -191,16 +187,8 @@ public class InitialPage extends WizardPage {
 						 classesText.setFocus();
 					 }
 					 else{
-						 
-						 if (classes == 1 && cloudType == CloudType.PRIVATE && admissionControl){
-							 setErrorMessage("When using Admission Control the number classes should be greater than 1");
-							 classes = -1;
-							 classesText.setFocus();							 
-						 }
-						 else {
-							 classes = value;
-							 setErrorMessage(null);
-						 }
+						classes = value;
+						setErrorMessage(null);
 					 }
 						 
 				 }
@@ -360,12 +348,6 @@ public class InitialPage extends WizardPage {
 		    public void widgetSelected(SelectionEvent e)
 		    {
 		    	admissionControl = admissionControlBtn.getSelection();
-		    	if (cloudType == CloudType.PRIVATE && admissionControl && classes == 1){
-					setErrorMessage("When using Admission Control the number classes should be greater than 1");
-		    	}
-		    	else {
-		    		setErrorMessage(null);
-		    	}
 				getWizard().getContainer().updateButtons();
 		    }
 		});
@@ -398,25 +380,15 @@ public class InitialPage extends WizardPage {
 	}
 	@Override
 	public boolean canFlipToNextPage() {
-		if (cloudType == CloudType.PRIVATE && admissionControl && classes == 1){
-			setErrorMessage("When using Admission Control the number classes should be greater than 1");
+		
+		if (spotPricing && (spotRatio > 1 || spotRatio < 0))
 			return false;
-		}
+			
+		if (technology != null && classes > 0 && (privateBtn.getSelection() || publicBtn.getSelection()))
+			return true;
 
-		else {
-			
-			if (!spotPricing)
-				setErrorMessage(null);
-			
-			if (spotPricing && (spotRatio > 1 || spotRatio < 0))
-				return false;
-			
-			if (technology != null && classes > 0 && (privateBtn.getSelection() || publicBtn.getSelection())){
-				return true;
-			}
-			else
-				return false;
-		}
+		else
+			return false;
 	}
 	
 	public int getClasses() {

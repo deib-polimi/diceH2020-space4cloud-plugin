@@ -71,7 +71,7 @@ public class DSpaceWizard extends Wizard {
 	public void addPages() {
 		initialPage = new InitialPage("Service type", "Choose service type");
 		classPage = new ClassPage("Class page", "Select page parameters and alternatives");
-		finalPage = new FinalPage("Finish", ".");
+		finalPage = new FinalPage("Finish", "Please wait for the results to be available");
 		hadoopDataPage = new HadoopDataPage("Set Hadoop parameters");
 		stormDataPage = new StormDataPage("Set Storm parameters");
 		sparkDataPage = new SparkDataPage("Set Spark parameters");
@@ -105,7 +105,6 @@ public class DSpaceWizard extends Wizard {
 			
 			numClasses = initialPage.getClasses();
 			currentClass = 1;
-			
 			classPage.setClasses(currentClass, numClasses);
 			
 			currentConfig.setNumClasses(numClasses);
@@ -147,15 +146,11 @@ public class DSpaceWizard extends Wizard {
 		if (currentPage == classPage) {
 						
 			classDescription = new ClassDesc(currentClass);
-			currentClass++;
-			classPage.setClasses(currentClass, numClasses);
-			
 			classDescription.setDdsmPath(classPage.getDDSMPath());
 			classDescription.setAltDtsm(classPage.getAltDtsm());
+			
 			if (!classPage.getMlPath().isEmpty())
 				classDescription.setMlPath(classPage.getMlPath());
-			
-			
 			
 			if (currentConfig.isHadoop()){
 				
@@ -163,12 +158,12 @@ public class DSpaceWizard extends Wizard {
 				String thinkTime = getThinkTimeFromModel(firstEntry);
 				
 				if (thinkTime.isEmpty()){
-					classPage.setErrorMessage("Unable to read think time from input model");
+					classPage.setErrorMessage("Unable to read think time from input model, please check your input model");
+					classPage.reset();
 					return classPage;
 				}
-				
+			
 				hadoopDataPage.setThinkTime(thinkTime);
-				currentConfig.getClasses().add(classDescription);
 				return hadoopDataPage;
 			} 
 			
@@ -179,19 +174,18 @@ public class DSpaceWizard extends Wizard {
 					String thinkTime = getThinkTimeFromModel(firstEntry);
 					
 					if (thinkTime.isEmpty()){
-						classPage.setErrorMessage("Unable to read think time from input model");
+						classPage.setErrorMessage("Unable to read think time from input model, please check your input model");
+						classPage.reset();
 						return classPage;
 					}
 					else 
 						sparkDataPage.setThinkTime(thinkTime);
 				}
 				
-				currentConfig.getClasses().add(classDescription);
 				return sparkDataPage;
 			} 
 			
 			if (currentConfig.isStorm()){
-				currentConfig.getClasses().add(classDescription);
 				return stormDataPage;
 			}
 		}
@@ -201,8 +195,10 @@ public class DSpaceWizard extends Wizard {
 		 */
 
 		if (currentPage == hadoopDataPage) {
-			
-			// Read Parameters from page
+		
+			currentConfig.getClasses().add(classDescription);
+			currentClass++;
+			classPage.setClasses(currentClass, numClasses);
 			classDescription.setHadoopParUD(hadoopDataPage.getParameters());
 			
 			if (currentClass > numClasses) {
@@ -215,7 +211,8 @@ public class DSpaceWizard extends Wizard {
 
 			if (currentConfig.isPrivate())
 				classPage.privateCase();
-
+			
+	
 			return classPage;
 		}
 
@@ -224,6 +221,10 @@ public class DSpaceWizard extends Wizard {
 		 */
 		
 		if (currentPage == sparkDataPage) {
+			
+			currentConfig.getClasses().add(classDescription);
+			currentClass++;
+			classPage.setClasses(currentClass, numClasses);
 			classDescription.setHadoopParUD(sparkDataPage.getParameters());
 	
 			if (currentClass > numClasses) {
@@ -244,6 +245,10 @@ public class DSpaceWizard extends Wizard {
 		 */
 		
 		if (currentPage == stormDataPage) {
+			
+			currentConfig.getClasses().add(classDescription);
+			currentClass++;
+			classPage.setClasses(currentClass, numClasses);
 			classDescription.setStormU(stormDataPage.getStormU());
 
 			if (currentClass > numClasses) {
@@ -268,6 +273,7 @@ public class DSpaceWizard extends Wizard {
 			PrivateConfiguration.getCurrent().setPriM(privateConfigPage.getMemForNode());
 			PrivateConfiguration.getCurrent().setPriN(privateConfigPage.getNumNodes());
 			PrivateConfiguration.getCurrent().setPriV(privateConfigPage.getCpuNode());
+			classPage.reset();
 			classPage.privateCase();
 			return classPage;
 		}
@@ -280,7 +286,6 @@ public class DSpaceWizard extends Wizard {
 		return wizardCompleted;
 	}
 	
-	
 	private String getThinkTimeFromModel(String inputModel){
 		
 		String think;
@@ -291,10 +296,10 @@ public class DSpaceWizard extends Wizard {
 	        Pattern pattern = null;
         
 	        if (currentConfig.isHadoop())    		
-	        	pattern = Pattern.compile("hadoopExtDelay=\\[([0-9]+)\\]");
+	        	pattern = Pattern.compile("hadoopExtDelay=.*?(\\d+)(.*?)");
 	        
 	        if (currentConfig.isSpark())
-	        	pattern = Pattern.compile("sparkExtDelay=\"\\(expr=([0-9]+),");
+	        	pattern = Pattern.compile("sparkExtDelay=.*?(\\d+)(.*?)");
 	        
 	        Matcher matcher = pattern.matcher(content);
 	        if (matcher.find()) {

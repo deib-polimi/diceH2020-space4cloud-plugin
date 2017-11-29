@@ -121,15 +121,11 @@ public class DICEWrap {
 						buildHadoopAnalyzableModel(c.getAltDtsm().get(alt));
 						generatePNML(String.valueOf(c.getId()), alt);
 						
-						if (Preferences.simulatorIsDAGSIM() ){
-							System.err.println("Dag Sim not supported yet");	
-							return;
-						}
-						
-						else if (Preferences.simulatorIsGSPN()){
+						if (Preferences.simulatorIsGSPN()){
 							genGSPN();
 							FileManager.editFiles(c.getId(), alt, extractHadoopId());
 						} 
+						
 						else if (Preferences.getSimulator().equals(Preferences.JMT)){
 							genJSIM(c.getId(), alt, extractHadoopId());
 							FileManager.editJsimgHadoop(c.getId(), alt, extractHadoopId());		
@@ -212,6 +208,7 @@ public class DICEWrap {
 		String srcFile = c.getAltDtsm().get(alt);		
 		Map<String, String> par = FileManager.parseDOMXmlFile(srcFile);
 		c.expandAltDtsmHadoop(alt, par);
+		System.out.println(c.getAltDtsmHadoop().toString());
 	}
 
 	public void extractStormInitialMarking() {
