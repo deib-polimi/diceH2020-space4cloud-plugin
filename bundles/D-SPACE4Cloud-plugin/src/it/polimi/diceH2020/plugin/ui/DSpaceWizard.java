@@ -149,8 +149,6 @@ public class DSpaceWizard extends Wizard {
 			classDescription.setDdsmPath(classPage.getDDSMPath());
 			classDescription.setAltDtsm(classPage.getAltDtsm());
 			
-			if (!classPage.getMlPath().isEmpty())
-				classDescription.setMlPath(classPage.getMlPath());
 			
 			if (currentConfig.isHadoop()){
 				
