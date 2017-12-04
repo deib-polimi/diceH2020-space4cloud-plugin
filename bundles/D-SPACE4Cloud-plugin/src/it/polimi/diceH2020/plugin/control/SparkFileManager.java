@@ -33,6 +33,8 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
+
+import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -89,16 +91,16 @@ public class SparkFileManager {
 
     public static void editFiles(int cdid, String alt, SparkIds sparkIds) {
         String savingDir = Preferences.getSavingDir();
-        Configuration conf = Configuration.getCurrent();
+        Configuration currentConfig = Configuration.getCurrent();
 
         File folder = new File(savingDir + "tmp/");
         File files[] = folder.listFiles();
         String outputFilePath;
 
-        if (Configuration.getCurrent().getIsPrivate()) {
-            outputFilePath = savingDir + conf.getID() + "J" + cdid + "inHouse" + alt;
+        if (currentConfig.isPrivate()) {
+            outputFilePath = savingDir + currentConfig.getID() + "J" + cdid + "inHouse" + alt;
         } else {
-            outputFilePath = savingDir + conf.getID() + "J" + cdid + alt.replaceAll("-", "");
+            outputFilePath = savingDir + currentConfig.getID() + "J" + cdid + alt.replaceAll("-", "");
         }
         File netFile = null;
         File defFile = null;
@@ -115,6 +117,7 @@ public class SparkFileManager {
         System.out.println("devices2resourcesId: " + sparkIds.getDevices2resources());
         System.out.println("Last Transaction Id: " + sparkIds.getNumberOfConcurrentUsers());
 
+        // [LOG]
         System.out.println("Putting placeholders over net file");
 
         putPlaceHolder(sparkIds.getDevices2resources(), "@@CORES@@", netFile);
@@ -126,18 +129,14 @@ public class SparkFileManager {
     }
 
     public static void editJSIMG(int cdid, String alt, SparkIds sparkIds) {
-        Configuration conf = Configuration.getCurrent();
+        Configuration currentConfig = Configuration.getCurrent();
 
-        String filename;
-        if (conf.getIsPrivate()) {
-            filename = Preferences.getSavingDir() + conf.getID() + "J" + cdid + "inHouse" + alt;
-        } else {
-            filename = Preferences.getSavingDir() + conf.getID() + "J" + cdid + alt.replaceAll("-", "");
-        }
-
+        String filename = currentConfig.getFilename(cdid, alt);
+        File jsimgFile = new File(filename + ".jsimg");
+        
+        // [LOG]
         System.out.println(String.format("Putting placeholders over %s.jsimg", filename));
 
-        File jsimgFile = new File(filename + ".jsimg");
         putPlaceHolderXML(sparkIds.getUsers(), "@@CORES@@", jsimgFile);
         putPlaceHolderXML(sparkIds.getDevices2resources(), "@@CORES@@", jsimgFile);
     }
@@ -146,7 +145,6 @@ public class SparkFileManager {
     static void putPlaceHolderXML(String id, String placeholder, File file){
 
         try {
-
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(file);
@@ -187,18 +185,35 @@ public class SparkFileManager {
             e.printStackTrace();
         }
     }
+    
+    public static boolean copyDagLogs(File logFolder, int cdid, String alt){
+    	
+    	if (!logFolder.isDirectory())
+    		return false;
+    	
+    	for (File file : logFolder.listFiles()) {
+    	    if (file.isFile()) {
+    	        String logName = file.getName();
+    	        String filePrefix = Configuration.getCurrent().getFilename(cdid, alt);
+    	        file.renameTo(new File(filePrefix.concat(logName)));
+    	    }
+    	}
+    	
+    	File destFolder = new File(Preferences.getSavingDir());
+    	
+    	try {
+    	    FileUtils.copyDirectory(logFolder, destFolder, true);
+    	} catch (IOException e) {
+    	    e.printStackTrace();
+    	}
+    	
+    	return true;
+    }
 
     public static void createStatFile(int cdid, String alt, String LastTransitionId){
 
-        Configuration conf = Configuration.getCurrent();
-        String filename;
-
-        if (conf.getIsPrivate()) {
-            filename = Preferences.getSavingDir() + conf.getID() + "J" + cdid + "inHouse" + alt;
-        } else {
-            filename = Preferences.getSavingDir() + conf.getID() + "J" + cdid + alt.replaceAll("-", "");
-        }
-
+        Configuration currentConfig = Configuration.getCurrent();
+        String filename = currentConfig.getFilename(cdid, alt);
         File statFile = new File(filename + ".stat");
 
         try (PrintWriter out = new PrintWriter(statFile)){

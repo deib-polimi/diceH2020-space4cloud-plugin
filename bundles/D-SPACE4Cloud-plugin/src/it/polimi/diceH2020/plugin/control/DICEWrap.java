@@ -18,19 +18,16 @@ limitations under the License.
 
 package it.polimi.diceH2020.plugin.control;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Map;
 import java.io.FileWriter;
 
-import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.BasicMonitor;
 import org.eclipse.emf.common.util.EList;
@@ -55,7 +52,6 @@ import fr.lip6.move.pnml.ptnet.Place;
 import fr.lip6.move.pnml.ptnet.Transition;
 import it.polimi.diceH2020.plugin.net.NetworkManager;
 import it.polimi.diceH2020.plugin.preferences.Preferences;
-import utils.WriterReader;
 
 /**
  * Manages models transformations and analysis using DICE-plugin APIs and
@@ -67,8 +63,7 @@ import utils.WriterReader;
 public class DICEWrap {
 	private static DICEWrap diceWrap;
 	private ModelResult result;
-	private Configuration conf;
-	private String scenario;
+	private Configuration currentConfig;
 	private String initialMarking;
 
 	public DICEWrap() {
@@ -86,18 +81,21 @@ public class DICEWrap {
 	 * Creates models from input files and upload them to the web service
 	 */
 	public void start() {
-		conf = Configuration.getCurrent();
-		System.out.println(conf.getID());
+		
+		currentConfig = Configuration.getCurrent();
 
-		if (!conf.isComplete()) {
-			System.out.println("Incomplete, aborting"); // TODO check completion for real
+		if (!currentConfig.isComplete()) {
+			System.out.println("Incomplete, aborting");
 			return;
 		}
-
-		switch (conf.getTechnology()) {
 		
-		case "Storm":
-			for (ClassDesc c : conf.getClasses()) {
+		/*
+		 * STORM 
+		 */
+		
+		if (currentConfig.isStorm()){
+			
+			for (ClassDesc c : currentConfig.getClasses()) {
 				for (String alt : c.getAltDtsm().keySet()) {
 					try {
 						buildStormAnalyzableModel(c.getAltDtsm().get(alt));
@@ -110,32 +108,27 @@ public class DICEWrap {
 					}
 				}
 			}
-			break;
-			
-		case "Hadoop Map-reduce":
-			for (ClassDesc c : conf.getClasses()) {
-				for (String alt : c.getAltDtsm().keySet())
+		}
+		
+		/*
+		 * HADOOP
+		 */
+		
+		if (currentConfig.isHadoop()){
+			for (ClassDesc c : currentConfig.getClasses()) {
+				for (String alt : c.getAltDtsm().keySet()){
 					try {
 						buildHadoopAnalyzableModel(c.getAltDtsm().get(alt));
 						generatePNML(String.valueOf(c.getId()), alt);
 						
-						if (Preferences.getSimulator().equals(Preferences.DAG_SIM)){
-							System.err.println("Dag Sim not supported yet");	
-							return;
-						}
-						
-						else if (Preferences.getSimulator().equals(Preferences.GSPN)){
+						if (Preferences.simulatorIsGSPN()){
 							genGSPN();
 							FileManager.editFiles(c.getId(), alt, extractHadoopId());
 						} 
+						
 						else if (Preferences.getSimulator().equals(Preferences.JMT)){
 							genJSIM(c.getId(), alt, extractHadoopId());
 							FileManager.editJsimgHadoop(c.getId(), alt, extractHadoopId());		
-						}
-						
-						else {
-							System.err.println("Unknown simulator: " + Preferences.getSimulator());
-							return;
 						}
 										
 						FileManager.createStatFile(c.getId(), alt, extractHadoopId());
@@ -143,77 +136,81 @@ public class DICEWrap {
 					} catch (Exception e) {
 						System.out.println(e.getMessage());
 					}
+				}
 			}
-			break;
-			
-		case "Spark":
-			for (ClassDesc c : conf.getClasses()) {
-				for (String alt : c.getAltDtsm().keySet())
-					try {
-						buildSparkAnalyzableModel(c.getAltDtsm().get(alt));
-						generatePNML(String.valueOf(c.getId()), alt);
-						
-						if (Preferences.getSimulator().equals(Preferences.DAG_SIM)){
-							System.err.println("Dag Sim not supported yet");	
-							return;
-						}
-						else if (Preferences.getSimulator().equals(Preferences.GSPN)){
-							genGSPN();
-							SparkFileManager.editFiles(c.getId(), alt, extractSparkIds());							
-						}
-						else if (Preferences.getSimulator().equals(Preferences.JMT)){
-							genJSIM(c.getId(), alt, extractSparkIds().getNumberOfConcurrentUsers());
-							SparkFileManager.editJSIMG(c.getId(), alt, extractSparkIds());
-						}
-						else {
-							System.err.println("Unknown simulator: " + Preferences.getSimulator());
-							return;
-						}
-						
-						SparkFileManager.createStatFile(c.getId(), alt, extractSparkIds().getNumberOfConcurrentUsers());
-						extractParametersFromHadoopModel(c, alt);
-					} catch (Exception e) {
-						System.err.println("SPARK EXCEPTION");
-						e.printStackTrace();
-					}
-			}
-			break;
-			
-		default:
-			System.err.println("Unknown technology: " + conf.getTechnology());
-			return;
 		}
-
+		
+		/*
+		 * SPARK 
+		 */
+		
+		if (currentConfig.isSpark()){
+			for (ClassDesc c : currentConfig.getClasses()) {
+				for (String alt : c.getAltDtsm().keySet()){
+					
+					// DagSim
+					if (Preferences.simulatorIsDAGSIM()){
+						File logFolder = new File(c.getAltDtsm().get(alt));
+						SparkFileManager.copyDagLogs(logFolder, c.getId(), alt);
+					}
+					
+					else {
+					
+						try {
+							buildSparkAnalyzableModel(c.getAltDtsm().get(alt));
+							generatePNML(String.valueOf(c.getId()), alt);
+						
+							// GSPN
+							if (Preferences.simulatorIsGSPN()){
+								genGSPN();
+								SparkFileManager.editFiles(c.getId(), alt, extractSparkIds());							
+							}
+							
+							// JMT
+							else if (Preferences.simulatorIsJMT()){
+								genJSIM(c.getId(), alt, extractSparkIds().getNumberOfConcurrentUsers());
+								SparkFileManager.editJSIMG(c.getId(), alt, extractSparkIds());
+							}
+							
+							SparkFileManager.createStatFile(c.getId(), alt, extractSparkIds().getNumberOfConcurrentUsers());
+							extractParametersFromHadoopModel(c, alt);
+						} catch (Exception e) {
+							System.err.println("SPARK EXCEPTION");
+							e.printStackTrace();
+						}
+					}
+				}
+			}	
+		}
+		
 		FileManager.generateInputJson();
 		FileManager.generateOutputJson();
 		if (!Configuration.getCurrent().canSend()) {
 			return;
 		}
 		try {
-			setScenario();
-			NetworkManager.getInstance().sendModel(FileManager.selectFiles(), scenario);
+			NetworkManager.getInstance().sendModel(FileManager.selectFiles(), currentConfig.getScenario());
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	} 
 
 	/**
 	 * Extracts parameters from Hadoop model and appends them to the internal
 	 * class structure
 	 * 
-	 * @param c
-	 *            Current class
-	 * @param alt
-	 *            Current alternative to expand
+	 * @param c: Current Class
+	 * @param alt: Current alternative to expand
+	 *            
 	 */
 	private void extractParametersFromHadoopModel(ClassDesc c, String alt) {
-		String srcFile = c.getAltDtsm().get(alt);
+		String srcFile = c.getAltDtsm().get(alt);		
 		Map<String, String> par = FileManager.parseDOMXmlFile(srcFile);
 		c.expandAltDtsmHadoop(alt, par);
+		System.out.println(c.getAltDtsmHadoop().toString());
 	}
 
-	// TODO: may be useless
 	public void extractStormInitialMarking() {
 		for (Trace i : result.getTraceSet().getTraces()) {
 			if (i.getFromDomainElement() instanceof Device && i.getToAnalyzableElement() instanceof Place) {
@@ -325,7 +322,7 @@ public class DICEWrap {
 	 */
 	public void generatePNML(String classID, String alt) {
 		PetriNetDoc pnd = (PetriNetDoc) result.getModel().get(0);
-		File aFile = new File(Preferences.getSavingDir() + conf.getID() + "J" + classID + alt.replaceAll("-", "") + ".pnml");
+		File aFile = new File(Preferences.getSavingDir() + currentConfig.getID() + "J" + classID + alt.replaceAll("-", "") + ".pnml");
 		FileOutputStream outputFile = null;
 		try {
 			outputFile = new FileOutputStream(aFile, true);
@@ -375,14 +372,14 @@ public class DICEWrap {
 	 */
 	
 	public static void genJSIM(int cdid, String alt, String lastTransactionId) throws IOException {
-		Configuration conf = Configuration.getCurrent();
+		Configuration currentConfig = Configuration.getCurrent();
 		File sparkIdx = new File(Preferences.getSavingDir() + "spark.idx");
 		String fileName; 
 				
-		if (Configuration.getCurrent().getIsPrivate()) {
-			fileName = Preferences.getSavingDir() + conf.getID() + "J" + cdid + "inHouse" + alt;
+		if (currentConfig.isPrivate()) {
+			fileName = Preferences.getSavingDir() + currentConfig.getID() + "J" + cdid + "inHouse" + alt;
 		} else {
-			fileName = Preferences.getSavingDir() + conf.getID() + "J" + cdid + alt.replaceAll("-", "");
+			fileName = Preferences.getSavingDir() + currentConfig.getID() + "J" + cdid + alt.replaceAll("-", "");
 		}
 		
 		try {
@@ -395,7 +392,7 @@ public class DICEWrap {
 			e.printStackTrace();
 		}
 		
-		String pnmlPath = Preferences.getSavingDir() + conf.getID() + "J" + cdid + alt.replaceAll("-", "") + ".pnml";
+		String pnmlPath = Preferences.getSavingDir() + currentConfig.getID() + "J" + cdid + alt.replaceAll("-", "") + ".pnml";
 		String outputPath = new File(fileName + ".jsimg").getAbsolutePath();
 		String indexPath = sparkIdx.getAbsolutePath();
 		
@@ -404,7 +401,7 @@ public class DICEWrap {
 						 Preferences.getJmTPath(), Preferences.getJmTPath(), pnmlPath, outputPath, indexPath);
 		
 		System.out.println("Calling PNML_Pre_Processor");
-		System.out.println(command);
+		//System.out.println(command);
 		
 		Process proc;
 
@@ -421,35 +418,5 @@ public class DICEWrap {
 			e.printStackTrace();
 		}
 		
-	}
-	
-
-	public void setScenario() {
-		if(Configuration.getCurrent().getTechnology().equals("Storm")) {
-			this.scenario = "StormPublicAvgWorkLoad";
-		} else if (!Configuration.getCurrent().getIsPrivate()) {
-			if (Configuration.getCurrent().getHasLtc()) {
-				this.scenario = "PublicPeakWorkload";
-			} else {
-				this.scenario = "PublicAvgWorkLoad";
-			}
-		} else {
-			this.scenario = "PrivateAdmissionControl";
-		}
-	}
-
-	public static void trySparkFork1() {
-		tryMe("ConfFork1.txt");
-	}
-
-	public static void trySparkFork2() {
-		tryMe("ConfFork2.txt");
-	}
-
-	public static void tryMe(String configFile) {
-		DICEWrap dw = new DICEWrap();
-		dw.conf = (Configuration) WriterReader.readObject(configFile);
-		Configuration.setConfiguration(dw.conf);
-		dw.start();
 	}
 }

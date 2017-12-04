@@ -38,9 +38,11 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
         addField(new IntegerFieldEditor(Preferences.FRONT_END_PORT, "Front End port:", getFieldEditorParent()));
         addField(new StringFieldEditor(Preferences.BACK_END_ADDRESS, "Back End address:", getFieldEditorParent()));
         addField(new IntegerFieldEditor(Preferences.BACK_END_PORT, "Back End port:", getFieldEditorParent()));
+        addField(new StringFieldEditor(Preferences.DAG_SOLVER_ADDRESS, "dagSim Extension address:", getFieldEditorParent()));
+        addField(new IntegerFieldEditor(Preferences.DAG_SOLVER_PORT, "dagSim Extension port:", getFieldEditorParent()));
         addField(new DirectoryFieldEditor(Preferences.SAVING_DIR, "Working Directory:", getFieldEditorParent()));
-
         addField(new DirectoryFieldEditor(Preferences.JMT_PARSER, "Path to PNML Preprocessor:", getFieldEditorParent()));
+        
         addField(new RadioGroupFieldEditor(Preferences.SIMULATOR, "Simulator:", 1, 
         		 new String[][] { { Preferences.GSPN, Preferences.GSPN }, { Preferences.JMT, Preferences.JMT }, 
                                   { Preferences.DAG_SIM, Preferences.DAG_SIM } }, getFieldEditorParent()));}

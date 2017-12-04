@@ -60,16 +60,12 @@ import it.polimi.diceH2020.plugin.preferences.Preferences;
 public class PrivateConfigPage extends WizardPage {
 	private Composite container;
 	private GridLayout layout;
-	private Button addConfig;
-	private Button removeConfig;
-	private Button saveConfig;
-	private Button loadConfig;
-	private Text nNodesText, cpuText, costNodeText, memNodeText;
+	private Button addConfig, removeConfig, saveConfig, loadConfig;
+	private Text nNodesText, cpuText, memNodeText;
 	private List vmConfigsList;
 	private int numNodes;
 	private double cpuForNode;
 	private double memForNode;
-	private double costNode;
 	private String selectedVmConfig;
 
 	protected PrivateConfigPage(String pageName) {
@@ -78,7 +74,6 @@ public class PrivateConfigPage extends WizardPage {
 		numNodes = -1;
 		cpuForNode = -1;
 		memForNode = -1;
-		costNode = -1;
 	}
 
 	@Override
@@ -100,16 +95,15 @@ public class PrivateConfigPage extends WizardPage {
 		cpuText = new Text(container, SWT.BORDER);
 
 		Label memLabel = new Label(container, SWT.NONE);
-		memLabel.setText("Set memory per node");
-
-		Label costLabel = new Label(container, SWT.NONE);
-		costLabel.setText("Set cost per node");
-
+		memLabel.setText("Set memory per node [GB]");
+		
+		new Label(container, SWT.NONE); 						// Padding
 		memNodeText = new Text(container, SWT.BORDER);
-		costNodeText = new Text(container, SWT.BORDER);
-
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
+		
+		new Label(container, SWT.NONE); 						// Padding
+		new Label(container, SWT.NONE); 						// Padding
+		new Label(container, SWT.NONE); 						// Padding
+		
 
 		vmConfigsList = new List(container, SWT.BORDER);
 		vmConfigsList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -175,18 +169,6 @@ public class PrivateConfigPage extends WizardPage {
 			}
 		});
 
-		costNodeText.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent arg0) {
-				try {
-					costNode = Double.parseDouble(costNodeText.getText());
-				} catch (NumberFormatException e) {
-					costNode = -1;
-				}
-				getWizard().getContainer().updateButtons();
-			}
-		});
-
 		addConfig.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
 				String name = "";
@@ -205,9 +187,9 @@ public class PrivateConfigPage extends WizardPage {
 				myPanel.add(nameField, c);
 				myPanel.add(new JLabel("Num Cores :"), c);
 				myPanel.add(coreField);
-				myPanel.add(new JLabel("Memory :"), c);
+				myPanel.add(new JLabel("Memory [GB]:"), c);
 				myPanel.add(memField);
-				myPanel.add(new JLabel("Cost :"), c);
+				myPanel.add(new JLabel("Cost [$/h]:"), c);
 				myPanel.add(costField);
 
 				int result = JOptionPane.showConfirmDialog(null, myPanel, "Please Enter VM parameters",
@@ -281,7 +263,7 @@ public class PrivateConfigPage extends WizardPage {
 
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				if (memForNode != -1 && costNode != -1 && cpuForNode != -1 && numNodes != -1) {
+				if (memForNode != -1 && cpuForNode != -1 && numNodes != -1) {
 					saveFile();
 				} else {
 					JOptionPane.showMessageDialog(null, "Can not save the configuration check parameters", "Info",
@@ -314,7 +296,7 @@ public class PrivateConfigPage extends WizardPage {
 
 	@Override
 	public boolean canFlipToNextPage() {
-		if (this.memForNode != -1 && this.costNode != -1 && this.cpuForNode != -1 && this.numNodes != -1
+		if (this.memForNode != -1 && this.cpuForNode != -1 && this.numNodes != -1
 				&& this.vmConfigsList.getItemCount() != 0) {
 			return true;
 		}
@@ -348,9 +330,9 @@ public class PrivateConfigPage extends WizardPage {
 			nPar.appendChild(doc.createTextNode(String.valueOf(numNodes)));
 			cloud.appendChild(nPar);
 
-			Element ePar = doc.createElement("e");
-			ePar.appendChild(doc.createTextNode(String.valueOf(costNode)));
-			cloud.appendChild(ePar);
+//			Element ePar = doc.createElement("e");
+//			ePar.appendChild(doc.createTextNode(String.valueOf(costNode)));
+//			cloud.appendChild(ePar);
 
 			Element vmConf = doc.createElement("VMConfigurations");
 			rootElement.appendChild(vmConf);
@@ -416,8 +398,8 @@ public class PrivateConfigPage extends WizardPage {
 
 				Node v = par.getElementsByTagName("e").item(0);
 				PrivateConfiguration.getCurrent().setPriM(Double.parseDouble(v.getTextContent()));
-				this.costNode = Double.parseDouble(v.getTextContent());
-				this.costNodeText.setText(v.getTextContent());
+				//this.costNode = Double.parseDouble(v.getTextContent());
+				//this.costNodeText.setText(v.getTextContent());
 
 				Node n = par.getElementsByTagName("n").item(0);
 				PrivateConfiguration.getCurrent().setPriM(Double.parseDouble(n.getTextContent()));
@@ -459,10 +441,6 @@ public class PrivateConfigPage extends WizardPage {
 
 	public double getMemForNode() {
 		return this.memForNode;
-	}
-
-	public double getCostNode() {
-		return this.costNode;
 	}
 
 	public double getCpuNode() {

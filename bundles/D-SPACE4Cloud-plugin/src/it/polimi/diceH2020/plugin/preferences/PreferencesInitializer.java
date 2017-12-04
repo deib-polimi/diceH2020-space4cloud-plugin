@@ -30,10 +30,16 @@ public class PreferencesInitializer extends AbstractPreferenceInitializer {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		store.setDefault(Preferences.FRONT_END_ADDRESS, "localhost");
 		store.setDefault(Preferences.FRONT_END_PORT, 8000);
+		
 		store.setDefault(Preferences.BACK_END_ADDRESS, "localhost");
 		store.setDefault(Preferences.BACK_END_PORT, 8080);
+		
+		store.setDefault(Preferences.DAG_SOLVER_ADDRESS, "localhost");
+		store.setDefault(Preferences.DAG_SOLVER_PORT, 8000);
+		
 		store.setDefault(Preferences.SAVING_DIR, ResourcesPlugin.getWorkspace().getRoot().getLocation().toString());
 		store.setDefault(Preferences.JMT_PARSER, ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()+"/PNML_Pre_processor");
+		
 		store.setDefault(Preferences.SIMULATOR, Preferences.GSPN);
 	}
 }

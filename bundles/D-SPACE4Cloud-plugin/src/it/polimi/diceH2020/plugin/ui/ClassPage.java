@@ -18,15 +18,8 @@ limitations under the License.
 
 package it.polimi.diceH2020.plugin.ui;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import java.util.HashMap;
 import javax.swing.JFileChooser;
 
 import org.eclipse.jface.wizard.WizardPage;
@@ -40,12 +33,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 
-import it.polimi.diceH2020.plugin.control.Configuration;
 import it.polimi.diceH2020.plugin.control.PrivateConfiguration;
 import it.polimi.diceH2020.plugin.control.VmClass;
 import it.polimi.diceH2020.plugin.preferences.Preferences;
 import utils.JsonDatabase;
-import utils.Premium;
 
 /**
  * Allows user to set parameters for this class.
@@ -54,19 +45,19 @@ import utils.Premium;
  *
  */
 public class ClassPage extends WizardPage {
-	private static final String DEFAULT_ML_PROFILE_PATH = Preferences.getSavingDir() + "ml_model.txt";
+	
+	
 	private Composite container;
 	private GridLayout layout;
-	private List availableAlternatives;
-	private List chosenAlternatives;
+	
+	private List availableAlternatives, chosenAlternatives;
+	private Label fileName, errorLabel, mlNameFile, classesLabel;
+	private Button mlProfile, button;
+	
+	private HashMap<String, String> altDtsm;						// MAP OF: VM | InputModel
 	private String ddsmPath = "";
-	private Label fileName, errorLabel;
-	private HashMap<String, String> altDtsm;
-	private Button mlProfile;
 	private String mlPath = "";
-	private Button button;
-	private Label mlNameFile;
-	protected static String thinkTime; 
+	
 
 	protected ClassPage(String title, String description) {
 		super("Browse Files");
@@ -77,11 +68,25 @@ public class ClassPage extends WizardPage {
 
 	@Override
 	public void createControl(Composite parent) {
+		
+		/*
+		 * Control
+		 */
+		
 		container = new Composite(parent, SWT.NONE);
 		layout = new GridLayout();
 		container.setLayout(layout);
 		layout.numColumns = 4;
-
+		layout.verticalSpacing = 15;
+		
+		classesLabel = new Label(container, SWT.NONE);
+		classesLabel.setText("");
+		classesLabel.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
+		
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		
 		Label l = new Label(container, SWT.NONE);
 		l.setText("Choose a vm configuration");
 		l.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
@@ -106,48 +111,6 @@ public class ClassPage extends WizardPage {
 		gdata.widthHint = 300;
 		chosenAlternatives.setLayoutData(gdata);
 
-		add.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				// Move alternative on the other side
-				if (availableAlternatives.getSelectionCount() == 1) {
-					final String selectedAlternative = availableAlternatives.getSelection()[0];
-					final int selectedIdx = availableAlternatives.getSelectionIndices()[0];
-
-					// Open file browser
-					JFileChooser chooser = new JFileChooser();
-					// JUST ONE UML FILE
-					chooser.setMultiSelectionEnabled(false); 
-																
-					final int choice = chooser.showOpenDialog(null);
-					if (choice == JFileChooser.APPROVE_OPTION) {
-						altDtsm.put(selectedAlternative, chooser.getSelectedFile().getPath());
-					
-						if (Configuration.isSpark() || Configuration.isHadoop())
-							thinkTime = getThinkTimeFromModel(chooser.getSelectedFile());
-						
-						chosenAlternatives.add(selectedAlternative);
-						availableAlternatives.remove(selectedIdx);
-					}
-
-					// Refresh page
-					container.layout();
-					getWizard().getContainer().updateButtons();
-				}
-			}
-		});
-
-		remove.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				if (chosenAlternatives.getSelectionCount() < 1) {
-					return;
-				}
-				availableAlternatives.add(chosenAlternatives.getSelection()[0]);
-				altDtsm.remove(chosenAlternatives.getSelection()[0]);
-				chosenAlternatives.remove(chosenAlternatives.getSelectionIndices()[0]);
-				container.layout();
-			}
-		});
-
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
@@ -170,18 +133,13 @@ public class ClassPage extends WizardPage {
 
 		button = new Button(container, SWT.PUSH);
 		button.setText("Refresh vm configurations");
-		button.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				refreshAlternatives();
-			}
-		});
 
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 
 		errorLabel = new Label(container, SWT.NONE);
-		errorLabel.setText("Error: Unable to get vm configurations from the webservice");
+		errorLabel.setText("Error: Unable to get vm configurations from the webservice.\nPlease check for current configuration in Windows > Preferences > DICE > Optimization");
 		errorLabel.setVisible(false);
 		fileName.setLayoutData(new GridData(SWT.BEGINNING, SWT.END, false, false));
 
@@ -197,7 +155,17 @@ public class ClassPage extends WizardPage {
 		new Label(container, SWT.NONE);
 
 		mlNameFile = new Label(container, SWT.NONE);
-
+		
+		/*
+		 * Listeners
+		 */
+		
+		button.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				refreshAlternatives();
+			}
+		});
+		
 		mlProfile.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				JFileChooser chooser = new JFileChooser();
@@ -211,16 +179,11 @@ public class ClassPage extends WizardPage {
 				mlPath = chooser.getSelectedFile().getPath();
 
 				mlNameFile.setText(chooser.getSelectedFile().getName());
-				// setPageComplete(true);
 				container.layout();
 				getWizard().getContainer().updateButtons();
 			}
 		});
 		
-		if(!Premium.isPremium()){
-			mlProfile.setVisible(false);
-		}
-
 		browse.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				JFileChooser chooser = new JFileChooser();
@@ -233,12 +196,55 @@ public class ClassPage extends WizardPage {
 
 				ddsmPath = chooser.getSelectedFile().getPath();
 				fileName.setText(chooser.getSelectedFile().getName());
-				// setPageComplete(true);
 				container.layout();
 				getWizard().getContainer().updateButtons();
 			}
 		});
+		
+		add.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				
+				// Move alternative on the other side
+				if (availableAlternatives.getSelectionCount() == 1) {
+					final String selectedAlternative = availableAlternatives.getSelection()[0];
+					final int selectedIdx = availableAlternatives.getSelectionIndices()[0];
 
+					// Open file browser
+					JFileChooser chooser = new JFileChooser();
+					
+					if (Preferences.getSimulator().equals(Preferences.DAG_SIM)){
+						chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+					    chooser.setAcceptAllFileFilterUsed(false);
+					}
+				    
+					chooser.setMultiSelectionEnabled(false); 
+																
+					final int choice = chooser.showOpenDialog(null);
+					if (choice == JFileChooser.APPROVE_OPTION) {
+						altDtsm.put(selectedAlternative, chooser.getSelectedFile().getPath());													
+						chosenAlternatives.add(selectedAlternative);
+						availableAlternatives.remove(selectedIdx);
+					}
+
+					// Refresh page
+					container.layout();
+					getWizard().getContainer().updateButtons();
+				}
+			}
+		});
+
+		remove.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				if (chosenAlternatives.getSelectionCount() < 1) {
+					return;
+				}
+				availableAlternatives.add(chosenAlternatives.getSelection()[0]);
+				altDtsm.remove(chosenAlternatives.getSelection()[0]);
+				chosenAlternatives.remove(chosenAlternatives.getSelectionIndices()[0]);
+				container.layout();
+			}
+		});
+		
 		populateAlternatives();
 		setPageComplete(false);
 		setControl(container);
@@ -246,18 +252,10 @@ public class ClassPage extends WizardPage {
 	
 	@Override
 	public boolean canFlipToNextPage() {
-		if (Configuration.getCurrent().getTechnology().contains("Hadoop Map-reduce")
-			|| Configuration.getCurrent().getTechnology().contains("Spark")) {
-			if (!ddsmPath.equals("") && chosenAlternatives.getItemCount() > 0 && !mlPath.equals("")) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		if (!ddsmPath.equals("") && chosenAlternatives.getItemCount() > 0) {
+		if (!ddsmPath.equals("") && chosenAlternatives.getItemCount() > 0) 
 			return true;
-		}
-		return false;
+		else
+			return false;
 	}
 
 	private void populateAlternatives() {
@@ -278,47 +276,7 @@ public class ClassPage extends WizardPage {
 			errorLabel.setVisible(false);
 			availableAlternatives.setItems(JsonDatabase.getInstance().getVmConfigs());
 		}
-	}
-	
-	private static String getThinkTimeFromModel(File inputModel){
-		String think;
-		try {
-			
-			Path path = Paths.get(inputModel.getAbsolutePath());
-	        String content = new String(Files.readAllBytes(path));
-	        Pattern pattern = null;
-        
-	        if (Configuration.isHadoop())    		
-	        	pattern = Pattern.compile("hadoopExtDelay=\\[([0-9]+)\\]");
-	        
-	        if (Configuration.isSpark())
-	        	pattern = Pattern.compile("sparkExtDelay=\"\\(expr=([0-9]+),");
-	        
-	        
-	        Matcher matcher = pattern.matcher(content);
-	        if (matcher.find()) {
-	            think = matcher.group(1);
-	            System.out.println("Found Think Time: " + think);
-	            return think;
-	        }
-	        else {
-	        	// TODO Throw exception wrong model
-	        	System.out.println("Cannot found think time in file: " + inputModel.getName());
-	        	return "";
-	        }
-        
-		}
-	    catch (IOException e) {
-	        // TODO Auto-generated catch block
-	        e.printStackTrace();
-	    }
-        
-		return "";
-	}
-
-	public String getDDSMPath() {
-		return ddsmPath;
-	}
+	}	
 
 	public HashMap<String, String> getAltDtsm() {
 		return altDtsm;
@@ -328,35 +286,28 @@ public class ClassPage extends WizardPage {
 		chosenAlternatives.removeAll();
 		populateAlternatives();
 		fileName.setText("");
-		ddsmPath = "";
+		mlNameFile.setText("");
 		getWizard().getContainer().updateButtons();
 		container.layout();
 		altDtsm = new HashMap<String, String>();
 		mlPath = "";
+		ddsmPath = "";
 	}
 
 	public String[] getSelectedAlternatives() {
 		return chosenAlternatives.getItems();
 	}
 
-	public void setNumClasses(int numClasses) {
-	}
-
-	public void udpate() {
-		if (Configuration.isSpark() || Configuration.isHadoop()) {
-			if (Premium.isPremium()) {
-				mlProfile.setVisible(true);
-			}
-		} else {
-			mlProfile.setVisible(false);
-		}
-	}
-
 	public String getMlPath() {
-		if(mlPath.isEmpty()){
-			return DEFAULT_ML_PROFILE_PATH;
-		}
 		return mlPath;
+	}
+	
+	public String getDDSMPath(){
+		return ddsmPath;
+	}
+	
+	public void setClasses(int current, int total){
+		classesLabel.setText(String.format("Current class: %d / %d", current, total));
 	}
 
 	public void privateCase() {

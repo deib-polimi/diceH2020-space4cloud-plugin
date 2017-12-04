@@ -32,9 +32,11 @@ public class DSpaceOptimizationWizardHandler extends AbstractHandler{
 	
 	@Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
-		System.out.println("default dir: " + Paths.get("").toAbsolutePath().toString());
-		System.out.println("saving dir: " + Preferences.getSavingDir());
-		System.out.println("Simulator: " + Preferences.getSimulator());
+		
+		// TODO Put this in a logger
+		//System.out.println("Default dir: " + Paths.get("").toAbsolutePath().toString());
+		//System.out.println("Saving dir: " + Preferences.getSavingDir());
+		//System.out.println("Simulator: " + Preferences.getSimulator());
 		
 		Configuration.getCurrent().reset();
 		PrivateConfiguration.getCurrent().clear();

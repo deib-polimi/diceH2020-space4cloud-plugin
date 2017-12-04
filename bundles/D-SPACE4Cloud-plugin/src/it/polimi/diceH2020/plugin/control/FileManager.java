@@ -91,9 +91,10 @@ public class FileManager {
 	 * @param hadoopId
 	 *            String be replaced
 	 */
+	
 	public static void editFiles(int cdid, String alt, String hadoopId) {
 		String savingDir = Preferences.getSavingDir();
-		Configuration conf = Configuration.getCurrent();
+		Configuration currentConfig = Configuration.getCurrent();
 		
 		File folder = new File(savingDir + "tmp/");
 		File files[] = folder.listFiles();
@@ -112,10 +113,10 @@ public class FileManager {
 			}
 		}
 		
-		if (Configuration.getCurrent().getIsPrivate()) {
-			outputFilePath = savingDir + conf.getID() + "J" + cdid + "inHouse" + alt;
+		if (currentConfig.isPrivate()) {
+			outputFilePath = savingDir + currentConfig.getID() + "J" + cdid + "inHouse" + alt;
 		} else {
-			outputFilePath = savingDir + conf.getID() + "J" + cdid + alt.replaceAll("-", "");
+			outputFilePath = savingDir + currentConfig.getID() + "J" + cdid + alt.replaceAll("-", "");
 		}
 		
 		String hup = String.valueOf(Configuration.getCurrent().getHup());
@@ -136,13 +137,13 @@ public class FileManager {
 	
 	public static void editJsimgHadoop(int cdid, String alt, String idToReplace) {
         String savingDir = Preferences.getSavingDir();
-        Configuration conf = Configuration.getCurrent();
+        Configuration currentConfig = Configuration.getCurrent();
 
         String filename;
-        if (Configuration.getCurrent().getIsPrivate()) {
-            filename = savingDir + conf.getID() + "J" + cdid + "inHouse" + alt;
+        if (currentConfig.isPrivate()) {
+            filename = savingDir + currentConfig.getID() + "J" + cdid + "inHouse" + alt;
         } else {
-            filename = savingDir + conf.getID() + "J" + cdid + alt.replaceAll("-", "");
+            filename = savingDir + currentConfig.getID() + "J" + cdid + alt.replaceAll("-", "");
         }
 
         System.out.println(String.format("Putting placeholders over %s.jsimg", filename));
@@ -152,21 +153,20 @@ public class FileManager {
         SparkFileManager.putPlaceHolderXML(idToReplace, "@@CORES@@", jsimgFile);
     }
 	
-
 	/**
-	 * Builds the JSON representation of the current Configuration and
-	 * eventually dumps it on a file.
+	 * Builds the JSON representation of the current Configuration
+	 * and save it on a file.
 	 */
 	public static void generateInputJson() {
-		Configuration conf = Configuration.getCurrent(); // TODO: REMOVE
+		Configuration currentConfig = Configuration.getCurrent();
 		InstanceDataMultiProvider data = InstanceDataMultiProviderGenerator.build();
 
-		data.setId(conf.getID());
+		data.setId(currentConfig.getID());
 
-		setMapJobProfile(data, conf);
-		setMapClassParameters(data, conf);
+		setMapJobProfile(data, currentConfig);
+		setMapClassParameters(data, currentConfig);
 
-		if (conf.getIsPrivate()) {
+		if (currentConfig.isPrivate()) {
 
 			data.setMapPublicCloudParameters(null);
 			setPrivateParameters(data);
@@ -175,15 +175,15 @@ public class FileManager {
 			// Set MapVMConfigurations
 			data.setMapVMConfigurations(null);
 			data.setPrivateCloudParameters(null);
-
-			if (conf.getHasLtc()) {
-				setEtaR(data, conf);
+			
+			if (currentConfig.hasLTC()) {
+				setEtaR(data, currentConfig);
 			} else {
 				data.setMapPublicCloudParameters(null);
 			}
 		}
-
-		setMachineLearningProfile(data, conf);
+		
+		setMachineLearningProfile(data, currentConfig);
 
 		if (!Configuration.getCurrent().canSend()) {
 			return;
@@ -195,7 +195,7 @@ public class FileManager {
 
 		try {
 			mapper.writerWithDefaultPrettyPrinter()
-				   .writeValue(new File(Preferences.getSavingDir() + conf.getID() + ".json"), data);
+				  .writeValue(new File(Preferences.getSavingDir() + currentConfig.getID() + ".json"), data);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -228,13 +228,13 @@ public class FileManager {
 		data.setMapVMConfigurations(priMap);
 	}
 
-	private static void setMapJobProfile(InstanceDataMultiProvider data, Configuration conf) {
+	private static void setMapJobProfile(InstanceDataMultiProvider data, Configuration currentConfig) {
 		// Set MapJobProfile
 		JobProfilesMap classdesc = JobProfilesMapGenerator.build();
 
 		Map<String, Map<String, Map<String, JobProfile>>> classMap = new HashMap<>();
 
-		for (ClassDesc c : conf.getClasses()) {
+		for (ClassDesc c : currentConfig.getClasses()) {
 			Map<String, Map<String, JobProfile>> alternative = new HashMap<>();
 
 			for (String alt : c.getAltDtsm().keySet()) {
@@ -242,7 +242,7 @@ public class FileManager {
 				String split[] = alt.split("-");
 
 				JobProfile jp;
-				if (conf.getTechnology().equals("Hadoop Map-reduce") || conf.getTechnology().equals("Spark")) {
+				if (currentConfig.isHadoop() || (currentConfig.isSpark() && !Preferences.simulatorIsDAGSIM())) {
 					jp = JobProfileGenerator.build(c.getAltDtsmHadoop().get(alt).keySet().size() - 1);
 
 					for (String par : c.getAltDtsmHadoop().get(alt).keySet()) {
@@ -261,8 +261,8 @@ public class FileManager {
 
 				jp.setProfileMap(profile);
 
-				final String provider = Configuration.getCurrent().getIsPrivate() ? "inHouse" : split[0];
-				final String vmType = Configuration.getCurrent().getIsPrivate() ? split[0] : split[1];
+				final String provider = currentConfig.isPrivate() ? "inHouse" : split[0];
+				final String vmType = currentConfig.isPrivate() ? split[0] : split[1];
 
 				Map<String, JobProfile> profilemap = new HashMap<>();
 				profilemap.put(vmType, jp);
@@ -280,12 +280,12 @@ public class FileManager {
 		data.setMapJobProfiles(classdesc);
 	}
 
-	private static void setMapClassParameters(InstanceDataMultiProvider data, Configuration conf) {
+	private static void setMapClassParameters(InstanceDataMultiProvider data, Configuration currentConfig) {
 		// Set MapClassParameter
 		Map<String, ClassParameters> classdesc1 = new HashMap<String, ClassParameters>();
 
-		if (conf.getTechnology().contains("Hadoop Map-reduce") || conf.getTechnology().contains("Spark")) {
-			for (ClassDesc c : conf.getClasses()) {
+		if (currentConfig.isHadoop() || currentConfig.isSpark()) {
+			for (ClassDesc c : currentConfig.getClasses()) {
 				ClassParameters clpm = ClassParametersGenerator.build(c.getHadoopParUD().size());
 				
 				clpm.setD(Double.parseDouble(c.getHadoopParUD().get("d")));
@@ -295,13 +295,13 @@ public class FileManager {
 				clpm.setM(0.0);
 				clpm.setV(1.0);
 				
-				if (Configuration.getCurrent().getIsPrivate()) {
+				if (currentConfig.isPrivate()) {
 					clpm.setPenalty(Double.parseDouble(c.getHadoopParUD().get("penalty")));
 				}
 				classdesc1.put(String.valueOf(c.getId()), clpm);
 			}
 		} else {
-			for (ClassDesc c : conf.getClasses()) {
+			for (ClassDesc c : currentConfig.getClasses()) {
 				ClassParameters clpm = ClassParametersGenerator.build(7);
 				clpm.setU(c.getStormU());
 				clpm.setPenalty(6.0);
@@ -316,19 +316,18 @@ public class FileManager {
 		data.setMapClassParameters(new ClassParametersMap(classdesc1));
 	}
 	
-
-	private static void setEtaR(InstanceDataMultiProvider data, Configuration conf) {
+	private static void setEtaR(InstanceDataMultiProvider data, Configuration currentConfig) {
 		// Set PublicCloudParameters
 		Map<String, Map<String, Map<String, PublicCloudParameters>>> classdesc2 = new HashMap<String, Map<String, Map<String, PublicCloudParameters>>>();
-		for (ClassDesc c : conf.getClasses()) {
+		for (ClassDesc c : currentConfig.getClasses()) {
 			Map<String, Map<String, PublicCloudParameters>> alternatives = new HashMap<String, Map<String, PublicCloudParameters>>();
 
 			for (String alt : c.getAltDtsm().keySet()) {
 				String split[] = alt.split("-");
 
 				PublicCloudParameters params = PublicCloudParametersGenerator.build(2);
-				params.setR(conf.getR());
-				params.setEta(conf.getSpsr());
+				params.setR(0);
+				params.setEta(currentConfig.getSpotRatio());
 
 				Map<String, PublicCloudParameters> size = new HashMap<String, PublicCloudParameters>();
 				size.put(split[1], params);
@@ -344,19 +343,25 @@ public class FileManager {
 		data.setMapPublicCloudParameters(pub);
 	}
 
-	private static void setMachineLearningProfile(InstanceDataMultiProvider data, Configuration conf) {
-		if (conf.getTechnology().contains("Hadoop Map-reduce") || conf.getTechnology().contains("Spark")) {
+	private static void setMachineLearningProfile(InstanceDataMultiProvider data, Configuration currentConfig) {
+		
+		if ((currentConfig.isHadoop() || currentConfig.isSpark()) && !Preferences.simulatorIsDAGSIM()) {
 			Configuration.getCurrent().setCanSend(setMachineLearningHadoop(data));
-		} else {
+		} 
+		else {
 			// Set mapJobMLProfile - MACHINE LEARNING
 			Map<String, JobMLProfile> jmlMap = new HashMap<String, JobMLProfile>();
 			List<String> par = new ArrayList<String>();
 			par.add("h");
 			par.add("x");
 
-			for (ClassDesc cd : conf.getClasses()) {
+			for (ClassDesc cd : currentConfig.getClasses()) {
 				JobMLProfile jmlProfile = JobMLProfileGenerator.build(par);
-				jmlMap.put(String.valueOf(cd.getId()), jmlProfile);
+				
+				if ((cd.getMlPath() == null || cd.getMlPath().isEmpty()))
+					jmlMap.put(String.valueOf(cd.getId()), null);
+				else
+					jmlMap.put(String.valueOf(cd.getId()), jmlProfile);		
 			}
 
 			JobMLProfilesMap jML = JobMLProfilesMapGenerator.build();
@@ -462,14 +467,19 @@ public class FileManager {
 
 		try {
 			for (ClassDesc cd : Configuration.getCurrent().getClasses()) {
+				
+				if (cd.getMlPath() == null || cd.getMlPath().isEmpty()){
+					jmlMap.put(String.valueOf(cd.getId()), null);
+					continue;
+				}
+				
 				Map<String, SVRFeature> map = new HashMap<String, SVRFeature>();
 
 				Object obj = parser.parse(new FileReader(cd.getMlPath()));
 				JSONObject jsonObject = (JSONObject) obj;
 				JSONObject parameter = (JSONObject) jsonObject.get("mlFeatures");
 
-				Map<String, String> toCheck = cd.getAltDtsmHadoop()
-						.get(cd.getAltDtsmHadoop().keySet().iterator().next());
+				Map<String, String> toCheck = cd.getAltDtsmHadoop().get(cd.getAltDtsmHadoop().keySet().iterator().next());
 				for (String st : toCheck.keySet()) {
 					if (!st.equals("file")) {
 						if (!parameter.containsKey(st)) {
@@ -529,15 +539,7 @@ public class FileManager {
 	
 	public static void createStatFile(int cdid, String alt, String LastTransitionId){
 
-        Configuration conf = Configuration.getCurrent();
-        String filename;
-
-        if (conf.getIsPrivate()) {
-            filename = Preferences.getSavingDir() + conf.getID() + "J" + cdid + "inHouse" + alt;
-        } else {
-            filename = Preferences.getSavingDir() + conf.getID() + "J" + cdid + alt.replaceAll("-", "");
-        }
-
+        String filename = Configuration.getCurrent().getFilename(cdid, alt);
         File statFile = new File(filename + ".stat");
 
         try (PrintWriter out = new PrintWriter(statFile)){

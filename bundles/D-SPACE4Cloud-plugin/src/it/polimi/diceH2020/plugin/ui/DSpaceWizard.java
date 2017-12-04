@@ -18,13 +18,20 @@ limitations under the License.
 
 package it.polimi.diceH2020.plugin.ui;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 
 import it.polimi.diceH2020.plugin.control.ClassDesc;
 import it.polimi.diceH2020.plugin.control.Configuration;
-import it.polimi.diceH2020.plugin.control.FileHandler;
 import it.polimi.diceH2020.plugin.control.PrivateConfiguration;
+import it.polimi.diceH2020.plugin.preferences.Preferences;
+import it.polimi.diceH2020.SPACE4Cloud.shared.settings.*;
 
 /**
  * Class needed by Eclipse to manage wizards. The core of this class is
@@ -34,24 +41,24 @@ import it.polimi.diceH2020.plugin.control.PrivateConfiguration;
  *
  */
 public class DSpaceWizard extends Wizard {
-	private FileHandler fileHandler;
-	private ChoicePage choice;
-	private ClassPage classp;
-	private FinalPage fpage;
-	private HadoopDataPage hPage;
-	private SparkDataPage spPage;
-	private SelectFolderPage folPage;
-	private StormDataPage stPage;
-	private PrivateConfigPage prConfigPage;
-	private int n = 0;
-	private int classes;
-	private ClassDesc c;
-	private boolean finish = false;
+	
+	private InitialPage initialPage;
+	private ClassPage classPage;
+	private PrivateConfigPage privateConfigPage;
+	private HadoopDataPage hadoopDataPage;
+	private SparkDataPage sparkDataPage;
+	private StormDataPage stormDataPage;
+	private FinalPage finalPage;
+	
+	private int numClasses;			
+	private int currentClass;
+	private ClassDesc classDescription;
+	
+	private boolean wizardCompleted = false;
 
 	public DSpaceWizard() {
 		super();
 		setNeedsProgressMonitor(true);
-		this.fileHandler = new FileHandler();
 	}
 
 	@Override
@@ -62,139 +69,213 @@ public class DSpaceWizard extends Wizard {
 
 	@Override
 	public void addPages() {
-		choice = new ChoicePage("Service type", "Choose service type");
-		classp = new ClassPage("Class page", "Select page parameters and alternatives");
-		fpage = new FinalPage("Finish", ".");
-		folPage = new SelectFolderPage("Select folder");
-		hPage = new HadoopDataPage("Set Hadoop parameters");
-		stPage = new StormDataPage("Set Storm parameters");
-		spPage = new SparkDataPage("Set Spark parameters");
-		prConfigPage = new PrivateConfigPage("Set cluster parameters");
+		initialPage = new InitialPage("Service type", "Choose service type");
+		classPage = new ClassPage("Class page", "Select page parameters and alternatives");
+		finalPage = new FinalPage("Finish", "Please wait for the results to be available");
+		hadoopDataPage = new HadoopDataPage("Set Hadoop parameters");
+		stormDataPage = new StormDataPage("Set Storm parameters");
+		sparkDataPage = new SparkDataPage("Set Spark parameters");
+		privateConfigPage = new PrivateConfigPage("Set cluster parameters");
 
-		addPage(choice);
-		addPage(prConfigPage);
-		addPage(folPage);
-		addPage(stPage);
-		addPage(hPage);
-		addPage(spPage);
-		addPage(classp);
-		addPage(fpage);
+		addPage(initialPage);
+		addPage(privateConfigPage);
+		addPage(stormDataPage);
+		addPage(hadoopDataPage);
+		addPage(sparkDataPage);
+		addPage(classPage);
+		addPage(finalPage);
 	}
 
 	@Override
 	public IWizardPage getNextPage(IWizardPage currentPage) {
-		if (currentPage == choice) {
-			classes = choice.getClasses();
-			Configuration.getCurrent().setNumClasses(classes);
-
-			if (Configuration.getCurrent().getHasLtc()) {
-				Configuration.getCurrent().setR(choice.getR());
-				Configuration.getCurrent().setSpsr(choice.getSpsr());
+		
+		Configuration currentConfig = Configuration.getCurrent();	
+		
+		/*
+		 *  Initial Page
+		 */
+		
+		if (currentPage == initialPage) {
+			
+			// Parse input from InitialPage 
+			boolean spotPricing = initialPage.getSpotPricing();
+			boolean admissionControl = initialPage.getAdmissionControl();
+			Technology technology = initialPage.getTechnology();
+			CloudType cloudType = initialPage.getCloudType();
+			
+			numClasses = initialPage.getClasses();
+			currentClass = 1;
+			classPage.setClasses(currentClass, numClasses);
+			
+			currentConfig.setNumClasses(numClasses);
+			
+			if (spotPricing) {
+				float spotRatio = initialPage.getSpotRatio();
+				currentConfig.setSpotRatio(spotRatio);
 			}
-
-			if (Configuration.getCurrent().getIsPrivate()) {
-				spPage.privateCase();
-				hPage.privateCase();
-				return prConfigPage;
-			} else {
-				spPage.publicCase();
-				hPage.publicCase();
+			
+			try {
+				
+				if (cloudType == CloudType.PUBLIC)
+					currentConfig.setScenario(technology, cloudType, spotPricing, null);
+				else 
+					currentConfig.setScenario(technology, cloudType, null, admissionControl);
+				
+			} catch (RuntimeException e) {
+				initialPage.setErrorMessage("There was an error during the creation of the scenario, please try again.");
+				return initialPage;
 			}
-
-			classp.udpate();
-			classp.setNumClasses(classes);
-			return classp;
+			
+			if (cloudType == CloudType.PRIVATE) {
+				sparkDataPage.privateCase();
+				hadoopDataPage.privateCase();
+				return privateConfigPage;
+				
+			} 
+			else {
+				sparkDataPage.publicCase();
+				hadoopDataPage.publicCase();
+				return classPage;
+			}
 		}
-
-		if (currentPage == hPage) {
-			c.setHadoopParUD(hPage.getHadoopParUD());
-
-			if (n == classes) {
-				finish = true;
-				Configuration.getCurrent().dump();
-				return fpage;
+		
+		/*
+		 *  Class Page
+		 */
+		
+		if (currentPage == classPage) {
+						
+			classDescription = new ClassDesc(currentClass);
+			classDescription.setDdsmPath(classPage.getDDSMPath());
+			classDescription.setAltDtsm(classPage.getAltDtsm());
+			
+			if (!classPage.getMlPath().isEmpty())
+				classDescription.setMlPath(classPage.getMlPath());
+			
+			if (currentConfig.isHadoop()){
+				
+				String firstEntry = classPage.getAltDtsm().values().iterator().next();
+				String thinkTime = getThinkTimeFromModel(firstEntry);
+				
+				if (thinkTime.isEmpty()){
+					classPage.setErrorMessage("Unable to read think time from input model, please check your input model");
+					classPage.reset();
+					return classPage;
+				}
+			
+				hadoopDataPage.setThinkTime(thinkTime);
+				return hadoopDataPage;
+			} 
+			
+			if (currentConfig.isSpark()){
+				
+				if ( Preferences.simulatorIsGSPN() || Preferences.simulatorIsJMT() ){
+					String firstEntry = classPage.getAltDtsm().values().iterator().next();
+					String thinkTime = getThinkTimeFromModel(firstEntry);
+					
+					if (thinkTime.isEmpty()){
+						classPage.setErrorMessage("Unable to read think time from input model, please check your input model");
+						classPage.reset();
+						return classPage;
+					}
+					else 
+						sparkDataPage.setThinkTime(thinkTime);
+				}
+				
+				return sparkDataPage;
+			} 
+			
+			if (currentConfig.isStorm()){
+				return stormDataPage;
 			}
-
-			classp.reset();
-			hPage.reset();
-
-			if (Configuration.getCurrent().getIsPrivate())
-				classp.privateCase();
-
-			return classp;
 		}
+		
+		/*
+		 *  Hadoop Page
+		 */
 
-		if (currentPage == spPage) {
-			c.setHadoopParUD(spPage.getHadoopParUD());
+		if (currentPage == hadoopDataPage) {
+		
+			currentConfig.getClasses().add(classDescription);
+			currentClass++;
+			classPage.setClasses(currentClass, numClasses);
+			classDescription.setHadoopParUD(hadoopDataPage.getParameters());
+			
+			if (currentClass > numClasses) {
+				wizardCompleted = true;
+				return finalPage;
+			}
+			
+			classPage.reset();
+			hadoopDataPage.reset();
+
+			if (currentConfig.isPrivate())
+				classPage.privateCase();
+			
 	
-			if (n == classes) {
-				finish = true;
-				Configuration.getCurrent().dump();
-				return fpage;
+			return classPage;
+		}
+
+		/*
+		 *  Spark Page
+		 */
+		
+		if (currentPage == sparkDataPage) {
+			
+			currentConfig.getClasses().add(classDescription);
+			currentClass++;
+			classPage.setClasses(currentClass, numClasses);
+			classDescription.setHadoopParUD(sparkDataPage.getParameters());
+	
+			if (currentClass > numClasses) {
+				wizardCompleted = true;
+				return finalPage;
 			}
-			classp.reset();
-			spPage.reset();
+			
+			classPage.reset();
+			sparkDataPage.reset();
 
-			if (Configuration.getCurrent().getIsPrivate())
-				classp.privateCase();
-			return classp;
+			if (currentConfig.isPrivate())
+				classPage.privateCase();
+			return classPage;
 		}
+		
+		/*
+		 *  Storm Page
+		 */
+		
+		if (currentPage == stormDataPage) {
+			
+			currentConfig.getClasses().add(classDescription);
+			currentClass++;
+			classPage.setClasses(currentClass, numClasses);
+			classDescription.setStormU(stormDataPage.getStormU());
 
-		if (currentPage == stPage) {
-			c.setStormU(stPage.getStormU());
-
-			if (n == classes) {
-				finish = true;
-				Configuration.getCurrent().dump();
-				return fpage;
+			if (currentClass > numClasses) {
+				wizardCompleted = true;
+				return finalPage;
 			}
 
-			classp.reset();
-			stPage.reset();
+			classPage.reset();
+			stormDataPage.reset();
 
-			if (Configuration.getCurrent().getIsPrivate())
-				classp.privateCase();
+			if (currentConfig.isPrivate())
+				classPage.privateCase();
 
-			return classp;
+			return classPage;
 		}
-
-		if (currentPage == classp) {
-			c = new ClassDesc(++n);
-			System.out.println("N: " + n + " classes: " + classes);
-			c.setDdsmPath(classp.getDDSMPath());
-			c.setAltDtsm(classp.getAltDtsm());
-
-			Configuration.getCurrent().getClasses().add(c);
-
-			if (Configuration.getCurrent().getTechnology().contains("Hadoop Map-reduce")) {
-				c.setMlPath(classp.getMlPath());
-				hPage.updateThinkTextField();
-				return hPage;
-			} else if (Configuration.getCurrent().getTechnology().contains("Spark")) {
-				c.setMlPath(classp.getMlPath());
-				spPage.updateThinkTextField();
-				return spPage;
-			} else {
-				return stPage;
-			}
-		}
-
-		if (currentPage == this.folPage) {
-			fileHandler.setFolder(folPage.getSelectedFolder());
-			fileHandler.setScenario(false, false);
-			fileHandler.sendFile();
-			finish = true;
-			return fpage;
-		}
-
-		if (currentPage == this.prConfigPage) {
-			PrivateConfiguration.getCurrent().setPriE(prConfigPage.getCostNode());
-			PrivateConfiguration.getCurrent().setPriM(prConfigPage.getMemForNode());
-			PrivateConfiguration.getCurrent().setPriN(prConfigPage.getNumNodes());
-			PrivateConfiguration.getCurrent().setPriV(prConfigPage.getCpuNode());
-			classp.privateCase();
-			classp.udpate();
-			return classp;
+		
+		/*
+		 *  Private Configuration Page
+		 */
+		
+		if (currentPage == this.privateConfigPage) {
+			PrivateConfiguration.getCurrent().setPriM(privateConfigPage.getMemForNode());
+			PrivateConfiguration.getCurrent().setPriN(privateConfigPage.getNumNodes());
+			PrivateConfiguration.getCurrent().setPriV(privateConfigPage.getCpuNode());
+			classPage.reset();
+			classPage.privateCase();
+			return classPage;
 		}
 
 		return null;
@@ -202,8 +283,38 @@ public class DSpaceWizard extends Wizard {
 
 	@Override
 	public boolean canFinish() {
-		if (finish == true)
-			return true;
-		return false;
+		return wizardCompleted;
+	}
+	
+	private String getThinkTimeFromModel(String inputModel){
+		
+		String think;
+		Configuration currentConfig = Configuration.getCurrent();
+		try {
+			
+			String content = new String(Files.readAllBytes(Paths.get(inputModel)));
+	        Pattern pattern = null;
+        
+	        if (currentConfig.isHadoop())    		
+	        	pattern = Pattern.compile("hadoopExtDelay=.*?(\\d+)(.*?)");
+	        
+	        if (currentConfig.isSpark())
+	        	pattern = Pattern.compile("sparkExtDelay=.*?(\\d+)(.*?)");
+	        
+	        Matcher matcher = pattern.matcher(content);
+	        if (matcher.find()) {
+	            think = matcher.group(1);
+	            return think;
+	        }
+	        else {
+	        	System.out.println("Cannot found think time in file: " + inputModel);
+	        	return "";
+	        }
+        
+		}
+	    catch (IOException e) {
+	        e.printStackTrace();
+	        return "";
+	    }
 	}
 }
