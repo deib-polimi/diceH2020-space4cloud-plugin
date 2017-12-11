@@ -185,29 +185,11 @@ public class SparkFileManager {
             e.printStackTrace();
         }
     }
-    
-    public static boolean copyDagLogs(File logFolder, int cdid, String alt){
-    	
-    	if (!logFolder.isDirectory())
-    		return false;
-    	
-    	for (File file : logFolder.listFiles()) {
-    	    if (file.isFile()) {
-    	        String logName = file.getName();
-    	        String filePrefix = Configuration.getCurrent().getFilename(cdid, alt);
-    	        file.renameTo(new File(filePrefix.concat(logName)));
-    	    }
-    	}
-    	
-    	File destFolder = new File(Preferences.getSavingDir());
-    	
-    	try {
-    	    FileUtils.copyDirectory(logFolder, destFolder, true);
-    	} catch (IOException e) {
-    	    e.printStackTrace();
-    	}
-    	
-    	return true;
+
+    public static void copyDagLogs(File logFolder, int cdid, String alt) throws Exception{
+       String filePrefix = Configuration.getCurrent().getFilename(cdid, alt);
+       File destFile = new File(filePrefix + "input.tar.gz");
+       FileManager.compressDirectory(logFolder, destFile);
     }
 
     public static void createStatFile(int cdid, String alt, String LastTransitionId){

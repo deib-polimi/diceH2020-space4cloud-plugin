@@ -151,7 +151,12 @@ public class DICEWrap {
 					// DagSim
 					if (Preferences.simulatorIsDAGSIM()){
 						File logFolder = new File(c.getAltDtsm().get(alt));
-						SparkFileManager.copyDagLogs(logFolder, c.getId(), alt);
+						try {
+							SparkFileManager.copyDagLogs(logFolder, c.getId(), alt);
+						} catch (Exception e) {
+							System.err.println("SPARK EXCEPTION");
+							e.printStackTrace();
+						}
 					}
 					
 					else {

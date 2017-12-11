@@ -18,7 +18,11 @@ limitations under the License.
 
 package it.polimi.diceH2020.plugin.control;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -34,6 +38,10 @@ import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -550,5 +558,66 @@ public class FileManager {
             e.printStackTrace();
         }
     }
+	
+   static final int BUFFER = 2048;
 
+   public static void compressDirectory(File source, File dest) throws Exception {
+      System.out.println("Compressing " + source.toString() + " into " + dest.toString());
+      FileOutputStream destination = null;
+      BufferedOutputStream bOut = null;
+      GzipCompressorOutputStream gzOut = null;
+      TarArchiveOutputStream tOut = null;
+      destination = new FileOutputStream(dest);
+
+      /** Step: 1 ---> create a TarArchiveOutputStream object. **/
+      bOut = new BufferedOutputStream(destination);
+      gzOut = new GzipCompressorOutputStream(bOut);
+      tOut = new TarArchiveOutputStream(gzOut);
+      tOut.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX);
+      /** Step: 2 --->Open the source data and get a list of files from given directory recursively. **/
+      if (!source.exists()) {
+         System.out.println("Input directory does not exist..");
+         tOut.close();
+         throw new RuntimeException("Input directory " + source.toString() + " does not exist");
+      }
+      compressFilesRecursively(source.getParentFile(), source, tOut);
+      /** Step: 7 --->close the output stream. **/
+      tOut.close();
+      System.out.println("tar.gz file created successfully!!");
+   }
+
+   private static void compressFilesRecursively(File baseDir, File source, TarArchiveOutputStream out) throws IOException {
+      if (source.isFile()) {
+         System.out.println("Adding File: " + baseDir.toURI().relativize(source.toURI()).getPath());
+         FileInputStream fi = new FileInputStream(source);
+         BufferedInputStream sourceStream = new BufferedInputStream(fi, BUFFER);
+         /** Step: 3 ---> Create a tar entry for each file that is read. **/
+         /** relativize is used to to add a file to a tar, without including the entire path from root. **/
+         TarArchiveEntry entry = new TarArchiveEntry(source, baseDir.getParentFile().toURI().relativize(source.toURI()).getPath());
+         /** Step: 4 ---> Put the tar entry using putArchiveEntry. **/
+         out.putArchiveEntry(entry);
+         /** Step: 5 ---> Write the data to the tar file and close the input stream. **/
+         int count;
+         byte data[] = new byte[BUFFER];
+         while ((count = sourceStream.read(data, 0, BUFFER)) != -1) {
+            out.write(data, 0, count);
+         }
+         sourceStream.close();
+         /** Step: 6 --->close the archive entry. **/
+         out.closeArchiveEntry();
+      } else {
+         if (source.listFiles() != null) {
+            /** Add an empty folder to the tar **/
+            if (source.listFiles().length == 0) {
+               System.out.println("Adding Empty Folder: " + baseDir.toURI().relativize(source.toURI()).getPath());
+               TarArchiveEntry entry = new TarArchiveEntry(source, baseDir.getParentFile().toURI().relativize(source.toURI()).getPath());
+               out.putArchiveEntry(entry);
+               out.closeArchiveEntry();
+            }
+            for (File file : source.listFiles()) {
+               compressFilesRecursively(baseDir, file, out);
+            }
+         }
+      }
+   }
 }
