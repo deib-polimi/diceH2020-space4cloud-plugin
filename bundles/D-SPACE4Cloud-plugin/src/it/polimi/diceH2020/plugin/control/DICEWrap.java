@@ -402,10 +402,10 @@ public class DICEWrap {
 		String indexPath = sparkIdx.getAbsolutePath();
 		
 				
-		String command = String.format("java -cp %sbin:%slib/* PNML_Pre_Processor gspn %s %s %s", 
-						 Preferences.getJmTPath(), Preferences.getJmTPath(), pnmlPath, outputPath, indexPath);
+		String command = String.format("java -cp %sbin:%s../lib/*:%s/lib/* PNML_Pre_Processor gspn %s %s %s", 
+						 Preferences.getJmTPath(), Preferences.getJmTPath(), Preferences.getJmTPath(), pnmlPath, outputPath, indexPath);
 		
-		System.out.println("Calling PNML_Pre_Processor");
+		System.out.println("Calling PNML_Pre_Processor: " + command);
 		//System.out.println(command);
 		
 		Process proc;
