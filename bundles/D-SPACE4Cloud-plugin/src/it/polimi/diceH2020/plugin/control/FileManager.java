@@ -184,7 +184,7 @@ public class FileManager {
 			data.setMapVMConfigurations(null);
 			data.setPrivateCloudParameters(null);
 			
-			if (currentConfig.hasLTC()) {
+			if (currentConfig.hasCPM()) {
 				setEtaR(data, currentConfig);
 			} else {
 				data.setMapPublicCloudParameters(null);

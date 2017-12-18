@@ -104,8 +104,8 @@ public class Configuration implements Serializable {
 		return currentConfig.scenario.getCloudType() == CloudType.PRIVATE;
 	}
 	
-	public boolean hasLTC(){
-		return currentConfig.scenario.getLongTermCommitment();
+	public boolean hasCPM(){
+		return currentConfig.scenario.getUseComplexPricingModel();
 	}
 	
 	public boolean hasAdmissionControl(){
