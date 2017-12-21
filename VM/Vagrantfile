@@ -1,0 +1,36 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/xenial64"
+  config.vm.provider "virtualbox" do |vb|
+     vb.name = "diceH2020-space4cloud-plugin"
+     vb.memory = "4096"
+     vb.customize ["modifyvm", :id, "--vram", "64"]
+     vm.customize ["modifyvm", :id, "--uartmode1", "disconnected" ]
+  end
+  config.vm.provision "shell", inline: <<-SHELL
+     echo "ubuntu:password" | chpasswd
+     export DEBIAN_FRONTEND=noninteractive
+     apt update
+     apt -y dist-upgrade
+     apt -y install ubuntu-gnome-desktop virtualbox-guest-dkms openjdk-8-jdk maven
+     wget https://github.com/dice-project/DICE-Platform/releases/download/1.0.0/dice-1.0.0-linux.gtk.x86_64.zip
+     mkdir dice_framework
+     cd dice_framework
+     unzip ../dice-1.0.0-linux.gtk.x86_64.zip
+     cd /home/ubuntu
+     chown -R ubuntu:ubuntu dice_framework
+     chmod a+x dice_framework/DICE
+     git clone https://github.com/lattuada/diceH2020-space4clouds_shared.git
+     chown -R ubuntu:ubuntu diceH2020-space4clouds_shared
+     cd diceH2020-space4clouds_shared
+     mvn initialize compile package install
+     cd /home/ubuntu
+     git clone https://github.com/lattuada/diceH2020-space4cloud-plugin.git
+     chown -R ubuntu:ubuntu diceH2020-space4cloud-plugin
+     cd diceH2020-space4cloud-plugin
+     mvn initialize
+     cd /home/ubuntu
+     wget https://github.com/dice-project/DICE-Optimisation-JMT-Pre-processors/archive/v0.1.1.tar.gz
+     tar zxvf v0.1.1.tar.gz
+  SHELL
+end
+
