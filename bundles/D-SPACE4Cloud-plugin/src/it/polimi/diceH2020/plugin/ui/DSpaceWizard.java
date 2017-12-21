@@ -194,10 +194,15 @@ public class DSpaceWizard extends Wizard {
 
 		if (currentPage == hadoopDataPage) {
 		
-			currentConfig.getClasses().add(classDescription);
+			classDescription.setHadoopParUD(hadoopDataPage.getParameters());
+			try {
+				currentConfig.getClasses().add(classDescription.clone());
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			currentClass++;
 			classPage.setClasses(currentClass, numClasses);
-			classDescription.setHadoopParUD(hadoopDataPage.getParameters());
 			
 			if (currentClass > numClasses) {
 				wizardCompleted = true;
@@ -220,10 +225,15 @@ public class DSpaceWizard extends Wizard {
 		
 		if (currentPage == sparkDataPage) {
 			
-			currentConfig.getClasses().add(classDescription);
+			classDescription.setHadoopParUD(sparkDataPage.getParameters());
+			try {
+				currentConfig.getClasses().add(classDescription.clone());
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			currentClass++;
 			classPage.setClasses(currentClass, numClasses);
-			classDescription.setHadoopParUD(sparkDataPage.getParameters());
 	
 			if (currentClass > numClasses) {
 				wizardCompleted = true;
@@ -244,10 +254,15 @@ public class DSpaceWizard extends Wizard {
 		
 		if (currentPage == stormDataPage) {
 			
-			currentConfig.getClasses().add(classDescription);
+			classDescription.setStormU(stormDataPage.getStormU());
+			try {
+				currentConfig.getClasses().add(classDescription.clone());
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			currentClass++;
 			classPage.setClasses(currentClass, numClasses);
-			classDescription.setStormU(stormDataPage.getStormU());
 
 			if (currentClass > numClasses) {
 				wizardCompleted = true;

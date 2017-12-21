@@ -19,6 +19,7 @@ limitations under the License.
 package it.polimi.diceH2020.plugin.control;
 
 import java.io.Serializable;
+import java.lang.Cloneable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +30,7 @@ import java.util.Map;
  * @author kom
  *
  */
-public class ClassDesc implements Serializable {
+public class ClassDesc implements Serializable, Cloneable {
 	/**
 	 * 
 	 */
@@ -49,6 +50,17 @@ public class ClassDesc implements Serializable {
 
 	public ClassDesc(int id) {
 		this.id = id;
+	}
+
+	public ClassDesc clone() throws CloneNotSupportedException{
+		ClassDesc classDesc = (ClassDesc)super.clone();
+		classDesc.altDtsm = new HashMap<>(this.altDtsm);
+		///This will be filled after the cloning
+		if(this.altDtsmHadoop != null) {
+			classDesc.altDtsmHadoop = new HashMap<>(this.altDtsmHadoop);
+		}
+		classDesc.hadoopParUD = new HashMap<>(this.hadoopParUD);
+		return classDesc;
 	}
 
 	public int getId() {
