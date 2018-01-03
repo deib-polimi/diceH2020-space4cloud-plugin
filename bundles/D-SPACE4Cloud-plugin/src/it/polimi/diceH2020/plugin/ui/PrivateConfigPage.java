@@ -396,8 +396,8 @@ public class PrivateConfigPage extends WizardPage {
 				this.memForNode = Double.parseDouble(m.getTextContent());
 				this.memNodeText.setText(m.getTextContent());
 
-				Node v = par.getElementsByTagName("e").item(0);
-				PrivateConfiguration.getCurrent().setPriM(Double.parseDouble(v.getTextContent()));
+				//Node v = par.getElementsByTagName("e").item(0);
+				//PrivateConfiguration.getCurrent().setPriM(Double.parseDouble(v.getTextContent()));
 				//this.costNode = Double.parseDouble(v.getTextContent());
 				//this.costNodeText.setText(v.getTextContent());
 
