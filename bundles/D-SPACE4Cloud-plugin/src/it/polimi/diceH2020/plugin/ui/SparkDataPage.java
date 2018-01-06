@@ -237,34 +237,38 @@ public class SparkDataPage extends WizardPage {
         setPageComplete(false);
     }
 	
-	@Override
-	public boolean canFlipToNextPage() {
+   @Override
+   public boolean canFlipToNextPage() {
 
-    	if (deadline > 0 && thinkTime > 0 && hup > 0 && hlow > 0 && hlow <= hup){
+      if (deadline > 0 && thinkTime > 0 && hup > 0 && hlow > 0 && hlow <= hup){
 
-			if (Configuration.getCurrent().isPrivate()) {
+         if (Configuration.getCurrent().isPrivate()) {
 
-				if (Configuration.getCurrent().hasAdmissionControl() && jobPenalty == -1)
-					return false;
+            if (Configuration.getCurrent().hasAdmissionControl() && jobPenalty == -1)
+               return false;
 
-				if (!Configuration.getCurrent().hasAdmissionControl() && hlow != hup) {
-					setErrorMessage("Minimum and maximum level of concurrency must coincide");
-					return false;
-				}
+            if (!Configuration.getCurrent().hasAdmissionControl() && hlow != hup) {
+               setErrorMessage("Minimum and maximum level of concurrency must coincide");
+               return false;
+            }
 
-				setErrorMessage(null);
-				setParameters();
-				return true;
-			} 
-			else {
-				// Public
-				setParameters();
-				return true; 
-			}
-		}
-    
-		return false; 
-	}
+            setErrorMessage(null);
+            setParameters();
+            return true;
+         }
+         else {
+            // Public
+            if (hlow != hup) {
+               setErrorMessage("Minimum and maximum level of concurrency must coincide");
+               return false;
+            }
+            setParameters();
+            return true;
+         }
+      }
+
+      return false;
+   }
     
 	public Map<String, String> getParameters() {
 		return parameters;
