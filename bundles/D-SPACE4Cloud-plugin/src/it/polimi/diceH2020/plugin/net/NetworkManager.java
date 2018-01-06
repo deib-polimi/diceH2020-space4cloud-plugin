@@ -29,6 +29,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -190,7 +191,11 @@ public class NetworkManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		// Extract path:
+		int position = StringUtils.ordinalIndexOf(link, "/", 3);
+		String path = link.substring(position + 1, link.length());
+		link = Preferences.getFrontEndUrl() + "/" + path;
+		System.out.println("Submission link is " + link);
 		return link;
 	}
 }
