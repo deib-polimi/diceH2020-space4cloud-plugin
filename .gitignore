@@ -11,3 +11,7 @@ pom.xml.*
 *.xtendbin
 .idea/
 *.iml
+VM/.vagrant/
+VM/vagrant_log
+log
+
