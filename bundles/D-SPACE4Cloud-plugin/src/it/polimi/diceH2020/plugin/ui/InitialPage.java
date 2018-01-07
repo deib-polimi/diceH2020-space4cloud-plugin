@@ -259,7 +259,11 @@ public class InitialPage extends WizardPage {
 				
 				spotComposite.setVisible(false);
 				spotRatioComposite.setVisible(false);
-				admissionComposite.setVisible(true);
+				if (Preferences.simulatorIsJMT() && technology.equals(Technology.SPARK)) {
+					admissionComposite.setVisible(false);
+				} else {
+					admissionComposite.setVisible(true);
+				}
 				
 				cloudType = CloudType.PRIVATE;
 				spotPricing = false;
