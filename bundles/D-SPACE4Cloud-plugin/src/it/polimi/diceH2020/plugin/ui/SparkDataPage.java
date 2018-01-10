@@ -66,11 +66,11 @@ public class SparkDataPage extends WizardPage {
         container.setLayout(layout);
         
         thinkLabel = new Label(container, SWT.None);
-        thinkLabel.setText("Set Think Time [ms]");
+        thinkLabel.setText("Set Think Time [s]");
         thinkText = new Text(container, SWT.BORDER);
         
         deadlineLabel = new Label(container, SWT.None);
-        deadlineLabel.setText("Set deadline [ms]");
+        deadlineLabel.setText("Set deadline [s]");
         deadlineText = new Text(container, SWT.BORDER);
         deadlineText.setEditable(true);
 
@@ -119,7 +119,7 @@ public class SparkDataPage extends WizardPage {
             @Override
             public void modifyText(ModifyEvent arg0) {
             	if (!thinkText.getText().isEmpty())
-            		thinkTime = Integer.parseInt(thinkText.getText());
+            		thinkTime = Integer.parseInt(thinkText.getText()) * 1000;
             	getWizard().getContainer().updateButtons();
             }
         });
@@ -129,7 +129,7 @@ public class SparkDataPage extends WizardPage {
             @Override
             public void modifyText(ModifyEvent arg0) {
             	if (!deadlineText.getText().isEmpty())
-            		deadline = Integer.parseInt(deadlineText.getText()); 
+            		deadline = Integer.parseInt(deadlineText.getText()) * 1000; 
             	getWizard().getContainer().updateButtons();
             }
         });

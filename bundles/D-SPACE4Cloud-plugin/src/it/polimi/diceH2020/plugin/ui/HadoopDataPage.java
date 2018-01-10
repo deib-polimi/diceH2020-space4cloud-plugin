@@ -61,12 +61,12 @@ public class HadoopDataPage extends WizardPage {
 		container.setLayout(layout);
 
 		thinkLabel = new Label(container, SWT.None);
-		thinkLabel.setText("Set Think Time [ms]");
+		thinkLabel.setText("Set Think Time [s]");
 		thinkText = new Text(container, SWT.BORDER);
 		thinkText.setEnabled(false);
 
 		deadlineLabel = new Label(container, SWT.None);
-		deadlineLabel.setText("Set deadline [ms]");
+		deadlineLabel.setText("Set deadline [s]");
 		deadlineText = new Text(container, SWT.BORDER);
 		deadlineText.setEditable(true);
 
@@ -95,7 +95,7 @@ public class HadoopDataPage extends WizardPage {
             @Override
             public void modifyText(ModifyEvent arg0) {
             	if (!deadlineText.getText().isEmpty())
-            		deadline = Integer.parseInt(deadlineText.getText()); 
+            		deadline = Integer.parseInt(deadlineText.getText()) * 1000; 
             	getWizard().getContainer().updateButtons();
             }
         });
@@ -273,7 +273,7 @@ public class HadoopDataPage extends WizardPage {
 			thinkTime = 1;		 
 		}
 		else {
-			thinkTime = Integer.parseInt(thinkTimeInput);
+			thinkTime = Integer.parseInt(thinkTimeInput) * 1000;
 		}	
 		return;
 	}
