@@ -59,7 +59,9 @@ public class ClassDesc implements Serializable, Cloneable {
 		if(this.altDtsmHadoop != null) {
 			classDesc.altDtsmHadoop = new HashMap<>(this.altDtsmHadoop);
 		}
-		classDesc.hadoopParUD = new HashMap<>(this.hadoopParUD);
+		if(this.hadoopParUD != null) {
+			classDesc.hadoopParUD = new HashMap<>(this.hadoopParUD);
+		}
 		return classDesc;
 	}
 
