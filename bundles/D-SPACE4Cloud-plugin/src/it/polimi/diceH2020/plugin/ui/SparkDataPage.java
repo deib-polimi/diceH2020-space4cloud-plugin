@@ -329,7 +329,7 @@ public class SparkDataPage extends WizardPage {
 		}
 		else {
 			System.out.println(thinkTimeInput);
-			thinkTime = Integer.parseInt(thinkTimeInput);
+			thinkTime = Integer.parseInt(thinkTimeInput) * 1000;
 		}	
 		return;
 	}

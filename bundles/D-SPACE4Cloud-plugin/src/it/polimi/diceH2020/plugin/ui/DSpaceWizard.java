@@ -317,6 +317,8 @@ public class DSpaceWizard extends Wizard {
 	        Matcher matcher = pattern.matcher(content);
 	        if (matcher.find()) {
 	            think = matcher.group(1);
+	            ///In the form thinktime must be inserted as seconds, so here we convert (then it will be converted back)
+	            think = String.valueOf(Integer.parseInt(think) / 1000);
 	            return think;
 	        }
 	        else {
