@@ -91,53 +91,53 @@ public class DSpaceWizard extends Wizard {
 		
 		Configuration currentConfig = Configuration.getCurrent();	
 		
-		/*
-		 *  Initial Page
-		 */
-		
-		if (currentPage == initialPage) {
-			
-			// Parse input from InitialPage 
-			boolean spotPricing = initialPage.getSpotPricing();
-			boolean admissionControl = initialPage.getAdmissionControl();
-			Technology technology = initialPage.getTechnology();
-			CloudType cloudType = initialPage.getCloudType();
-			
-			numClasses = initialPage.getClasses();
-			currentClass = 1;
-			classPage.setClasses(currentClass, numClasses);
-			
-			currentConfig.setNumClasses(numClasses);
-			
-			if (spotPricing) {
-				float spotRatio = initialPage.getSpotRatio();
-				currentConfig.setSpotRatio(spotRatio);
-			}
-			
-			try {
-				
-				if (cloudType == CloudType.PUBLIC)
-					currentConfig.setScenario(technology, cloudType, spotPricing, null);
-				else 
-					currentConfig.setScenario(technology, cloudType, null, admissionControl);
-				
-			} catch (RuntimeException e) {
-				initialPage.setErrorMessage("There was an error during the creation of the scenario, please try again.");
-				return initialPage;
-			}
-			
-			if (cloudType == CloudType.PRIVATE) {
-				sparkDataPage.privateCase();
-				hadoopDataPage.privateCase();
-				return privateConfigPage;
-				
-			} 
-			else {
-				sparkDataPage.publicCase();
-				hadoopDataPage.publicCase();
-				return classPage;
-			}
-		}
+      /*
+       *  Initial Page
+       */
+
+      if (currentPage == initialPage) {
+
+         // Parse input from InitialPage 
+         boolean spotPricing = initialPage.getSpotPricing();
+         boolean admissionControl = initialPage.getAdmissionControl();
+         Technology technology = initialPage.getTechnology();
+         CloudType cloudType = initialPage.getCloudType();
+
+         numClasses = initialPage.getClasses();
+         currentClass = 1;
+         classPage.setClasses(currentClass, numClasses);
+
+         currentConfig.setNumClasses(numClasses);
+
+         if (spotPricing) {
+            float spotRatio = initialPage.getSpotRatio();
+            currentConfig.setSpotRatio(spotRatio);
+         }
+
+         try {
+
+            if (cloudType == CloudType.PUBLIC)
+               currentConfig.setScenario(technology, cloudType, spotPricing, null);
+            else 
+               currentConfig.setScenario(technology, cloudType, null, admissionControl);
+
+         } catch (RuntimeException e) {
+            initialPage.setErrorMessage("There was an error during the creation of the scenario, please try again.");
+            return initialPage;
+         }
+
+         if (cloudType == CloudType.PRIVATE) {
+            sparkDataPage.privateCase();
+            hadoopDataPage.privateCase();
+            return privateConfigPage;
+
+         } else {
+            System.out.println("CloudType is PUBLIC");
+            sparkDataPage.publicCase();
+            hadoopDataPage.publicCase();
+            return classPage;
+         }
+      }
 		
 		/*
 		 *  Class Page

@@ -213,86 +213,79 @@ public class InitialPage extends WizardPage {
 			}
 		});
 
-		technologyList.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-			    
+      technologyList.addSelectionListener(new SelectionAdapter() {
+         public void widgetSelected(SelectionEvent e) {
 
-				String selection = technologyList.getSelection()[0];
-				
-				if (selection.equals("Storm")){
-					
-					technology = Technology.STORM;
-					cloudType = CloudType.PUBLIC;
-					disablePrivateCase();
-					classesText.setEnabled(true);
-				}
-				
-				if (selection.equals("Spark")){
-					technology = Technology.SPARK;
-					privateBtn.setEnabled(true);
-					
-					if ((Preferences.simulatorIsJMT() || Preferences.simulatorIsGSPN()) && 
-							(Preferences.simulatorIsDAGSIM() && cloudType == CloudType.PUBLIC)){
-						
-					classes = 1;
-					classesText.setText("1");
-					classesText.setEnabled(false);
-					}
-				}
-				
-				if (selection.contains("Hadoop")){
-					technology = Technology.HADOOP;
-					classesText.setEnabled(true);
-					if (Preferences.simulatorIsGSPN()){
-						privateBtn.setEnabled(true);
-					}
-					else {
-						disablePrivateCase();
-					}
-				}
-				getWizard().getContainer().updateButtons();
-			}
-		});
 
-		privateBtn.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				
-				spotComposite.setVisible(false);
-				spotRatioComposite.setVisible(false);
-				if (Preferences.simulatorIsJMT() && technology.equals(Technology.SPARK)) {
-					admissionComposite.setVisible(false);
-				} else {
-					admissionComposite.setVisible(true);
-				}
-				
-				cloudType = CloudType.PRIVATE;
-				spotPricing = false;
-				
-				if (Preferences.simulatorIsDAGSIM() && cloudType == CloudType.PUBLIC){
-					classesText.setEnabled(true);
-				}
-				
-				resetPublicCase();			
-				getWizard().getContainer().updateButtons();
+            classesText.setEnabled(true);
+            String selection = technologyList.getSelection()[0];
 
-			}
-		});
+            if (selection.equals("Storm")){
 
-		publicBtn.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
+               technology = Technology.STORM;
+               cloudType = CloudType.PUBLIC;
+               disablePrivateCase();
+            }
 
-				spotComposite.setVisible(true);
-				spotPricingBtn.setSelection(false);
-				spotRatioComposite.setVisible(false);
-				admissionComposite.setVisible(false);
-				
-				cloudType = CloudType.PUBLIC;
-				admissionControl = false;
-				admissionControlBtn.setSelection(false);
-				
-				getWizard().getContainer().updateButtons();
-			}
-		});
+            if (selection.equals("Spark")){
+               technology = Technology.SPARK;
+               privateBtn.setEnabled(true);
+               if (Preferences.simulatorIsJMT()) {
+            	   admissionComposite.setVisible(false);
+               }
+            }
+
+            if (selection.contains("Hadoop")){
+               technology = Technology.HADOOP;
+               privateBtn.setEnabled(true);
+               if (cloudType != null && cloudType.equals(CloudType.PRIVATE)) {
+            	   admissionComposite.setVisible(true);
+               }
+            }
+            getWizard().getContainer().updateButtons();
+         }
+      });
+
+      privateBtn.addSelectionListener(new SelectionAdapter() {
+         public void widgetSelected(SelectionEvent e) {
+
+            spotComposite.setVisible(false);
+            spotRatioComposite.setVisible(false);
+            if (Preferences.simulatorIsJMT() && technology != null && technology.equals(Technology.SPARK)) {
+               admissionComposite.setVisible(false);
+            } else {
+               admissionComposite.setVisible(true);
+            }
+
+            cloudType = CloudType.PRIVATE;
+            spotPricing = false;
+
+            if (Preferences.simulatorIsDAGSIM() && cloudType == CloudType.PUBLIC){
+               classesText.setEnabled(true);
+            }
+
+            resetPublicCase();			
+            getWizard().getContainer().updateButtons();
+
+         }
+      });
+
+      publicBtn.addSelectionListener(new SelectionAdapter() {
+         public void widgetSelected(SelectionEvent e) {
+
+            spotComposite.setVisible(true);
+            spotPricingBtn.setSelection(false);
+            spotRatioComposite.setVisible(false);
+            admissionComposite.setVisible(false);
+
+            cloudType = CloudType.PUBLIC;
+            System.out.println("Setting cloud type to PUBLIC");
+            admissionControl = false;
+            admissionControlBtn.setSelection(false);
+
+            getWizard().getContainer().updateButtons();
+         }
+      });
 		
 		spotPricingBtn.addSelectionListener(new SelectionAdapter()
 		{
@@ -361,27 +354,27 @@ public class InitialPage extends WizardPage {
 	}
 
 	
-	private void resetPublicCase() {
-		spotPricingBtn.setSelection(false);
-		spotPricing = false; 
-		spotRatioText.setText("");
-		spotRatio = -1;
-		spotRatioComposite.setVisible(false);
-		setErrorMessage(null);
-	}
-	
-	private void disablePrivateCase() {
-		privateBtn.setSelection(false);
-		privateBtn.setEnabled(false);
-		publicBtn.setSelection(true);		
-		admissionComposite.setVisible(false);
-		admissionControlBtn.setSelection(false);
-		admissionControl = false;
-		spotComposite.setVisible(true);
-		resetPublicCase();
-		
-		return;
-	}
+   private void resetPublicCase() {
+      spotPricingBtn.setSelection(false);
+      spotPricing = false; 
+      spotRatioText.setText("");
+      spotRatio = -1;
+      spotRatioComposite.setVisible(false);
+      setErrorMessage(null);
+   }
+
+   private void disablePrivateCase() {
+      privateBtn.setSelection(false);
+      privateBtn.setEnabled(false);
+      publicBtn.setSelection(true);		
+      admissionComposite.setVisible(false);
+      admissionControlBtn.setSelection(false);
+      admissionControl = false;
+      spotComposite.setVisible(true);
+      resetPublicCase();
+
+      return;
+   }
 	@Override
 	public boolean canFlipToNextPage() {
 		
