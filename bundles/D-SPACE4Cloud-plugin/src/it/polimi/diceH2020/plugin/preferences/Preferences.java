@@ -16,6 +16,7 @@ limitations under the License.
 package it.polimi.diceH2020.plugin.preferences;
 
 import it.polimi.diceH2020.plugin.Activator;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Preferences {
 	protected static final String SAVING_DIR = "SavingDir";
@@ -32,6 +33,7 @@ public class Preferences {
 	public static final String GSPN = "GSPN";
 	public static final String JMT = "JMT";
 	
+	public static ReentrantLock resultsLock = new ReentrantLock();
 
 	public static String getFrontEndAddress() {
 		return Activator.getDefault().getPreferenceStore().getString(FRONT_END_ADDRESS);

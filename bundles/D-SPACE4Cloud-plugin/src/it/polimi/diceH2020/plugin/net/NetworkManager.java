@@ -167,16 +167,44 @@ public class NetworkManager {
 	}
 
 	
-	private void parseResponseForResultLinks(String response){
-		
-		Pattern pattern = Pattern.compile("\\{\"href\":\"(.*?)\"\\}");
-        Matcher matcher = pattern.matcher(response);
-        while (matcher.find()) {
-            String link = matcher.group(1);
-            System.out.println("Resuls will be available at: " + link);
-        }
-	}
-	
+private void parseResponseForResultLinks(String response) {
+   JSONParser parser = new JSONParser();
+
+   try {
+      JSONObject json = (JSONObject) parser.parse(response);
+      JSONObject lin = (JSONObject) json.get("_links");
+      JSONObject sub = (JSONObject) lin.get("solution");
+      String link = (String) sub.get("href");
+      try {
+         Preferences.resultsLock.lock();
+         File f = new File(Preferences.getSavingDir() + "results");
+
+         if (!f.exists()) {
+            try {
+               PrintWriter writer = new PrintWriter(Preferences.getSavingDir() + "results", "UTF-8");
+               writer.println(Configuration.getCurrent().getID());
+               writer.println(link);
+               writer.close();
+            } catch (IOException e) {
+               // do something
+            }
+         } else {
+            try (FileWriter fw = new FileWriter(Preferences.getSavingDir() + "results", true);
+                  BufferedWriter bw = new BufferedWriter(fw);
+                  PrintWriter out = new PrintWriter(bw)) {
+               out.println(Configuration.getCurrent().getID());
+               out.println(link);
+            } catch (IOException e) {
+               e.printStackTrace();
+            }
+         }
+      } finally {
+         Preferences.resultsLock.unlock();
+      }
+   } catch (ParseException e) {
+      e.printStackTrace();
+   }
+}
 
 	private String getLink(String string) {
 		JSONParser parser = new JSONParser();

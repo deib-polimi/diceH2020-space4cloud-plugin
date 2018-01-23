@@ -172,62 +172,66 @@ public class ResultCheck extends TimerTask{
 		return toReturn;
 	}
 
-	private void removeLine(String url){
-		BufferedReader br=null;
-		int urlPos=-1;
+   private void removeLine(String url){
+      BufferedReader br=null;
+      int urlPos=-1;
+      try {
+         Preferences.resultsLock.lock();
+         try {
+            br = new BufferedReader(new FileReader(filePath));
+         } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
 
-		try {
-			br = new BufferedReader(new FileReader(filePath));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+         try {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
 
-		try {
-			StringBuilder sb = new StringBuilder();
-			String line = br.readLine();
+            while (line != null) {
+               sb.append(line+"\n");
+               line = br.readLine();
+            }
 
-			while (line != null) {
-				sb.append(line+"\n");
-				line = br.readLine();
-			}
+            String everything = sb.toString();
+            String[] st=everything.split("\n");
 
-			String everything = sb.toString();
-			String[] st=everything.split("\n");
+            for(int i=0;i<st.length;i++){
+               if(st[i].equals(url)){
+                  urlPos=i/2;
+                  break;
+               }
+            }
+         } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         } finally {
+            try {
+               br.close();
+            } catch (IOException e) {
+               // TODO Auto-generated catch block
+               e.printStackTrace();
+            }
+         }
 
-			for(int i=0;i<st.length;i++){
-				if(st[i].equals(url)){
-					urlPos=i/2;
-					break;
-				}
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				br.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+         PrintWriter writer;
+         try {
+            writer = new PrintWriter(Preferences.getSavingDir() + "results", "UTF-8");
 
-		PrintWriter writer;
-		try {
-			writer = new PrintWriter(Preferences.getSavingDir() + "results", "UTF-8");
+            for(int i=0;i<this.urls.size();i++){
+               if(i==urlPos)
+                  continue;
 
-			for(int i=0;i<this.urls.size();i++){
-				if(i==urlPos)
-					continue;
-
-				writer.println(this.fileNames.get(i));
-				writer.println(this.urls.get(i));
-				writer.close();
-			}
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+               writer.println(this.fileNames.get(i));
+               writer.println(this.urls.get(i));
+               writer.close();
+            }
+         } catch (FileNotFoundException | UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
+      } finally {
+         Preferences.resultsLock.unlock();
+      }
+   }
 }
