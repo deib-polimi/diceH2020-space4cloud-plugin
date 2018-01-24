@@ -5,7 +5,7 @@
 
 	<groupId>it.polimi.diceH2020</groupId>
 	<artifactId>D-SPACE4Cloud-plugin.configuration</artifactId>
-	<version>0.2.4</version>
+	<version>0.2.5-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>

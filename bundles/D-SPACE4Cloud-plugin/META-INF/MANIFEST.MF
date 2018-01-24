@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: D-SPACE4Cloud Plugin
 Bundle-SymbolicName: it.polimi.diceH2020.D-SPACE4Cloud-plugin;singleton:=true
-Bundle-Version: 0.2.4
+Bundle-Version: 0.2.5.qualifier
 Bundle-Activator: it.polimi.diceH2020.plugin.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

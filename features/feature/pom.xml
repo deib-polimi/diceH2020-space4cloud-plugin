@@ -8,7 +8,7 @@
     <parent>
         <groupId>it.polimi.diceH2020</groupId>
         <artifactId>D-SPACE4Cloud-plugin.parent</artifactId>
-        <version>0.2.4</version>
+        <version>0.2.5-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 </project>
